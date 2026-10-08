@@ -37,11 +37,13 @@ SwaraGPT does not rely on generic large language model hallucinations for author
 ## 2. Ingested Canonical Musicology Corpus
 
 The knowledge base is built from classical treatises and musicological scholarship:
-* **Natya Shastra (Bharata Muni, ~200 BCE - 200 CE):** Foundations of Shruti, Grama, and Murchhana systems.
-* **Sangeet Ratnakara (Sarangadeva, 13th Century):** The authoritative exposition of the 22 Shrutis, Nada, and Gamaka types.
-* **Hindustani Sangeet Paddhati (Pt. Vishnu Narayan Bhatkhande):** Classification of Ragas into 10 Parent Thaats.
+* **[Natya Shastra](https://archive.org/details/NatyaShastra) (Bharata Muni, ~200 BCE – 200 CE):** Foundations of Shruti, Grama, and Murchhana systems.
+* **[Sangita Ratnakara](https://archive.org/details/sangitaratnakaraofsankasangaradevashringyr.k.vol1mlbd) (Sarangadeva, 13th Century CE):** The authoritative exposition of the 22 Shrutis, Nada, and 15 Gamaka types.
+* **[Hindustani Sangeet Paddhati - Kramik Pustak Malika Part 1](https://archive.org/details/bhatkhande-hindustani-sangeet-paddhati-kramik-pustak-malika-part-1_compress) & [Part 2](https://archive.org/details/wwdr_hindustani-sangit-paddhati-kramik-pustak-malika-part-2-of-vishnu-narayan-bhatkha) (Pt. Vishnu Narayan Bhatkhande):** Classification of Ragas into 10 Parent Thaats, Bandishes, and Time Theory (Samay Siddhanta).
 * **Swara Melakalanidhi (Ramamatya, 16th Century):** Foundations of Carnatic Raga classification.
 * **Sangita Sampradaya Pradarsini (Subbarama Dikshitar, 1904):** Detailed notations of Carnatic Ragas and Gamakas.
+
+*(See [`DATASETS.md`](DATASETS.md) for full citations and research dataset access.)*
 
 ---
 

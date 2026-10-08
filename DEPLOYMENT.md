@@ -42,12 +42,29 @@ curl http://localhost:8000/health
 
 ## 3. Vercel (Frontend) & Render (Backend)
 
-### Frontend on Vercel
-1. Link your GitHub repository in Vercel.
-2. Set Root Directory to `frontend`.
-3. Add Environment Variables:
-   * `NEXT_PUBLIC_API_URL`: `https://your-backend.onrender.com`
-4. Deploy! Next.js 16 App Router will build and optimize static and dynamic pages automatically.
+### Frontend on Vercel (1-Click Deployment)
+
+Deploy directly to Vercel with one click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fom-mane-coder%2FSwaraGPT&root-directory=frontend)
+
+#### Manual Deployment via Vercel Dashboard:
+1. Log in to [Vercel](https://vercel.com) and click **"Add New..." > "Project"**.
+2. Select your imported GitHub repository: `https://github.com/om-mane-coder/SwaraGPT`.
+3. Under **Project Settings**:
+   * **Framework Preset:** Next.js
+   * **Root Directory:** Click "Edit" and set to `frontend` (critical for this monorepo).
+4. Environment Variables (Optional):
+   * `NEXT_PUBLIC_API_URL`: URL of your deployed backend (e.g. `https://your-backend.onrender.com` or leave empty to use built-in offline simulation mode).
+5. Click **Deploy**. Vercel will build and assign a global, free, SSL-secured domain: `https://swaragpt.vercel.app`.
+
+#### CLI Deployment:
+```bash
+cd frontend
+npx vercel
+# Follow prompts: Link to existing project, choose Next.js preset, deploy to production with:
+npx vercel --prod
+```
 
 ### Backend on Render / Railway
 1. Create a new Web Service pointing to `backend/`.

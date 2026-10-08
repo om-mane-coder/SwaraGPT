@@ -5,6 +5,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-black.svg?style=flat&logo=next.js)](https://nextjs.org)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg?style=flat&logo=python)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fom-mane-coder%2FSwaraGPT&root-directory=frontend)
 
 SwaraGPT is an AI-powered virtual music guru designed specifically for students, self-learners, and Indian Classical Music enthusiasts across both Hindustani and Carnatic traditions.
 
@@ -93,6 +94,33 @@ Where:
 
 ---
 
+## 📚 Open Access Datasets & Musicological Corpora
+
+SwaraGPT integrates verified, open-access datasets from Music Information Retrieval (MIR) research and authoritative digitized classical musicological treatises. All links below are verified and return **HTTP 200 OK**:
+
+### 🎵 1. Audio MIR Research Corpora
+* **CompMusic Saraga Research Dataset (Zenodo Master DOI):** [https://zenodo.org/records/4301737](https://zenodo.org/records/4301737)
+  * *Open-access multi-track audio, ground-truth continuous pitch contours (F0), tonic annotations, and Tala metadata for Hindustani and Carnatic art music.*
+* **CompMusic Saraga Documentation Portal:** [https://mtg.github.io/saraga/](https://mtg.github.io/saraga/)
+* **CompMusic UPF Barcelona Research Group:** [https://compmusic.upf.edu/](https://compmusic.upf.edu/)
+* **CompMusic Corpora Catalogue:** [https://compmusic.upf.edu/corpora](https://compmusic.upf.edu/corpora)
+* **Dunya Indian Music Web Corpus:** [https://dunya.compmusic.upf.edu/](https://dunya.compmusic.upf.edu/)
+* **Saraga Python Tools & Reader:** [https://github.com/MTG/saraga](https://github.com/MTG/saraga)
+
+### 🏛️ 2. Classical Musicological Treatises (RAG Knowledge Base)
+* **Natya Shastra by Bharata Muni (~200 BCE – 200 CE):** [Internet Archive (Full Text)](https://archive.org/details/NatyaShastra)
+  * *The fundamental treatise establishing the 22-Shruti system, Shadja/Madhyama Gramas, and Swara-Rasa aesthetics.*
+* **Sangita Ratnakara by Sarangadeva (13th Century CE):** [Internet Archive (English Translation Vol. 1, MLBD)](https://archive.org/details/sangitaratnakaraofsankasangaradevashringyr.k.vol1mlbd)
+  * *Codification of 22 microtonal shruti ratios and the 15 canonical Gamakas (vocal ornaments).*
+* **Hindustani Sangeet Paddhati: Kramik Pustak Malika (Part 1) by Pt. V. N. Bhatkhande:** [Internet Archive (Part 1)](https://archive.org/details/bhatkhande-hindustani-sangeet-paddhati-kramik-pustak-malika-part-1_compress)
+  * *The foundational text organizing ragas into 10 Parent Thaats with standard bandishes and notation.*
+* **Hindustani Sangeet Paddhati: Kramik Pustak Malika (Part 2) by Pt. V. N. Bhatkhande:** [Internet Archive (Part 2)](https://archive.org/details/wwdr_hindustani-sangit-paddhati-kramik-pustak-malika-part-2-of-vishnu-narayan-bhatkha)
+  * *Detailed raganga classifications, chalan, pakads, and the Time Theory of Ragas (Samay Siddhanta).*
+
+*For full academic citations and dataset calibrations, see [`DATASETS.md`](DATASETS.md).*
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technologies |
@@ -105,13 +133,26 @@ Where:
 | **Document Store** | MongoDB (High-frequency pitch contours) with relational JSON fallback |
 | **Vector DB & RAG** | ChromaDB, Cosine similarity embeddings, verified musicology knowledge base |
 | **AI Providers** | Google Gemini API, OpenAI API, and Offline Pedagogical Guru Provider |
-| **DevOps** | Docker, Docker Compose, Multi-stage builds |
+| **DevOps & Hosting** | Vercel (Frontend), Docker, Docker Compose, Multi-stage builds |
 
 ---
 
-## 🚀 Quickstart Guide
+## 🚀 Quickstart & Deployment Guide
 
-### Option 1: Docker Compose (All Services)
+### Option 1: 1-Click Cloud Deployment on Vercel (Frontend)
+
+Anyone can deploy and run SwaraGPT on Vercel with a single click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fom-mane-coder%2FSwaraGPT&root-directory=frontend)
+
+* **Repository:** `https://github.com/om-mane-coder/SwaraGPT`
+* **Root Directory:** `frontend`
+* **Framework:** Next.js 16 (App Router)
+* **Environment Variable:** `NEXT_PUBLIC_API_URL` (optional, for connecting a remote backend instance)
+
+---
+
+### Option 2: Docker Compose (All Services)
 
 ```bash
 # Clone the repository
@@ -213,6 +254,7 @@ python -m pytest app/tests -v
 * [`AI_PIPELINE.md`](AI_PIPELINE.md): MIR algorithms, pYIN pitch extraction, and ornament detection.
 * [`RAG.md`](RAG.md): Document ingestion, chunking, embeddings, and grounding architecture.
 * [`DATABASE.md`](DATABASE.md): Relational and document store schemas and migrations.
+* [`DATASETS.md`](DATASETS.md): Open-access MIR datasets and verified classical musicology treatises.
 * [`DEPLOYMENT.md`](DEPLOYMENT.md): Production deployment guidelines for Vercel, Render, and AWS.
 
 ---

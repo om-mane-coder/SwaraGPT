@@ -26,12 +26,13 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div className="space-y-3">
-          <h3 className="text-slate-900 font-bold text-xs tracking-wider uppercase">Features</h3>
+          <h3 className="text-slate-900 font-bold text-xs tracking-wider uppercase">Features & Resources</h3>
           <ul className="space-y-2 text-xs sm:text-sm">
             <li><Link href="/chat" className="hover:text-amber-800 transition-colors">AI Virtual Guru</Link></li>
             <li><Link href="/practice" className="hover:text-amber-800 transition-colors">Live Riyaz Studio</Link></li>
             <li><Link href="/ragas" className="hover:text-amber-800 transition-colors">Raga Knowledge Base</Link></li>
             <li><Link href="/progress" className="hover:text-amber-800 transition-colors">Sadhana Progress Tracker</Link></li>
+            <li><a href="https://github.com/om-mane-coder/SwaraGPT" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800 transition-colors flex items-center gap-1 font-medium text-amber-900">GitHub & Open Datasets ↗</a></li>
           </ul>
         </div>
 
