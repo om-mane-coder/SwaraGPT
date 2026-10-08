@@ -36,6 +36,26 @@ class FullAnalysisResponse(BaseModel):
     recommendations: List[str]
     is_demo: bool = False
 
+    # Frontend Compatibility & Direct Mapping Aliases
+    overall_score: Optional[float] = None
+    pitch_accuracy: Optional[float] = None
+    swara_accuracy: Optional[float] = None
+    shruti_accuracy: Optional[float] = None
+    raga_accuracy: Optional[float] = None
+    tonic_stability: Optional[float] = None
+    shruti_deviation: Optional[float] = None
+    sa_estimate: Optional[float] = None
+    target_raga: Optional[str] = None
+    pitch_analysis: Optional[Dict[str, Any]] = None
+    detected_swaras: Optional[List[Dict[str, Any]]] = None
+    raga_predictions: Optional[List[Dict[str, Any]]] = None
+    ai_feedback: Optional[str] = None
+    practice_recommendations: Optional[List[str]] = None
+    strengths: Optional[List[str]] = None
+    issues: Optional[List[str]] = None
+    detected_ornaments: Optional[List[Dict[str, Any]]] = None
+    pitch_points: Optional[List[Dict[str, Any]]] = None
+
 
 class PakadAnalysisRequest(BaseModel):
     target_raga: str

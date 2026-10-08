@@ -214,8 +214,11 @@ function PracticeContent() {
       const formData = new FormData();
       const uploadFile = file || new File([blob], 'riyaz_practice.webm', { type: blob.type || 'audio/webm' });
       formData.append('file', uploadFile);
+      formData.append('audio_file', uploadFile);
       formData.append('target_raga', ragaName);
       formData.append('manual_tonic_hz', tonic.toString());
+      formData.append('user_sa_hz', tonic.toString());
+      formData.append('user_sa', tonic.toString());
 
       const res = await audioApi.analyze(formData);
       setLastAnalysis(res.data);

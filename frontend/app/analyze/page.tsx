@@ -47,8 +47,11 @@ export default function AnalyzePage() {
       const formData = new FormData();
       const uploadFile = file || new File([blob], 'vocal_recording.webm', { type: blob.type || 'audio/webm' });
       formData.append('file', uploadFile);
+      formData.append('audio_file', uploadFile);
       formData.append('target_raga', targetRaga);
       formData.append('manual_tonic_hz', tonicHz.toString());
+      formData.append('user_sa_hz', tonicHz.toString());
+      formData.append('user_sa', tonicHz.toString());
 
       // Start visual pipeline progress animation in parallel
       const animationPromise = runPipelineAnimation();
