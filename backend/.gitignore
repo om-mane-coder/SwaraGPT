@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+*.sqlite
+*.sqlite3
+swaragpt.db
+.env
+uploads/
+*.wav
+*.mp3
+*.webm
+*.ogg
+venv/
+.venv/

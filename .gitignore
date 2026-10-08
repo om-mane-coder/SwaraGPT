@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production & Build outputs
+.next/
+out/
+build/
+dist/
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+
+# Local Databases & Logs
+*.db
+*.sqlite
+*.sqlite3
+swaragpt.db
+backend/swaragpt.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads & Temporary Media
+uploads/
+backend/uploads/
+*.wav
+*.mp3
+*.webm
+*.ogg
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

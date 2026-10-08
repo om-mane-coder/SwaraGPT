@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@source "../app";
+@source "../components";
+
+@layer base {
+  :root {
+    --bg-primary: #FAF8F5;
+    --bg-secondary: #FFFFFF;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --border-card: rgba(217, 119, 6, 0.2);
+    
+    --amber-gold: #B45309;
+    --amber-glow: #D97706;
+    --crimson-accent: #B91C1C;
+    --purple-mist: #6D28D9;
+    
+    --text-main: #1E293B;
+    --text-muted: #64748B;
+  }
+
+  body {
+    background-color: #FAF8F5;
+    color: #1E293B;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME ADAPTIVE SYSTEM
+   Gracefully adapts dark utility tokens to an opulent, warm ivory & amber palette
+   ========================================================================== */
+
+/* Dark container backgrounds converted to luminous ivory & warm parchment */
+.bg-\[\#080B11\],
+.bg-\[\#080b11\],
+[class*="bg-[#080B11]"],
+[class*="bg-[#080b11]"] {
+  background-color: #FAF8F5 !important;
+}
+
+.bg-\[\#080B11\]\/90,
+.bg-\[\#080b11\]\/90 {
+  background-color: rgba(250, 248, 245, 0.92) !important;
+}
+
+.bg-\[\#0F1420\],
+.bg-\[\#0f1420\],
+[class*="bg-[#0F1420]"],
+[class*="bg-[#0f1420]"] {
+  background-color: #FFFFFF !important;
+}
+
+.bg-\[\#090D16\],
+.bg-\[\#090d16\],
+[class*="bg-[#090D16]"],
+[class*="bg-[#090d16]"] {
+  background-color: #F5EFE6 !important;
+}
+
+.bg-\[\#0C101A\],
+.bg-\[\#0c101a\],
+[class*="bg-[#0C101A]"],
+[class*="bg-[#0c101a]"] {
+  background-color: #FFFFFF !important;
+}
+
+.bg-\[\#131B2E\],
+.bg-\[\#131b2e\],
+[class*="bg-[#131B2E]"],
+[class*="bg-[#131b2e]"] {
+  background-color: #EDE6D8 !important;
+}
+
+/* Text adaptations for Light Theme */
+.text-white:not(button *):not([class*="bg-amber-"]):not([class*="bg-rose-"]):not([class*="bg-emerald-"]):not([class*="bg-gradient-"]):not(button):not(.text-white-keep) {
+  color: #1E293B !important;
+}
+
+.text-gray-100,
+.text-gray-200 {
+  color: #1E293B !important;
+}
+
+.text-gray-300 {
+  color: #334155 !important;
+}
+
+.text-gray-400 {
+  color: #64748B !important;
+}
+
+.text-gray-500 {
+  color: #94A3B8 !important;
+}
+
+/* Borders in Light Theme */
+.border-gray-800,
+.border-gray-700 {
+  border-color: #E6DFD3 !important;
+}
+
+.border-gray-800\/80,
+.border-gray-800\/50 {
+  border-color: rgba(230, 223, 211, 0.8) !important;
+}
+
+/* Glassmorphism effects for Light Theme */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(217, 119, 6, 0.18) !important;
+  box-shadow: 0 4px 20px -2px rgba(217, 119, 6, 0.06) !important;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 250, 245, 0.92) 100%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(217, 119, 6, 0.2) !important;
+  box-shadow: 0 4px 18px rgba(180, 83, 9, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(217, 119, 6, 0.45) !important;
+  box-shadow: 0 12px 28px -6px rgba(180, 83, 9, 0.12), 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(-2px);
+}
+
+.glass-card-glow {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(254, 226, 226, 0.45) 100%) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(217, 119, 6, 0.35) !important;
+  box-shadow: 0 0 25px rgba(217, 119, 6, 0.12) !important;
+}
+
+/* Warm Saffron & Gold Gradients for Light Theme */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #B45309 0%, #D97706 50%, #92400E 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.saffron-gradient-text {
+  background: linear-gradient(135deg, #B45309 0%, #D97706 40%, #DC2626 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F5EFE6;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8CEBE;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D97706;
+}
+
+/* Pulse animation for voice audio equalizer */
+@keyframes soundwave {
+  0%, 100% { height: 6px; }
+  50% { height: 32px; }
+}
+
+.animate-wave-bar {
+  animation: soundwave 1.2s ease-in-out infinite;
+}
