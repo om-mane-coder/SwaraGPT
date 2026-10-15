@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} light`}>
-      <body className="min-h-screen bg-[#FAF8F9] text-slate-800 font-sans antialiased selection:bg-pink-100 selection:text-pink-900">
+      <body className="min-h-screen bg-[#FAF8F5] text-slate-800 font-sans antialiased selection:bg-amber-400 selection:text-black">
         {children}
       </body>
     </html>

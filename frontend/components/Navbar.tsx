@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  Music, Mic, BookOpen, Activity, User, LogOut, 
-  Settings, History, Menu, X, Compass, Award, MessageSquare 
+  Sparkles, Music, Mic, BookOpen, Activity, User, LogOut, 
+  Settings, History, Menu, X, Compass, Award 
 } from 'lucide-react';
 import { useSwaraStore } from '@/lib/store';
 
@@ -26,25 +26,30 @@ export default function Navbar() {
     { href: '/ragas', label: 'Ragas', icon: BookOpen },
     { href: '/progress', label: 'Progress', icon: Compass },
     { href: '/history', label: 'History', icon: History },
-    { href: '/chat', label: 'Guru AI', icon: MessageSquare },
+    { href: '/chat', label: 'Guru Chat', icon: Sparkles },
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-50 border-b border-amber-900/10 bg-white/95 backdrop-blur-md shadow-2xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Brand Identity */}
-        <Link href="/" className="flex items-center gap-2.5" id="nav-brand-logo">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white shadow-2xs ring-1 ring-pink-200/50">
-            <Music className="w-4 h-4 text-pink-200" />
+        <Link href="/" className="flex items-center gap-3 group" id="nav-brand-logo">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform duration-300">
+            <Music className="w-5 h-5 text-black" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+            </span>
           </div>
-          <span className="text-base font-bold tracking-tight text-slate-900">
-            Swara<span className="text-pink-600/90">GPT</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold tracking-tight saffron-gradient-text">SwaraGPT</span>
+            <span className="text-[10px] text-amber-700/80 tracking-widest uppercase font-mono font-medium">Virtual Guru AI</span>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium">
+        <nav className="hidden lg:flex items-center gap-2 text-sm font-medium text-slate-600">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
@@ -52,14 +57,14 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs transition-colors ${
+                className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'text-pink-950 bg-pink-50/80 border border-pink-200/60 font-semibold shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-pink-50/40'
+                    ? 'text-amber-800 bg-amber-100/90 font-semibold border border-amber-300/80 shadow-2xs'
+                    : 'text-slate-600 hover:text-amber-800 hover:bg-amber-50/70'
                 }`}
                 id={`nav-${link.label.toLowerCase().replace(' ', '-')}`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-pink-700' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-700' : 'text-slate-400'}`} />
                 <span>{link.label}</span>
               </Link>
             );
@@ -67,21 +72,21 @@ export default function Navbar() {
         </nav>
 
         {/* User CTA & Profile Menu */}
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-3">
           {user ? (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <Link
                 href="/profile"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium hover:bg-slate-100 transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm font-medium hover:bg-amber-100 transition-all shadow-2xs"
                 id="nav-user-profile"
               >
-                <User className="w-3.5 h-3.5 text-slate-500" />
-                <span className="max-w-[100px] truncate">{user.name}</span>
+                <User className="w-4 h-4 text-amber-700" />
+                <span className="max-w-[120px] truncate">{user.name}</span>
               </Link>
 
               <Link
                 href="/settings"
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                className="p-2 rounded-lg text-slate-500 hover:text-amber-800 hover:bg-amber-50 transition-all"
                 title="Settings"
                 id="nav-settings-btn"
               >
@@ -90,7 +95,7 @@ export default function Navbar() {
 
               <button
                 onClick={handleLogout}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-50 transition-colors"
+                className="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-all"
                 title="Sign Out"
                 id="nav-logout-btn"
               >
@@ -98,16 +103,18 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 text-xs font-medium"
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-amber-800 transition-colors"
+                id="nav-login-btn"
               >
                 Sign In
               </Link>
               <Link
                 href="/register"
-                className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold text-sm shadow-md shadow-amber-500/20 hover:scale-105 transition-all"
+                id="nav-register-btn"
               >
                 Get Started
               </Link>
@@ -115,18 +122,22 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile menu trigger */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-1.5 rounded-lg text-slate-600 hover:bg-slate-100"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile menu toggle */}
+        <div className="flex lg:hidden items-center">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-amber-50"
+            id="mobile-menu-toggle"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+        <div className="lg:hidden px-4 pt-3 pb-6 border-t border-amber-900/10 bg-white shadow-xl space-y-2">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -135,15 +146,61 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-medium ${
-                  isActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                  isActive ? 'text-amber-800 bg-amber-100' : 'text-slate-600 hover:bg-amber-50'
                 }`}
               >
-                <Icon className="w-4 h-4 text-slate-500" />
+                <Icon className="w-5 h-5" />
                 <span>{link.label}</span>
               </Link>
             );
           })}
+          <div className="pt-4 border-t border-amber-100 flex flex-col gap-2">
+            {user ? (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/5"
+                >
+                  <User className="w-5 h-5 text-amber-400" />
+                  <span>Profile ({user.name})</span>
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/5"
+                >
+                  <Settings className="w-5 h-5 text-gray-400" />
+                  <span>Audio & App Settings</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-rose-400 hover:bg-rose-500/10 text-left"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <div className="flex gap-2 pt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-1/2 text-center py-2 text-sm rounded-lg border border-gray-700 text-gray-300"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-1/2 text-center py-2 text-sm rounded-lg bg-amber-500 text-black font-semibold"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

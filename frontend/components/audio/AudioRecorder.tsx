@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
-  Mic, Square, Upload, Play, Pause, Volume2, 
-  CheckCircle, AlertCircle, Music
+  Mic, Square, Upload, Play, Pause, Volume2, VolumeX, 
+  RefreshCw, CheckCircle, AlertCircle, Music
 } from 'lucide-react';
 
 interface AudioRecorderProps {
@@ -17,6 +17,7 @@ export default function AudioRecorder({
   tonicFrequency = 130.81,
   className = '',
 }: AudioRecorderProps) {
+  // Mode: mic record vs upload
   const [mode, setMode] = useState<'record' | 'upload'>('record');
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
@@ -38,13 +39,14 @@ export default function AudioRecorder({
   const recordedAudioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Tanpura nodes ref
   const tanpuraNodesRef = useRef<{
     ctx: AudioContext;
     masterGain: GainNode;
     intervalId: NodeJS.Timeout;
   } | null>(null);
 
-  // Draw real-time audio visualization with faint slate stroke
+  // Draw real-time audio visualization
   const drawWaveform = useCallback(() => {
     if (!analyserRef.current || !canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -55,11 +57,11 @@ export default function AudioRecorder({
     const dataArray = new Uint8Array(bufferLength);
     analyserRef.current.getByteTimeDomainData(dataArray);
 
-    ctx.fillStyle = '#F8FAFC';
+    ctx.fillStyle = '#090D16';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#F59E0B';
     ctx.beginPath();
 
     const sliceWidth = canvas.width / bufferLength;
@@ -83,6 +85,7 @@ export default function AudioRecorder({
     animFrameRef.current = requestAnimationFrame(drawWaveform);
   }, []);
 
+  // Start Live Microphone Recording
   const startRecording = async () => {
     setMicError(null);
     setAudioUrl(null);
@@ -124,6 +127,7 @@ export default function AudioRecorder({
         setAudioUrl(url);
         onAudioReady(blob);
 
+        // Stop all media tracks
         stream.getTracks().forEach((track) => track.stop());
         if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
           audioContextRef.current.close();
@@ -141,10 +145,11 @@ export default function AudioRecorder({
 
     } catch (err: unknown) {
       console.error("Microphone access error:", err);
-      setMicError("Microphone access unavailable. Check browser permissions.");
+      setMicError("Microphone permission denied or device not found. Please check browser settings.");
     }
   };
 
+  // Stop Recording
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.stop();
@@ -153,6 +158,7 @@ export default function AudioRecorder({
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
+  // Handle File Upload
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -162,6 +168,7 @@ export default function AudioRecorder({
     }
   };
 
+  // Play / Pause Recorded Audio Preview
   const togglePlayRecorded = () => {
     if (!recordedAudioRef.current) return;
     if (isPlayingRecorded) {
@@ -173,8 +180,10 @@ export default function AudioRecorder({
     }
   };
 
+  // Start / Stop Synthetic Tanpura Drone
   const toggleTanpura = () => {
     if (isTanpuraActive) {
+      // Stop Tanpura
       if (tanpuraNodesRef.current) {
         clearInterval(tanpuraNodesRef.current.intervalId);
         tanpuraNodesRef.current.ctx.close();
@@ -182,12 +191,14 @@ export default function AudioRecorder({
       }
       setIsTanpuraActive(false);
     } else {
+      // Start Tanpura Pluck Cycle (Pa - Sa - Sa - Sa_low)
       try {
         const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
         const masterGain = ctx.createGain();
         masterGain.gain.setValueAtTime(tanpuraVolume, ctx.currentTime);
         masterGain.connect(ctx.destination);
 
+        // Frequencies based on tonic: Pa (3/2 * tonic), Sa (tonic), Mandra Sa (0.5 * tonic)
         const paFreq = tonicFrequency * 1.5;
         const saFreq = tonicFrequency;
         const lowSaFreq = tonicFrequency * 0.5;
@@ -199,12 +210,13 @@ export default function AudioRecorder({
           if (ctx.state === 'closed') return;
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
+          // Sawtooth gives rich harmonics akin to jawari thread buzz
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
           const now = ctx.currentTime;
           gain.gain.setValueAtTime(0.001, now);
-          gain.gain.exponentialRampToValueAtTime(0.25, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.3, now + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
 
           osc.connect(gain);
@@ -214,6 +226,7 @@ export default function AudioRecorder({
           osc.stop(now + 3.0);
         };
 
+        // Pluck strings sequentially every 800ms
         pluckString(stringFrequencies[0]);
         currentString = 1;
 
@@ -230,6 +243,7 @@ export default function AudioRecorder({
     }
   };
 
+  // Adjust Tanpura Volume
   const handleVolumeChange = (vol: number) => {
     setTanpuraVolume(vol);
     if (tanpuraNodesRef.current) {
@@ -237,6 +251,7 @@ export default function AudioRecorder({
     }
   };
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -255,60 +270,68 @@ export default function AudioRecorder({
   };
 
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs ${className}`}>
-      {/* Header & Tabs */}
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <div className="flex items-center gap-2">
-          <Mic className="w-4 h-4 text-pink-700" />
-          <h3 className="text-xs font-semibold text-slate-800">Audio Input</h3>
+    <div className={`glass-card p-6 rounded-2xl border border-amber-500/20 ${className}`}>
+      {/* Header & Mode Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <Mic className="w-5 h-5 text-amber-400" />
+            <span>Audio Capture & Practice Studio</span>
+          </h3>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Sing with acoustic Tanpura drone or upload pre-recorded riyaz.
+          </p>
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-lg">
+        {/* Tab switch */}
+        <div className="flex items-center gap-1 bg-[#090D16] p-1 rounded-xl border border-gray-800">
           <button
             onClick={() => setMode('record')}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               mode === 'record'
-                ? 'bg-white text-pink-950 border border-pink-200/50 shadow-2xs font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-amber-500 text-black shadow-md'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
-            Mic
+            <Mic className="w-3.5 h-3.5" />
+            <span>Live Mic</span>
           </button>
           <button
             onClick={() => setMode('upload')}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               mode === 'upload'
-                ? 'bg-white text-pink-950 border border-pink-200/50 shadow-2xs font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-amber-500 text-black shadow-md'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
-            Upload
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload File</span>
           </button>
         </div>
       </div>
 
-      {/* Tanpura Drone Control */}
-      <div className="p-2.5 rounded-xl bg-pink-50/30 border border-pink-100 flex items-center justify-between gap-3 mb-4 text-xs">
-        <div className="flex items-center gap-2">
+      {/* Tanpura Drone Control Bar */}
+      <div className="p-3.5 rounded-xl bg-[#090D16] border border-gray-800/80 flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={toggleTanpura}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
               isTanpuraActive 
-                ? 'bg-slate-900 text-white shadow-2xs' 
-                : 'bg-white border border-pink-200/70 text-pink-900 hover:bg-pink-50'
+                ? 'bg-rose-500 text-white animate-pulse' 
+                : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
             }`}
           >
-            <Music className="w-3.5 h-3.5 text-pink-600" />
-            <span>{isTanpuraActive ? 'Stop Drone' : 'Drone (Tanpura)'}</span>
+            <Music className="w-3.5 h-3.5" />
+            <span>{isTanpuraActive ? 'Stop Tanpura Drone' : 'Start Tanpura Drone'}</span>
           </button>
-          <span className="font-mono text-pink-900/80 text-[11px]">
-            Sa: {tonicFrequency.toFixed(1)} Hz
+          <span className="text-xs text-gray-400 font-mono">
+            Sa: <strong className="text-amber-400">{tonicFrequency.toFixed(1)} Hz</strong>
           </span>
         </div>
 
         {isTanpuraActive && (
           <div className="flex items-center gap-2">
-            <Volume2 className="w-3.5 h-3.5 text-slate-400" />
+            <Volume2 className="w-4 h-4 text-gray-400" />
             <input
               type="range"
               min="0.05"
@@ -316,15 +339,16 @@ export default function AudioRecorder({
               step="0.05"
               value={tanpuraVolume}
               onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-              className="w-20 accent-slate-800 h-1 bg-slate-200 rounded cursor-pointer"
+              className="w-24 accent-amber-500 h-1 bg-gray-700 rounded-lg cursor-pointer"
             />
+            <span className="text-[10px] font-mono text-gray-400">{Math.round(tanpuraVolume * 100)}%</span>
           </div>
         )}
       </div>
 
       {/* Error Banner */}
       {micError && (
-        <div className="mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs flex items-center gap-2">
+        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{micError}</span>
         </div>
@@ -332,47 +356,50 @@ export default function AudioRecorder({
 
       {/* Main Recording / Upload Area */}
       {mode === 'record' ? (
-        <div className="space-y-3">
-          <div className="h-24 w-full bg-[#F8FAFC] rounded-xl border border-slate-200 overflow-hidden relative flex items-center justify-center">
-            <canvas ref={canvasRef} width={600} height={96} className="w-full h-full" />
+        <div className="space-y-4">
+          {/* Waveform Canvas */}
+          <div className="h-28 w-full bg-[#090D16] rounded-xl border border-gray-800 overflow-hidden relative flex items-center justify-center">
+            <canvas ref={canvasRef} width={600} height={112} className="w-full h-full" />
 
             {!isRecording && !audioUrl && (
-              <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs gap-1.5 pointer-events-none">
-                <Mic className="w-4 h-4 text-slate-400" />
-                <span>Ready to record</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 text-xs gap-1.5 pointer-events-none">
+                <Mic className="w-6 h-6 text-gray-600" />
+                <span>Press Record to start singing</span>
               </div>
             )}
 
             {isRecording && (
-              <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 bg-white/90 px-2 py-0.5 rounded-full border border-slate-200 text-slate-700 text-xs font-mono font-semibold shadow-2xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              <div className="absolute top-3 right-3 flex items-center gap-2 bg-rose-950/80 px-2.5 py-1 rounded-full border border-rose-600/40 text-rose-400 text-xs font-mono font-bold">
+                <div className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
                 <span>{formatSeconds(recordTime)}</span>
               </div>
             )}
           </div>
 
-          <div className="flex items-center justify-center pt-1">
+          {/* Controls */}
+          <div className="flex items-center justify-center gap-4 pt-2">
             {!isRecording ? (
               <button
                 onClick={startRecording}
-                className="px-5 py-2 rounded-xl bg-slate-900 text-white font-medium text-xs hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-2xs"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-rose-500/25 hover:scale-105 transition-all flex items-center gap-2"
               >
-                <Mic className="w-3.5 h-3.5" />
-                <span>Record</span>
+                <Mic className="w-4 h-4" />
+                <span>Start Recording Riyaz</span>
               </button>
             ) : (
               <button
                 onClick={stopRecording}
-                className="px-5 py-2 rounded-xl bg-slate-800 text-white font-medium text-xs hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-2xs"
+                className="px-6 py-3 rounded-xl bg-gray-800 text-white font-bold text-sm border border-gray-700 hover:bg-gray-700 hover:scale-105 transition-all flex items-center gap-2 shadow-lg"
               >
-                <Square className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
+                <Square className="w-4 h-4 text-rose-400 fill-rose-400" />
                 <span>Stop & Analyze ({formatSeconds(recordTime)})</span>
               </button>
             )}
           </div>
         </div>
       ) : (
-        <div className="p-6 border border-dashed border-slate-200 hover:border-slate-400 rounded-xl text-center transition-colors bg-slate-50">
+        /* File Upload Mode */
+        <div className="p-8 border-2 border-dashed border-gray-700 hover:border-amber-500/50 rounded-xl text-center transition-all bg-[#090D16]">
           <input
             type="file"
             id="audio-file-input"
@@ -381,27 +408,31 @@ export default function AudioRecorder({
             className="hidden"
           />
           <label htmlFor="audio-file-input" className="cursor-pointer flex flex-col items-center">
-            <Upload className="w-6 h-6 text-slate-400 mb-1.5" />
-            <span className="text-xs font-medium text-slate-700">Choose audio file (WAV, MP3, FLAC)</span>
+            <Upload className="w-10 h-10 text-amber-400 mb-3" />
+            <span className="text-sm font-semibold text-white mb-1">Click to upload singing audio</span>
+            <span className="text-xs text-gray-400">Supported formats: WAV, MP3, FLAC (Up to 50MB)</span>
           </label>
         </div>
       )}
 
       {/* Recorded Audio Preview */}
       {audioUrl && (
-        <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-slate-700 font-medium">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span>Audio ready for analysis</span>
+        <div className="mt-6 p-4 rounded-xl bg-[#090D16] border border-emerald-500/30 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-400" />
+            <div>
+              <div className="text-xs font-semibold text-white">Audio Captured Successfully</div>
+              <div className="text-[11px] text-gray-400 font-mono">Ready for full MIR pipeline analysis</div>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={togglePlayRecorded}
-              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition-all"
               title="Preview audio"
             >
-              {isPlayingRecorded ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              {isPlayingRecorded ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </button>
             <audio
               ref={recordedAudioRef}

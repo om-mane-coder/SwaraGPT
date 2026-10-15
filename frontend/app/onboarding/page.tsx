@@ -68,7 +68,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       <Navbar />
 
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-12 flex flex-col justify-center">
@@ -79,19 +79,19 @@ export default function OnboardingPage() {
             <div
               key={s}
               className={`h-2 rounded-full transition-all duration-300 ${
-                step === s ? 'w-8 bg-slate-500' : step > s ? 'w-2 bg-emerald-400' : 'w-2 bg-gray-800'
+                step === s ? 'w-8 bg-amber-500' : step > s ? 'w-2 bg-emerald-400' : 'w-2 bg-gray-800'
               }`}
             />
           ))}
         </div>
 
-        <div className="glass-card p-6 sm:p-10 rounded-2xl border border-slate-200 shadow-2xl relative">
+        <div className="glass-card p-6 sm:p-10 rounded-2xl border border-amber-500/20 shadow-2xl relative">
           
           {/* STEP 1: Musical Tradition & Experience Level */}
           {step === 1 && (
             <div className="space-y-6">
               <div className="text-center">
-                <span className="text-xs font-mono uppercase tracking-wider text-slate-500">Step 1 of 3</span>
+                <span className="text-xs font-mono uppercase tracking-wider text-amber-400">Step 1 of 3</span>
                 <h2 className="text-2xl font-bold text-white font-serif mt-1">Musical Background</h2>
                 <p className="text-xs text-gray-400 mt-1">Tell us your tradition and current experience level.</p>
               </div>
@@ -106,7 +106,7 @@ export default function OnboardingPage() {
                       onClick={() => setTradition(t)}
                       className={`p-3.5 rounded-xl border text-xs font-semibold transition-all ${
                         tradition === t
-                          ? 'bg-slate-500/20 border-slate-300 text-slate-600 shadow'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow'
                           : 'bg-[#090D16] border-gray-800 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
                       onClick={() => setExperience(lvl)}
                       className={`p-3.5 rounded-xl border text-xs font-semibold transition-all ${
                         experience === lvl
-                          ? 'bg-slate-500/20 border-slate-300 text-slate-600 shadow'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow'
                           : 'bg-[#090D16] border-gray-800 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
 
               <button
                 onClick={() => setStep(2)}
-                className="w-full py-3.5 rounded-xl bg-slate-900 text-white font-medium text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-4"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-4"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-4 h-4" />
@@ -150,7 +150,7 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div className="space-y-6">
               <div className="text-center">
-                <span className="text-xs font-mono uppercase tracking-wider text-slate-500">Step 2 of 3</span>
+                <span className="text-xs font-mono uppercase tracking-wider text-amber-400">Step 2 of 3</span>
                 <h2 className="text-2xl font-bold text-white font-serif mt-1">Tonic (Sa) Calibration</h2>
                 <p className="text-xs text-gray-400 mt-1">
                   Indian classical music uses a variable tonic Sa. Select or sing your comfortable pitch.
@@ -166,7 +166,7 @@ export default function OnboardingPage() {
                 <button
                   onClick={handleAutoDetectSa}
                   disabled={isDetectingSa}
-                  className="px-3.5 py-2 rounded-lg bg-slate-500/20 text-slate-600 border border-slate-200 text-xs font-semibold hover:bg-slate-500/30 transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-2 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold hover:bg-amber-500/30 transition-all flex items-center gap-1.5"
                 >
                   <Mic className="w-3.5 h-3.5" />
                   <span>{isDetectingSa ? 'Listening...' : 'Auto-Detect Sa'}</span>
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
                       onClick={() => setPreferredTonic(p.val)}
                       className={`p-2.5 rounded-xl border text-xs font-mono transition-all text-left ${
                         preferredTonic === p.val
-                          ? 'bg-slate-500/20 border-slate-300 text-slate-600 font-bold'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
                           : 'bg-[#090D16] border-gray-800 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -202,7 +202,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="w-2/3 py-3.5 rounded-xl bg-slate-900 text-white font-medium text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                  className="w-2/3 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2"
                 >
                   <span>Continue</span>
                   <ArrowRight className="w-4 h-4" />
@@ -215,7 +215,7 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div className="space-y-6">
               <div className="text-center">
-                <span className="text-xs font-mono uppercase tracking-wider text-slate-500">Step 3 of 3</span>
+                <span className="text-xs font-mono uppercase tracking-wider text-amber-400">Step 3 of 3</span>
                 <h2 className="text-2xl font-bold text-white font-serif mt-1">Your Riyaz Goals</h2>
                 <p className="text-xs text-gray-400 mt-1">Set your target raga and daily practice commitment.</p>
               </div>
@@ -226,7 +226,7 @@ export default function OnboardingPage() {
                 <select
                   value={targetRaga}
                   onChange={(e) => setTargetRaga(e.target.value)}
-                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 >
                   {['Yaman', 'Bhairav', 'Bhairavi', 'Bhupali', 'Bageshri', 'Kafi', 'Hamsadhwani'].map((r) => (
                     <option key={r} value={r}>Raga {r}</option>
@@ -244,7 +244,7 @@ export default function OnboardingPage() {
                       onClick={() => setDailyGoalMinutes(mins)}
                       className={`p-3 rounded-xl border text-xs font-mono transition-all ${
                         dailyGoalMinutes === mins
-                          ? 'bg-slate-500/20 border-slate-300 text-slate-600 font-bold'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
                           : 'bg-[#090D16] border-gray-800 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -263,7 +263,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={handleFinish}
-                  className="w-2/3 py-3.5 rounded-xl bg-slate-900 text-white font-medium text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-2xs"
+                  className="w-2/3 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
                 >
                   <span>Begin Your Riyaz</span>
                   <CheckCircle className="w-4 h-4" />

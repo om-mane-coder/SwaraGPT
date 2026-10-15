@@ -47,14 +47,14 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header */}
         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-800">
-          <div className="w-12 h-12 rounded-2xl bg-slate-500/10 border border-slate-200 flex items-center justify-center text-slate-500">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
             <SettingsIcon className="w-6 h-6" />
           </div>
           <div>
@@ -73,9 +73,9 @@ export default function SettingsPage() {
         <div className="space-y-8">
           
           {/* Audio Hardware & DSP Section */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-6">
+          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-6">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Mic className="w-4 h-4 text-slate-500" />
+              <Mic className="w-4 h-4 text-amber-400" />
               <span>Audio Hardware & MIR Input</span>
             </h3>
 
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                 <select
                   value={selectedDevice}
                   onChange={(e) => setSelectedDevice(e.target.value)}
-                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 >
                   {audioDevices.length > 0 ? (
                     audioDevices.map((d, i) => (
@@ -102,7 +102,7 @@ export default function SettingsPage() {
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-gray-400">Microphone Sensitivity / Gain:</span>
-                  <span className="text-slate-600 font-bold">{micSensitivity}%</span>
+                  <span className="text-amber-300 font-bold">{micSensitivity}%</span>
                 </div>
                 <input
                   type="range"
@@ -110,7 +110,7 @@ export default function SettingsPage() {
                   max="100"
                   value={micSensitivity}
                   onChange={(e) => setMicSensitivity(parseInt(e.target.value))}
-                  className="w-full accent-slate-800 h-1.5 bg-gray-800 rounded-lg cursor-pointer"
+                  className="w-full accent-amber-500 h-1.5 bg-gray-800 rounded-lg cursor-pointer"
                 />
               </div>
 
@@ -121,7 +121,7 @@ export default function SettingsPage() {
                     onClick={() => setAnalysisMode('swara')}
                     className={`p-3 rounded-xl border text-xs font-semibold transition-all ${
                       analysisMode === 'swara'
-                        ? 'bg-slate-500/20 border-slate-300 text-slate-600'
+                        ? 'bg-amber-500/20 border-amber-500 text-amber-300'
                         : 'bg-[#090D16] border-gray-800 text-gray-400'
                     }`}
                   >
@@ -131,7 +131,7 @@ export default function SettingsPage() {
                     onClick={() => setAnalysisMode('shruti')}
                     className={`p-3 rounded-xl border text-xs font-semibold transition-all ${
                       analysisMode === 'shruti'
-                        ? 'bg-slate-500/20 border-slate-300 text-slate-600'
+                        ? 'bg-amber-500/20 border-amber-500 text-amber-300'
                         : 'bg-[#090D16] border-gray-800 text-gray-400'
                     }`}
                   >
@@ -143,10 +143,10 @@ export default function SettingsPage() {
           </div>
 
           {/* AI Musicology Engine & Free API Tier Section */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-6">
+          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-slate-500" />
+                <Sparkles className="w-4 h-4 text-amber-400" />
                 <span>AI Musicology Engine & Free API Tier</span>
               </h3>
               <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1.5 font-semibold">
@@ -163,7 +163,7 @@ export default function SettingsPage() {
               <div className="p-4 rounded-xl bg-[#090D16] border border-gray-800 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white">Google Gemini Free API</span>
-                  <span className="text-[10px] text-slate-600 font-mono">100% Free Tier</span>
+                  <span className="text-[10px] text-amber-300 font-mono">100% Free Tier</span>
                 </div>
                 <p className="text-[11px] text-gray-400">
                   Google Gemini 2.5 Flash / 1.5 Flash provides free multimodal musicological reasoning, Pakad catchphrase alignment, and raga validation with up to 15 RPM.
@@ -174,7 +174,7 @@ export default function SettingsPage() {
                     href="https://aistudio.google.com/app/apikey"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-slate-500 hover:text-slate-600 font-semibold inline-flex items-center gap-1"
+                    className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1"
                   >
                     <span>Get Free Key</span>
                     <ExternalLink className="w-3 h-3" />
@@ -198,9 +198,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Preferences Section */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-6">
+          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-6">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Globe className="w-4 h-4 text-slate-500" />
+              <Globe className="w-4 h-4 text-amber-400" />
               <span>Language & Aesthetics</span>
             </h3>
 
@@ -210,7 +210,7 @@ export default function SettingsPage() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as 'en' | 'hi')}
-                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 >
                   <option value="en">English (Classical Musicology)</option>
                   <option value="hi">हिन्दी (पारंपरिक शब्दावली)</option>
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                 <select
                   value={theme}
                   onChange={(e) => setTheme(e.target.value as 'dark' | 'saffron')}
-                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                  className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 >
                   <option value="dark">Deep Indigo Obsidian (Dark)</option>
                   <option value="saffron">Saffron Classical Radiance</option>
@@ -232,9 +232,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Privacy & Data Ownership Section */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-6">
+          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-6">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-slate-500" />
+              <Shield className="w-4 h-4 text-amber-400" />
               <span>Audio Privacy & Data Ownership</span>
             </h3>
 
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   checked={privacyAudioRetention}
                   onChange={(e) => setPrivacyAudioRetention(e.target.checked)}
-                  className="w-4 h-4 accent-slate-800 cursor-pointer"
+                  className="w-4 h-4 accent-amber-500 cursor-pointer"
                 />
               </div>
 
