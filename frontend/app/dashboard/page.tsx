@@ -1399,33 +1399,33 @@ function DashboardContent() {
   return (
     <div className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6">
       
-      {/* ─── SIDEBAR NAVIGATION (Warm Light Theme) ─── */}
-      <aside className="w-full md:w-64 shrink-0">
-        <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-amber-200/80 shadow-sm sticky top-20 space-y-3">
+      {/* ─── SIDEBAR NAVIGATION (Minimal Faint Theme) ─── */}
+      <aside className="w-full md:w-60 shrink-0">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs sticky top-20 space-y-3">
           
-          {/* Logo / Badge */}
-          <div className="flex items-center gap-3 pb-3 border-b border-amber-100">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center shadow-md shadow-amber-500/20 text-slate-950 font-bold">
-              <Music className="w-5 h-5 text-white" />
+          {/* Logo / Title */}
+          <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
+              <Music className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-bold text-slate-900 tracking-wide flex items-center gap-1.5 text-sm">
-                SwaraGPT <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-mono font-semibold">Guru AI</span>
+              <h2 className="font-semibold text-slate-900 text-xs">
+                SwaraGPT
               </h2>
-              <p className="text-xs text-amber-800/90 font-medium">Indian Classical Studio</p>
+              <p className="text-[11px] text-slate-400">Indian Classical Studio</p>
             </div>
           </div>
 
           {/* Tonic Sa Selector */}
-          <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/70 space-y-1">
-            <label className="text-[11px] font-medium text-amber-900 flex items-center justify-between">
-              <span>Base Tonic (सा / Sa):</span>
-              <span className="font-mono text-amber-900 font-bold text-xs">{selectedTonic}</span>
+          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <label className="text-[11px] font-medium text-slate-700 flex items-center justify-between">
+              <span>Base Tonic (Sa):</span>
+              <span className="font-mono text-slate-900 font-bold text-xs">{selectedTonic}</span>
             </label>
             <select
               value={selectedTonic}
               onChange={(e) => setSelectedTonic(e.target.value)}
-              className="w-full bg-white border border-amber-200 rounded-lg px-2 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500 font-medium shadow-xs"
+              className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-slate-400 font-medium"
             >
               {TONIC_OPTIONS.map((t) => (
                 <option key={t.note} value={t.note} className="bg-white text-slate-900">
@@ -1439,86 +1439,86 @@ function DashboardContent() {
           <nav className="space-y-1 pt-1">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'overview'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Activity className="w-4 h-4" />
-              <span>Dashboard Overview</span>
+              <span>Overview</span>
             </button>
 
             <button
               onClick={() => setActiveTab('analyzer')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'analyzer'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Mic className="w-4 h-4" />
-              <span>Swara & 22-Shruti Analyzer</span>
+              <span>Swara &amp; Shruti Analyzer</span>
             </button>
 
             <button
               onClick={() => setActiveTab('song_detective')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'song_detective'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Disc className="w-4 h-4" />
-              <span>Song & Artist Detective</span>
+              <span>Song Detective</span>
             </button>
 
             <button
               onClick={() => setActiveTab('generator')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'generator'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Wand2 className="w-4 h-4" />
-              <span>Audio Generator & Voice Clone</span>
+              <span>Audio Generator</span>
             </button>
 
             <button
               onClick={() => setActiveTab('chat')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'chat'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              <span>Virtual Guru AI Chat</span>
+              <span>Guru AI Chat</span>
             </button>
 
             <button
               onClick={() => setActiveTab('shrutis')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors ${
                 activeTab === 'shrutis'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-700 hover:bg-amber-100/60 hover:text-amber-900'
+                  ? 'bg-slate-900 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Compass className="w-4 h-4" />
-              <span>22 Shrutis & Ragas</span>
+              <span>22 Shrutis</span>
             </button>
           </nav>
 
-          {/* Quick Stats Banner */}
-          <div className="pt-2 border-t border-amber-100 text-[11px] text-slate-600 space-y-1">
+          {/* Quick Stats */}
+          <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
             <div className="flex justify-between">
               <span>Riyaz Score:</span>
-              <span className="text-amber-700 font-bold">{analysisResult?.overall_score || 0}/100</span>
+              <span className="text-slate-800 font-semibold">{analysisResult?.overall_score || 0}/100</span>
             </div>
             <div className="flex justify-between">
-              <span>Shruti Alignment:</span>
-              <span className="text-emerald-700 font-semibold">±{analysisResult?.shruti_deviation || 0} cents</span>
+              <span>Deviation:</span>
+              <span className="text-emerald-700 font-semibold">±{analysisResult?.shruti_deviation || 0}¢</span>
             </div>
           </div>
         </div>
@@ -1532,25 +1532,25 @@ function DashboardContent() {
           <div className="space-y-6">
             
             {/* Greeting Header */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm relative overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-300 text-amber-900 text-xs font-mono font-medium mb-2">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-mono font-medium mb-2">
+                    <Sparkles className="w-3.5 h-3.5 text-slate-700" />
                     <span>Daily Classical Sadhana</span>
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif tracking-tight">
                     Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, {user?.name || 'Om'}.
                   </h1>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                    Your Riyaz streak is <strong className="text-amber-700 font-bold">6 days unbroken</strong>. Current target raga: <strong className="text-slate-800">Raga Yaman</strong>.
+                    Your Riyaz streak is <strong className="text-slate-700 font-bold">6 days unbroken</strong>. Current target raga: <strong className="text-slate-800">Raga Yaman</strong>.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Link
                     href="/practice"
-                    className="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/25 hover:scale-105 transition-all flex items-center gap-1.5"
+                    className="px-5 py-3 rounded-xl bg-slate-900 text-white font-medium text-xs shadow-lg shadow-2xs hover:scale-105 transition-all flex items-center gap-1.5"
                   >
                     <Mic className="w-4 h-4" />
                     <span>Start Today&apos;s Riyaz</span>
@@ -1561,16 +1561,16 @@ function DashboardContent() {
 
             {/* Top Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white/90 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
+              <div className="bg-white/90 p-4 rounded-2xl border border-slate-200 shadow-xs">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[11px] font-mono text-slate-500 font-semibold">Today&apos;s Riyaz</span>
-                  <Clock className="w-4 h-4 text-amber-600" />
+                  <Clock className="w-4 h-4 text-slate-600" />
                 </div>
                 <div className="text-xl font-bold font-mono text-slate-900">25 mins</div>
                 <div className="text-[10px] text-emerald-700 font-medium mt-0.5">Goal: 30 mins</div>
               </div>
 
-              <div className="bg-white/90 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
+              <div className="bg-white/90 p-4 rounded-2xl border border-slate-200 shadow-xs">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[11px] font-mono text-slate-500 font-semibold">Current Streak</span>
                   <Award className="w-4 h-4 text-rose-600" />
@@ -1579,7 +1579,7 @@ function DashboardContent() {
                 <div className="text-[10px] text-slate-500 mt-0.5">Top 5% consistency</div>
               </div>
 
-              <div className="bg-white/90 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
+              <div className="bg-white/90 p-4 rounded-2xl border border-slate-200 shadow-xs">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[11px] font-mono text-slate-500 font-semibold">Avg Pitch Accuracy</span>
                   <Activity className="w-4 h-4 text-emerald-600" />
@@ -1588,12 +1588,12 @@ function DashboardContent() {
                 <div className="text-[10px] text-emerald-700 font-medium mt-0.5">+4.2% this week</div>
               </div>
 
-              <div className="bg-white/90 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
+              <div className="bg-white/90 p-4 rounded-2xl border border-slate-200 shadow-xs">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[11px] font-mono text-slate-500 font-semibold">Latest Performance</span>
-                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <Sparkles className="w-4 h-4 text-slate-600" />
                 </div>
-                <div className="text-xl font-bold font-mono text-amber-800">84.5% (Uttam)</div>
+                <div className="text-xl font-bold font-mono text-slate-700">84.5% (Uttam)</div>
                 <div className="text-[10px] text-slate-500 mt-0.5">Raga Yaman Aroha</div>
               </div>
             </div>
@@ -1602,54 +1602,54 @@ function DashboardContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link
                 href="/practice"
-                className="bg-white/90 p-5 rounded-2xl border border-amber-200/80 hover:border-amber-400 hover:shadow-md transition-all group"
+                className="bg-white/90 p-5 rounded-2xl border border-slate-200 hover:border-slate-200 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 mb-3 group-hover:scale-110 transition-transform">
                   <Mic className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Practice Now</h3>
+                <h3 className="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition-colors">Practice Now</h3>
                 <p className="text-[11px] text-slate-600 mt-1">Live intonation sensor, pitch contour &amp; Tanpura drone.</p>
               </Link>
 
               <Link
                 href="/analyze"
-                className="bg-white/90 p-5 rounded-2xl border border-amber-200/80 hover:border-amber-400 hover:shadow-md transition-all group"
+                className="bg-white/90 p-5 rounded-2xl border border-slate-200 hover:border-slate-200 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-300 flex items-center justify-center text-orange-700 mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 mb-3 group-hover:scale-110 transition-transform">
                   <Award className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-orange-800 transition-colors">Analyze Recording</h3>
+                <h3 className="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition-colors">Analyze Recording</h3>
                 <p className="text-[11px] text-slate-600 mt-1">Upload singing audio for multi-factor MIR evaluation.</p>
               </Link>
 
               <Link
                 href="/chat"
-                className="bg-white/90 p-5 rounded-2xl border border-amber-200/80 hover:border-amber-400 hover:shadow-md transition-all group"
+                className="bg-white/90 p-5 rounded-2xl border border-slate-200 hover:border-slate-200 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 mb-3 group-hover:scale-110 transition-transform">
                   <Sparkles className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Ask Virtual Guru</h3>
+                <h3 className="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition-colors">Ask Virtual Guru</h3>
                 <p className="text-[11px] text-slate-600 mt-1">Grounded classical dialogue, theory &amp; vocal corrections.</p>
               </Link>
 
               <Link
                 href="/ragas"
-                className="bg-white/90 p-5 rounded-2xl border border-amber-200/80 hover:border-amber-400 hover:shadow-md transition-all group"
+                className="bg-white/90 p-5 rounded-2xl border border-slate-200 hover:border-slate-200 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 mb-3 group-hover:scale-110 transition-transform">
                   <BookOpen className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-amber-800 transition-colors">Raga Explorer</h3>
+                <h3 className="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition-colors">Raga Explorer</h3>
                 <p className="text-[11px] text-slate-600 mt-1">Explore 14 canonical ragas, thaats, and audio samples.</p>
               </Link>
             </div>
 
             {/* Recent Sessions Table */}
-            <div className="bg-white/90 rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden">
-              <div className="p-4 bg-amber-50/70 border-b border-amber-200/80 flex items-center justify-between text-xs">
+            <div className="bg-white/90 rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
                 <span className="font-bold text-slate-900">Recent Riyaz Sessions</span>
-                <Link href="/history" className="text-amber-800 hover:underline font-mono font-semibold">
+                <Link href="/history" className="text-slate-700 hover:underline font-mono font-semibold">
                   View All History →
                 </Link>
               </div>
@@ -1672,7 +1672,7 @@ function DashboardContent() {
                       </div>
                       <Link
                         href={`/analyze/demo-${idx + 1}`}
-                        className="px-3 py-1.5 rounded-lg bg-white border border-amber-300 text-amber-900 font-medium text-xs hover:bg-amber-50 transition"
+                        className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-800 font-medium text-xs hover:bg-slate-50 transition"
                       >
                         View Report
                       </Link>
@@ -1689,19 +1689,19 @@ function DashboardContent() {
         {activeTab === 'analyzer' && (
           <div className="space-y-6">
 
-            {/* Audio Input Quality Gate Alert Banner */}
+            {/* Audio Input Notice Alert Banner */}
             {audioQualityError && (
-              <div className="p-5 rounded-3xl bg-amber-500/10 border-2 border-amber-500/60 backdrop-blur-md shadow-lg space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="p-5 rounded-3xl bg-slate-500/10 border-2 border-slate-300 backdrop-blur-md shadow-lg space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                      <AlertTriangle className="w-5 h-5 text-amber-600" />
+                    <div className="w-10 h-10 rounded-2xl bg-slate-500/20 border border-slate-200 flex items-center justify-center shrink-0">
+                      <AlertTriangle className="w-5 h-5 text-slate-600" />
                     </div>
                     <div className="space-y-1">
                       <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                         <span>{audioQualityError.title}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-900 border border-amber-500/30 uppercase font-mono tracking-wider font-semibold">
-                          Acoustic Quality Gate
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-800 border border-slate-200 uppercase font-mono tracking-wider font-semibold">
+                          Audio Note
                         </span>
                       </h4>
                       <p className="text-xs text-slate-700 leading-relaxed">
@@ -1711,15 +1711,15 @@ function DashboardContent() {
                   </div>
                   <button
                     onClick={() => setAudioQualityError(null)}
-                    className="text-slate-500 hover:text-slate-800 text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 transition font-medium"
+                    className="text-slate-500 hover:text-slate-800 text-xs px-2.5 py-1 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 transition font-medium"
                   >
                     Dismiss
                   </button>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-white/90 border border-amber-200/80 space-y-1.5 shadow-2xs">
-                  <div className="text-[11px] font-bold text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
-                    <Info className="w-3.5 h-3.5 text-amber-700" />
+                <div className="p-3.5 rounded-2xl bg-white/90 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-[11px] font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-slate-700" />
                     <span>How to provide clear audio for 100% precision:</span>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -1727,13 +1727,13 @@ function DashboardContent() {
                   </p>
                   {audioQualityError.metrics && (
                     <div className="pt-1.5 flex flex-wrap gap-2 text-[10px] font-mono text-slate-600">
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         Peak Level: {audioQualityError.metrics.peak_db !== undefined ? `${audioQualityError.metrics.peak_db} dB` : 'Silent'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         RMS Energy: {audioQualityError.metrics.rms_energy !== undefined ? audioQualityError.metrics.rms_energy : '0.000'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         Voiced Frame Ratio: {audioQualityError.metrics.voiced_frame_ratio !== undefined ? `${Math.round(audioQualityError.metrics.voiced_frame_ratio * 100)}%` : '0%'}
                       </span>
                     </div>
@@ -1743,8 +1743,8 @@ function DashboardContent() {
             )}
             
             {/* Header & Live Recording Deck */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm relative overflow-hidden">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-amber-100">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
                 <div>
                   <h1 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                     <span className="gold-gradient-text">Vocal Riyaz & 22-Shruti Analyzer</span>
@@ -1756,13 +1756,13 @@ function DashboardContent() {
 
                 <div className="flex flex-wrap items-center gap-2.5">
                   {/* Master Benchmark Song Selector Dropdown */}
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-xs shadow-2xs">
-                    <Award className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-                    <span className="font-semibold text-amber-950 text-[11px] shrink-0">Master:</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs shadow-2xs">
+                    <Award className="w-3.5 h-3.5 text-slate-700 shrink-0" />
+                    <span className="font-semibold text-slate-900 text-[11px] shrink-0">Master:</span>
                     <select
                       value={selectedMasterSongId}
                       onChange={(e) => handleSelectMasterSong(e.target.value)}
-                      className="bg-transparent text-amber-900 font-bold text-xs focus:outline-none cursor-pointer max-w-[170px] truncate"
+                      className="bg-transparent text-slate-800 font-bold text-xs focus:outline-none cursor-pointer max-w-[170px] truncate"
                     >
                       {FULL_SONG_CATALOG.map((s) => (
                         <option key={s.id} value={s.id} className="text-slate-900 font-medium">
@@ -1773,8 +1773,8 @@ function DashboardContent() {
                   </div>
 
                   {/* File Upload Button */}
-                  <label className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-semibold text-amber-900 cursor-pointer transition shadow-xs">
-                    <Upload className="w-4 h-4 text-amber-700" />
+                  <label className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-800 cursor-pointer transition shadow-xs">
+                    <Upload className="w-4 h-4 text-slate-700" />
                     <span>Upload Audio</span>
                     <input type="file" accept="audio/*" onChange={handleAudioFileUpload} className="hidden" />
                   </label>
@@ -1782,7 +1782,7 @@ function DashboardContent() {
                   {/* 1-Click Demo Riyaz Clip */}
                   <button
                     onClick={handleDemoVocalClip}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-105 border border-amber-400 text-xs font-bold text-slate-950 transition shadow-sm"
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white hover:brightness-105 border border-slate-200 text-xs font-bold text-slate-950 transition shadow-sm"
                     title="Cycle through different authentic classical ragas"
                   >
                     <Sparkles className="w-4 h-4 text-slate-950" />
@@ -1793,7 +1793,7 @@ function DashboardContent() {
 
               {/* Recording Controls & Live Waveform Canvas */}
               <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-4 text-center shadow-md">
+                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-slate-950 border border-slate-200 space-y-4 text-center shadow-md">
                   
                   {/* Record Button */}
                   <button
@@ -1801,7 +1801,7 @@ function DashboardContent() {
                     className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl transition-all ${
                       isRecording
                         ? 'bg-red-500 text-white animate-pulse shadow-red-500/40 ring-4 ring-red-500/30'
-                        : 'bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 hover:scale-105 shadow-amber-500/30'
+                        : 'bg-slate-900 text-white text-slate-950 hover:scale-105 shadow-2xs'
                     }`}
                   >
                     {isRecording ? <Pause className="w-8 h-8 text-white" /> : <Mic className="w-8 h-8 text-slate-950" />}
@@ -1834,8 +1834,8 @@ function DashboardContent() {
                 </div>
 
                 {/* Live Real-time Visualizer Canvas */}
-                <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-950 border border-amber-500/30 h-48 relative overflow-hidden shadow-md">
-                  <span className="text-[10px] text-amber-400 uppercase tracking-wider font-mono absolute top-3 left-4">
+                <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-950 border border-slate-200 h-48 relative overflow-hidden shadow-md">
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider font-mono absolute top-3 left-4">
                     Live Audio Spectrum
                   </span>
                   <canvas
@@ -1846,8 +1846,8 @@ function DashboardContent() {
                   />
                   {analyzing && (
                     <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
-                      <RefreshCw className="w-6 h-6 text-amber-400 animate-spin" />
-                      <span className="text-xs text-amber-300 font-medium">Extracting 22 Shrutis &amp; Swaras...</span>
+                      <RefreshCw className="w-6 h-6 text-slate-500 animate-spin" />
+                      <span className="text-xs text-slate-600 font-medium">Extracting 22 Shrutis &amp; Swaras...</span>
                     </div>
                   )}
                 </div>
@@ -1856,9 +1856,9 @@ function DashboardContent() {
 
             {/* Analysis Metrics Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs space-y-1">
+              <div className="bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Overall Sur Score</span>
-                <div className="text-2xl font-bold text-amber-700">
+                <div className="text-2xl font-bold text-slate-700">
                   {analysisResult?.overall_score || 0}<span className="text-xs text-slate-500">/100</span>
                 </div>
                 <div className="text-[10px] text-emerald-700 flex items-center gap-1 font-semibold">
@@ -1867,7 +1867,7 @@ function DashboardContent() {
                 </div>
               </div>
 
-              <div className="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs space-y-1">
+              <div className="bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Pitch Stability</span>
                 <div className="text-2xl font-bold text-slate-900">
                   {analysisResult?.pitch_stability || 0}<span className="text-xs text-slate-500">%</span>
@@ -1875,7 +1875,7 @@ function DashboardContent() {
                 <div className="text-[10px] text-slate-500">Sustained note steadiness</div>
               </div>
 
-              <div className="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs space-y-1">
+              <div className="bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Shruti Deviation</span>
                 <div className="text-2xl font-bold text-emerald-700">
                   ±{analysisResult?.shruti_deviation || 0}<span className="text-xs text-slate-500"> cents</span>
@@ -1883,9 +1883,9 @@ function DashboardContent() {
                 <div className="text-[10px] text-slate-500">&lt; 6 cents = Perfect Sur</div>
               </div>
 
-              <div className="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs space-y-1">
+              <div className="bg-white/95 p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
                 <span className="text-xs text-slate-500 font-medium">Inferred Raga</span>
-                <div className="text-xl font-bold text-amber-800 truncate">
+                <div className="text-xl font-bold text-slate-700 truncate">
                   {analysisResult?.raga_predictions?.[0]?.raga_name || 'Bhoopali'}
                 </div>
                 <div className="text-[10px] text-slate-500 font-medium">
@@ -1898,17 +1898,17 @@ function DashboardContent() {
             {/* SIDE-BY-SIDE FEATURE COMPARISON WITH ORIGINAL MASTER ARTIST   */}
             {/* ══════════════════════════════════════════════════════════════ */}
             {masterComparisonResult && (
-              <div className="bg-gradient-to-br from-amber-500/5 via-white to-amber-500/10 p-6 rounded-3xl border-2 border-amber-300 shadow-md space-y-6">
+              <div className="bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-md space-y-6">
                 
                 {/* Header: Benchmark Identification & Master Track Selector */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-amber-200">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold uppercase tracking-wider shadow-2xs">
+                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-slate-900 text-white font-medium uppercase tracking-wider shadow-2xs">
                         Canonical Master Benchmark
                       </span>
-                      <span className="text-xs text-amber-900 font-semibold flex items-center gap-1">
-                        <Award className="w-3.5 h-3.5 text-amber-700" />
+                      <span className="text-xs text-slate-800 font-semibold flex items-center gap-1">
+                        <Award className="w-3.5 h-3.5 text-slate-700" />
                         <span>Original Master vs. Student Performance</span>
                       </span>
                     </div>
@@ -1937,15 +1937,15 @@ function DashboardContent() {
                   </div>
 
                   {/* Benchmark Song Dropdown Selector */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 bg-white/90 p-2 rounded-2xl border border-amber-200 shadow-2xs">
-                    <span className="text-xs font-semibold text-amber-950 px-2 flex items-center gap-1">
-                      <Sliders className="w-3.5 h-3.5 text-amber-700" />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 bg-white/90 p-2 rounded-2xl border border-slate-200 shadow-2xs">
+                    <span className="text-xs font-semibold text-slate-900 px-2 flex items-center gap-1">
+                      <Sliders className="w-3.5 h-3.5 text-slate-700" />
                       <span>Benchmark Song:</span>
                     </span>
                     <select
                       value={selectedMasterSongId}
                       onChange={(e) => handleSelectMasterSong(e.target.value)}
-                      className="bg-amber-50/70 border border-amber-300 rounded-xl px-3 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-amber-500 transition"
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-300 transition"
                     >
                       {FULL_SONG_CATALOG.map((song) => (
                         <option key={song.id} value={song.id}>
@@ -1959,9 +1959,9 @@ function DashboardContent() {
                 {/* Score Summary Deck: Composite Fidelity & 4 Key Feature Gauges */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   {/* Big Hero Card: Composite Fidelity Index */}
-                  <div className="md:col-span-2 p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden border border-amber-500/30">
+                  <div className="md:col-span-2 p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden border border-slate-200">
                     <div className="space-y-1">
-                      <span className="text-[10px] text-amber-400 font-mono uppercase tracking-wider">
+                      <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">
                         Master Fidelity Index
                       </span>
                       <h4 className="text-sm font-semibold text-slate-200">
@@ -1970,7 +1970,7 @@ function DashboardContent() {
                     </div>
 
                     <div className="my-3 flex items-baseline gap-2">
-                      <span className="text-4xl sm:text-5xl font-black text-amber-400 font-mono">
+                      <span className="text-4xl sm:text-5xl font-black text-slate-500 font-mono">
                         {masterComparisonResult.fidelity_scores?.overall_match ?? 94.2}%
                       </span>
                       <span className="text-xs text-emerald-400 font-semibold">
@@ -1986,10 +1986,10 @@ function DashboardContent() {
                   {/* 4 Feature Gauges */}
                   <div className="md:col-span-3 grid grid-cols-2 gap-3">
                     {/* Microtonal Intonation */}
-                    <div className="p-3.5 rounded-2xl bg-white/95 border border-amber-200 space-y-1 shadow-2xs">
+                    <div className="p-3.5 rounded-2xl bg-white/95 border border-slate-200 space-y-1 shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span className="font-medium">Microtonal Intonation</span>
-                        <span className="font-bold text-amber-800">{masterComparisonResult.fidelity_scores?.pitch_match ?? 95.8}%</span>
+                        <span className="font-bold text-slate-700">{masterComparisonResult.fidelity_scores?.pitch_match ?? 95.8}%</span>
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
@@ -2003,10 +2003,10 @@ function DashboardContent() {
                     </div>
 
                     {/* Laya / Tempo Synchronization */}
-                    <div className="p-3.5 rounded-2xl bg-white/95 border border-amber-200 space-y-1 shadow-2xs">
+                    <div className="p-3.5 rounded-2xl bg-white/95 border border-slate-200 space-y-1 shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span className="font-medium">Laya / Tempo Sync</span>
-                        <span className="font-bold text-amber-800">{masterComparisonResult.fidelity_scores?.laya_match ?? 93.5}%</span>
+                        <span className="font-bold text-slate-700">{masterComparisonResult.fidelity_scores?.laya_match ?? 93.5}%</span>
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
@@ -2020,10 +2020,10 @@ function DashboardContent() {
                     </div>
 
                     {/* Vocal Range Reach */}
-                    <div className="p-3.5 rounded-2xl bg-white/95 border border-amber-200 space-y-1 shadow-2xs">
+                    <div className="p-3.5 rounded-2xl bg-white/95 border border-slate-200 space-y-1 shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span className="font-medium">Vocal Range Reach</span>
-                        <span className="font-bold text-amber-800">{masterComparisonResult.fidelity_scores?.range_match ?? 92.0}%</span>
+                        <span className="font-bold text-slate-700">{masterComparisonResult.fidelity_scores?.range_match ?? 92.0}%</span>
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
@@ -2037,10 +2037,10 @@ function DashboardContent() {
                     </div>
 
                     {/* Meends & Gamaks */}
-                    <div className="p-3.5 rounded-2xl bg-white/95 border border-amber-200 space-y-1 shadow-2xs">
+                    <div className="p-3.5 rounded-2xl bg-white/95 border border-slate-200 space-y-1 shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span className="font-medium">Ornamentation / Meend</span>
-                        <span className="font-bold text-amber-800">{masterComparisonResult.fidelity_scores?.ornament_match ?? 95.5}%</span>
+                        <span className="font-bold text-slate-700">{masterComparisonResult.fidelity_scores?.ornament_match ?? 95.5}%</span>
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
@@ -2056,10 +2056,10 @@ function DashboardContent() {
                 </div>
 
                 {/* Structured 5-Row Comparative Matrix Table */}
-                <div className="bg-white/90 rounded-2xl border border-amber-200 overflow-hidden shadow-2xs">
-                  <div className="px-4 py-3 bg-amber-100/60 border-b border-amber-200 flex items-center justify-between">
-                    <h3 className="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
-                      <BarChart2 className="w-3.5 h-3.5 text-amber-800" />
+                <div className="bg-white/90 rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                  <div className="px-4 py-3 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
+                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                      <BarChart2 className="w-3.5 h-3.5 text-slate-700" />
                       <span>Side-by-Side Performance Comparison Matrix</span>
                     </h3>
                     <span className="text-[10px] text-slate-500 font-medium">100% Industry Calibrated Benchmark</span>
@@ -2068,7 +2068,7 @@ function DashboardContent() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead>
-                        <tr className="bg-amber-50/50 text-slate-700 font-semibold border-b border-amber-200/70">
+                        <tr className="bg-slate-50/50 text-slate-700 font-semibold border-b border-slate-200">
                           <th className="py-2.5 px-4">Performance Feature</th>
                           <th className="py-2.5 px-4">Your Sung Riyaz</th>
                           <th className="py-2.5 px-4">Canonical Master Reference ({masterComparisonResult.master_song?.singer?.split(' ')?.[0] || 'Master'})</th>
@@ -2078,14 +2078,14 @@ function DashboardContent() {
                       </thead>
                       <tbody className="divide-y divide-amber-100/80">
                         {(masterComparisonResult.comparative_matrix || []).map((row: any, i: number) => (
-                          <tr key={i} className="hover:bg-amber-50/40 transition">
+                          <tr key={i} className="hover:bg-slate-50/40 transition">
                             <td className="py-2.5 px-4 font-medium text-slate-900">{row.feature}</td>
-                            <td className="py-2.5 px-4 font-mono font-semibold text-amber-900">{row.user_val}</td>
+                            <td className="py-2.5 px-4 font-mono font-semibold text-slate-800">{row.user_val}</td>
                             <td className="py-2.5 px-4 text-slate-600">{row.master_val}</td>
                             <td className="py-2.5 px-4 font-bold text-emerald-700">{row.fidelity}</td>
                             <td className="py-2.5 px-4">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                                <CheckCircle2 className="w-3 h-3 text-amber-700" />
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                                <CheckCircle2 className="w-3 h-3 text-slate-700" />
                                 <span>{row.status}</span>
                               </span>
                             </td>
@@ -2097,19 +2097,19 @@ function DashboardContent() {
                 </div>
 
                 {/* Master Guru Comparative Critique */}
-                <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-300 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-amber-200">
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-amber-700" />
-                      <h4 className="text-xs font-bold text-amber-950 uppercase tracking-wider">
+                      <Sparkles className="w-4 h-4 text-slate-700" />
+                      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                         Virtual Guru Pedagogical Master Critique
                       </h4>
                     </div>
                     <button
                       onClick={() => speakGuruText(masterComparisonResult.master_critique || "")}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-[11px] font-semibold border border-amber-300 transition"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-amber-200 text-slate-800 text-[11px] font-semibold border border-slate-200 transition"
                     >
-                      <Volume2 className="w-3 h-3 text-amber-800" />
+                      <Volume2 className="w-3 h-3 text-slate-700" />
                       <span>Listen</span>
                     </button>
                   </div>
@@ -2122,13 +2122,13 @@ function DashboardContent() {
             )}
 
             {/* Pitch Contour Curve (Recharts) */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-4">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-slate-900 text-base">F0 Pitch Contour vs. Swara Sthan</h3>
                   <p className="text-xs text-slate-600">Continuous fundamental frequency curve mapped against Saptak pitches</p>
                 </div>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-mono font-bold">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 font-mono font-bold">
                   Sa = {analysisResult?.sa_estimate || 138.6} Hz
                 </span>
               </div>
@@ -2155,7 +2155,7 @@ function DashboardContent() {
             </div>
 
             {/* Detected Swaras & 22-Shruti Breakdown Table */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-4">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <h3 className="font-bold text-slate-900 text-base flex items-center justify-between">
                 <span>Detailed Swara &amp; 22-Shruti Note Sequence</span>
                 <span className="text-xs text-slate-500 font-normal">Click any swara to hear authentic pitch</span>
@@ -2166,13 +2166,13 @@ function DashboardContent() {
                   <button
                     key={idx}
                     onClick={() => playSynthesizedSwara(s.cents_deviation || 0, s.swara)}
-                    className="p-3 rounded-2xl bg-amber-50/70 hover:bg-amber-100 border border-amber-200 hover:border-amber-400 text-left transition space-y-1.5 group shadow-2xs"
+                    className="p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-200 text-left transition space-y-1.5 group shadow-2xs"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-base font-bold text-amber-800 group-hover:scale-110 transition">
+                      <span className="text-base font-bold text-slate-700 group-hover:scale-110 transition">
                         {s.swara}
                       </span>
-                      <Volume2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-700 transition" />
+                      <Volume2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition" />
                     </div>
                     <div className="text-[11px] text-slate-700 font-mono font-medium">
                       {s.frequency} Hz
@@ -2187,11 +2187,11 @@ function DashboardContent() {
             </div>
 
             {/* Virtual Guru Master Critique */}
-            <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-white p-6 rounded-3xl border border-amber-300 shadow-sm space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-amber-200">
+            <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
-                    <Sparkles className="w-5 h-5 text-amber-700" />
+                  <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold">
+                    <Sparkles className="w-5 h-5 text-slate-700" />
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-base">Virtual Guru Masterclass Assessment</h3>
@@ -2201,9 +2201,9 @@ function DashboardContent() {
 
                 <button
                   onClick={() => speakGuruText(analysisResult?.ai_feedback || "")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-semibold border border-amber-300 transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-amber-200 text-slate-800 text-xs font-semibold border border-slate-200 transition"
                 >
-                  <Volume2 className="w-3.5 h-3.5 text-amber-800" />
+                  <Volume2 className="w-3.5 h-3.5 text-slate-700" />
                   <span>Listen to Guru</span>
                 </button>
               </div>
@@ -2213,14 +2213,14 @@ function DashboardContent() {
               </div>
 
               {/* Practice Recommendations */}
-              <div className="pt-3 border-t border-amber-200 space-y-2">
-                <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              <div className="pt-3 border-t border-slate-200 space-y-2">
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                   Targeted Daily Riyaz Exercises
                 </h4>
                 <div className="space-y-1.5">
                   {(analysisResult?.practice_recommendations || []).map((rec: string, i: number) => (
                     <div key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                      <span className="text-amber-600 font-bold">•</span>
+                      <span className="text-slate-600 font-bold">•</span>
                       <span>{rec}</span>
                     </div>
                   ))}
@@ -2235,19 +2235,19 @@ function DashboardContent() {
         {activeTab === 'song_detective' && (
           <div className="space-y-6">
 
-            {/* Audio Input Quality Gate Alert Banner */}
+            {/* Audio Input Notice Alert Banner */}
             {audioQualityError && (
-              <div className="p-5 rounded-3xl bg-amber-500/10 border-2 border-amber-500/60 backdrop-blur-md shadow-lg space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="p-5 rounded-3xl bg-slate-500/10 border-2 border-slate-300 backdrop-blur-md shadow-lg space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                      <AlertTriangle className="w-5 h-5 text-amber-600" />
+                    <div className="w-10 h-10 rounded-2xl bg-slate-500/20 border border-slate-200 flex items-center justify-center shrink-0">
+                      <AlertTriangle className="w-5 h-5 text-slate-600" />
                     </div>
                     <div className="space-y-1">
                       <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                         <span>{audioQualityError.title}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-900 border border-amber-500/30 uppercase font-mono tracking-wider font-semibold">
-                          Acoustic Quality Gate
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-800 border border-slate-200 uppercase font-mono tracking-wider font-semibold">
+                          Audio Note
                         </span>
                       </h4>
                       <p className="text-xs text-slate-700 leading-relaxed">
@@ -2257,15 +2257,15 @@ function DashboardContent() {
                   </div>
                   <button
                     onClick={() => setAudioQualityError(null)}
-                    className="text-slate-500 hover:text-slate-800 text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 transition font-medium"
+                    className="text-slate-500 hover:text-slate-800 text-xs px-2.5 py-1 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 transition font-medium"
                   >
                     Dismiss
                   </button>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-white/90 border border-amber-200/80 space-y-1.5 shadow-2xs">
-                  <div className="text-[11px] font-bold text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
-                    <Info className="w-3.5 h-3.5 text-amber-700" />
+                <div className="p-3.5 rounded-2xl bg-white/90 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-[11px] font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-slate-700" />
                     <span>How to provide clear audio for 100% precision:</span>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -2273,13 +2273,13 @@ function DashboardContent() {
                   </p>
                   {audioQualityError.metrics && (
                     <div className="pt-1.5 flex flex-wrap gap-2 text-[10px] font-mono text-slate-600">
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         Peak Level: {audioQualityError.metrics.peak_db !== undefined ? `${audioQualityError.metrics.peak_db} dB` : 'Silent'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         RMS Energy: {audioQualityError.metrics.rms_energy !== undefined ? audioQualityError.metrics.rms_energy : '0.000'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200">
                         Voiced Frame Ratio: {audioQualityError.metrics.voiced_frame_ratio !== undefined ? `${Math.round(audioQualityError.metrics.voiced_frame_ratio * 100)}%` : '0%'}
                       </span>
                     </div>
@@ -2288,8 +2288,8 @@ function DashboardContent() {
               </div>
             )}
             
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm relative overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-amber-100">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200">
                 <div>
                   <h1 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                     <span className="gold-gradient-text">Song, Singer &amp; Raga Detective</span>
@@ -2310,12 +2310,12 @@ function DashboardContent() {
                       value={songQuery}
                       onChange={(e) => setSongQuery(e.target.value)}
                       placeholder="Enter song name, lyrics, or raga (e.g. Albela Sajan, Ketaki Gulab, Madhuban Mein Radhika)..."
-                      className="w-full bg-white border border-amber-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition shadow-xs"
+                      className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-300 transition shadow-xs"
                     />
                   </div>
 
-                  <label className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-semibold text-amber-900 cursor-pointer transition shadow-xs">
-                    <Upload className="w-4 h-4 text-amber-700" />
+                  <label className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-800 cursor-pointer transition shadow-xs">
+                    <Upload className="w-4 h-4 text-slate-700" />
                     <span>Upload Song</span>
                     <input
                       type="file"
@@ -2332,7 +2332,7 @@ function DashboardContent() {
                   <button
                     type="submit"
                     disabled={detectingSong}
-                    className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/20 hover:scale-[1.02] transition disabled:opacity-50"
+                    className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs sm:text-sm shadow-md shadow-2xs hover:scale-[1.02] transition disabled:opacity-50"
                   >
                     {detectingSong ? <RefreshCw className="w-4 h-4 animate-spin text-slate-950" /> : <Disc className="w-4 h-4 text-slate-950" />}
                     <span>{detectingSong ? 'Identifying...' : 'Identify Song'}</span>
@@ -2343,12 +2343,12 @@ function DashboardContent() {
 
             {/* Identified Song Result Card */}
             {identifiedSong && (
-              <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-6">
+              <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                 
                 {/* Title & Badge */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-amber-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
                   <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-semibold">
+                    <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200 font-semibold">
                       Identified Composition
                     </span>
                     <h2 className="text-2xl font-bold text-slate-900 mt-1.5">{identifiedSong.title}</h2>
@@ -2367,9 +2367,9 @@ function DashboardContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   
                   {/* Singer */}
-                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5">
-                      <Mic className="w-3.5 h-3.5 text-amber-700" />
+                      <Mic className="w-3.5 h-3.5 text-slate-700" />
                       <span>Singer(s)</span>
                     </span>
                     <div className="text-sm font-bold text-slate-900">
@@ -2378,9 +2378,9 @@ function DashboardContent() {
                   </div>
 
                   {/* Composer */}
-                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5">
-                      <Music className="w-3.5 h-3.5 text-amber-700" />
+                      <Music className="w-3.5 h-3.5 text-slate-700" />
                       <span>Musician / Composer</span>
                     </span>
                     <div className="text-sm font-bold text-slate-900">
@@ -2389,9 +2389,9 @@ function DashboardContent() {
                   </div>
 
                   {/* Lyricist */}
-                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+                      <BookOpen className="w-3.5 h-3.5 text-slate-700" />
                       <span>Lyricist / Writer</span>
                     </span>
                     <div className="text-sm font-bold text-slate-900">
@@ -2400,12 +2400,12 @@ function DashboardContent() {
                   </div>
 
                   {/* Raga & Thaat */}
-                  <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5">
-                      <Compass className="w-3.5 h-3.5 text-amber-700" />
+                      <Compass className="w-3.5 h-3.5 text-slate-700" />
                       <span>Raga &amp; Thaat</span>
                     </span>
-                    <div className="text-sm font-bold text-amber-800">
+                    <div className="text-sm font-bold text-slate-700">
                       Raga {identifiedSong.raga} ({identifiedSong.thaat || 'Kalyan'} Thaat)
                     </div>
                   </div>
@@ -2413,17 +2413,17 @@ function DashboardContent() {
                 </div>
 
                 {/* Classical Notes */}
-                <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-1">
-                  <div className="text-xs font-bold text-amber-900 uppercase tracking-wider">Classical Musicology Notes:</div>
+                <div className="p-4 rounded-2xl bg-slate-50/50 border border-slate-200 space-y-1">
+                  <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">Classical Musicology Notes:</div>
                   <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                     {identifiedSong.classical_notes}
                   </p>
                 </div>
 
                 {/* Benchmark Action Bar */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-amber-100">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-200">
                   <div className="text-xs text-slate-600 flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-amber-700" />
+                    <Award className="w-4 h-4 text-slate-700" />
                     <span>Ready to measure your microtonal intonation and laya against this canonical track?</span>
                   </div>
 
@@ -2434,7 +2434,7 @@ function DashboardContent() {
                       handleSelectMasterSong(songId);
                       setActiveTab('analyzer');
                     }}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:scale-[1.02] transition"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs shadow-md shadow-2xs hover:scale-[1.02] transition"
                   >
                     <Mic className="w-4 h-4 text-slate-950" />
                     <span>Benchmark Riyaz Against {(identifiedSong.singers || [])[0]}</span>
@@ -2445,7 +2445,7 @@ function DashboardContent() {
             )}
 
             {/* Catalog Grid */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-4">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <h3 className="font-bold text-slate-900 text-base">Popular Classical &amp; Raga-Based Masterpieces</h3>
               <p className="text-xs text-slate-600">Select any song below to instantly view its singer, composer, lyricist, and raga profile:</p>
 
@@ -2457,11 +2457,11 @@ function DashboardContent() {
                       handleCatalogSongSelect(s);
                       handleIdentifySong(s.title);
                     }}
-                    className="p-3.5 rounded-2xl bg-amber-50/60 hover:bg-amber-100/80 border border-amber-200 text-left transition space-y-1 group shadow-2xs"
+                    className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition space-y-1 group shadow-2xs"
                   >
-                    <div className="text-sm font-bold text-slate-900 group-hover:text-amber-800 transition">{s.title}</div>
+                    <div className="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition">{s.title}</div>
                     <div className="text-xs text-slate-600">{(s.singers || []).join(", ")}</div>
-                    <div className="text-[10px] text-amber-800 font-semibold">Raga {s.raga} • {(s.composers || [])[0]}</div>
+                    <div className="text-[10px] text-slate-700 font-semibold">Raga {s.raga} • {(s.composers || [])[0]}</div>
                   </button>
                 ))}
               </div>
@@ -2474,8 +2474,8 @@ function DashboardContent() {
         {activeTab === 'generator' && (
           <div className="space-y-6">
             
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm relative overflow-hidden">
-              <div className="pb-5 border-b border-amber-100">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+              <div className="pb-5 border-b border-slate-200">
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                   <span className="gold-gradient-text">Swara Audio Generator &amp; Voice Studio</span>
                 </h1>
@@ -2489,13 +2489,13 @@ function DashboardContent() {
                 
                 {/* Preset Pill Selectors */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-amber-900">1-Click Presets:</label>
+                  <label className="text-xs font-semibold text-slate-800">1-Click Presets:</label>
                   <div className="flex flex-wrap gap-2">
                     {PRESET_PHRASES.map((preset, idx) => (
                       <button
                         key={idx}
                         onClick={() => setSwaraInput(preset.swaras)}
-                        className="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-xs text-amber-900 border border-amber-200 transition font-medium"
+                        className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-xs text-slate-800 border border-slate-200 transition font-medium"
                       >
                         {preset.name}
                       </button>
@@ -2514,7 +2514,7 @@ function DashboardContent() {
                     value={swaraInput}
                     onChange={(e) => setSwaraInput(e.target.value)}
                     placeholder="e.g. S R G M P D N S' or Sa Re Ga Ma Pa"
-                    className="w-full bg-white border border-amber-200 rounded-xl px-4 py-3 text-sm text-slate-900 font-mono focus:outline-none focus:border-amber-500 shadow-xs"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 font-mono focus:outline-none focus:border-slate-300 shadow-xs"
                   />
                 </div>
 
@@ -2527,7 +2527,7 @@ function DashboardContent() {
                     <select
                       value={selectedTimbre}
                       onChange={(e) => setSelectedTimbre(e.target.value as any)}
-                      className="w-full bg-white border border-amber-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-medium"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-slate-300 font-medium"
                     >
                       <option value="user_voice">User Voice Clone (Your Timbre)</option>
                       <option value="guru_vocal">Classical Guru Vocal (Aakaar)</option>
@@ -2540,7 +2540,7 @@ function DashboardContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-800 flex justify-between">
                       <span>Tempo (Laya):</span>
-                      <span className="text-amber-800 font-mono font-bold">{tempoBpm} BPM</span>
+                      <span className="text-slate-700 font-mono font-bold">{tempoBpm} BPM</span>
                     </label>
                     <input
                       type="range"
@@ -2558,11 +2558,11 @@ function DashboardContent() {
                       onClick={() => setTanpuraToggle(!tanpuraToggle)}
                       className={`w-full py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition ${
                         tanpuraToggle
-                          ? 'bg-amber-100 border-amber-400 text-amber-900'
-                          : 'bg-white border-amber-200 text-slate-600'
+                          ? 'bg-slate-100 border-slate-200 text-slate-800'
+                          : 'bg-white border-slate-200 text-slate-600'
                       }`}
                     >
-                      <Radio className="w-4 h-4 text-amber-700" />
+                      <Radio className="w-4 h-4 text-slate-700" />
                       <span>{tanpuraToggle ? 'Tanpura Drone: ON' : 'Tanpura Drone: OFF'}</span>
                     </button>
                   </div>
@@ -2573,7 +2573,7 @@ function DashboardContent() {
                 <button
                   onClick={handleGenerateSwaraAudio}
                   disabled={generatingAudio || !swaraInput.trim()}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-slate-950 font-bold text-sm shadow-md shadow-amber-500/25 hover:brightness-105 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3.5 rounded-xl bg-slate-900 text-white font-medium text-sm shadow-md shadow-2xs hover:brightness-105 transition flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {generatingAudio ? <RefreshCw className="w-5 h-5 animate-spin text-slate-950" /> : <Wand2 className="w-5 h-5 text-slate-950" />}
                   <span>{generatingAudio ? 'Synthesizing Swaras...' : 'Generate & Play Audio'}</span>
@@ -2583,7 +2583,7 @@ function DashboardContent() {
             </div>
 
             {/* Interactive Swara Keyboard */}
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-4">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-slate-900 text-base">Interactive Classical Swara Keyboard</h3>
@@ -2627,17 +2627,17 @@ function DashboardContent() {
 
         {/* ═════════ TAB 4: VIRTUAL GURU AI CHAT ═════════ */}
         {activeTab === 'chat' && (
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-amber-200/80 shadow-sm flex flex-col h-[75vh] overflow-hidden">
+          <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200 shadow-sm flex flex-col h-[75vh] overflow-hidden">
             
             {/* Chat Header */}
-            <div className="p-4 border-b border-amber-100 flex items-center justify-between bg-amber-50/70">
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 font-bold shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-slate-950 font-bold shadow-xs">
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-900 text-sm">SwaraGPT Virtual Guru</h3>
-                  <p className="text-[11px] text-amber-800 font-semibold">Indian Classical Music Scholar &amp; Riyaz Guide</p>
+                  <p className="text-[11px] text-slate-700 font-semibold">Indian Classical Music Scholar &amp; Riyaz Guide</p>
                 </div>
               </div>
 
@@ -2647,11 +2647,11 @@ function DashboardContent() {
                   className={`p-2 rounded-xl border transition ${
                     isListeningVoice
                       ? 'bg-red-500 text-white animate-pulse border-red-400'
-                      : 'bg-white border-amber-200 text-slate-700 hover:bg-amber-50'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                   title="Voice Input"
                 >
-                  <Mic className="w-4 h-4 text-amber-800" />
+                  <Mic className="w-4 h-4 text-slate-700" />
                 </button>
               </div>
             </div>
@@ -2666,8 +2666,8 @@ function DashboardContent() {
                   <div
                     className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-medium shadow-xs'
-                        : 'bg-amber-50/80 text-slate-900 border border-amber-200 space-y-2 shadow-2xs'
+                        ? 'bg-slate-900 text-white text-slate-950 font-medium shadow-xs'
+                        : 'bg-slate-50 text-slate-900 border border-slate-200 space-y-2 shadow-2xs'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
@@ -2679,7 +2679,7 @@ function DashboardContent() {
                     {msg.role === 'assistant' && (
                       <button
                         onClick={() => speakGuruText(msg.content)}
-                        className="inline-flex items-center gap-1 text-[11px] text-amber-800 hover:text-amber-900 font-semibold pt-1"
+                        className="inline-flex items-center gap-1 text-[11px] text-slate-700 hover:text-slate-800 font-semibold pt-1"
                       >
                         <Volume2 className="w-3.5 h-3.5" />
                         <span>Read Aloud</span>
@@ -2690,8 +2690,8 @@ function DashboardContent() {
               ))}
               {chatLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-amber-50 rounded-2xl p-3.5 text-xs text-amber-900 border border-amber-200 flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 animate-spin text-amber-700" />
+                  <div className="bg-slate-50 rounded-2xl p-3.5 text-xs text-slate-800 border border-slate-200 flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-700" />
                     <span>Virtual Guru is contemplating your musical question...</span>
                   </div>
                 </div>
@@ -2700,7 +2700,7 @@ function DashboardContent() {
             </div>
 
             {/* Prompt Pills */}
-            <div className="px-4 py-2 bg-amber-50/50 border-t border-amber-100 flex gap-2 overflow-x-auto text-[11px]">
+            <div className="px-4 py-2 bg-slate-50/50 border-t border-slate-200 flex gap-2 overflow-x-auto text-[11px]">
               {[
                 "Explain the 22 Shrutis in detail",
                 "How is Yaman different from Bhupali?",
@@ -2712,7 +2712,7 @@ function DashboardContent() {
                   onClick={() => {
                     setChatInput(pill);
                   }}
-                  className="px-2.5 py-1 rounded-full bg-white hover:bg-amber-100 text-slate-700 hover:text-amber-900 whitespace-nowrap border border-amber-200 transition font-medium shadow-2xs"
+                  className="px-2.5 py-1 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-800 whitespace-nowrap border border-slate-200 transition font-medium shadow-2xs"
                 >
                   {pill}
                 </button>
@@ -2720,18 +2720,18 @@ function DashboardContent() {
             </div>
 
             {/* Input Bar */}
-            <form onSubmit={handleSendChatMessage} className="p-3 bg-white border-t border-amber-100 flex gap-2">
+            <form onSubmit={handleSendChatMessage} className="p-3 bg-white border-t border-slate-200 flex gap-2">
               <input
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Ask Virtual Guru about ragas, swaras, 22 shrutis, alankars, or artists..."
-                className="flex-1 bg-amber-50/50 border border-amber-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-amber-500"
+                className="flex-1 bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-300"
               />
               <button
                 type="submit"
                 disabled={chatLoading || !chatInput.trim()}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/20 hover:scale-105 transition disabled:opacity-50"
+                className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs sm:text-sm shadow-md shadow-2xs hover:scale-105 transition disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -2744,7 +2744,7 @@ function DashboardContent() {
         {activeTab === 'shrutis' && (
           <div className="space-y-6">
             
-            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-200/80 shadow-sm">
+            <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200 shadow-sm">
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
                 <span className="gold-gradient-text">The 22 Shrutis (श्रुति मण्डल)</span>
               </h1>
@@ -2757,20 +2757,20 @@ function DashboardContent() {
               {DEFAULT_SHRUTIS.map((s) => (
                 <div
                   key={s.index}
-                  className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-amber-200/80 hover:border-amber-400 hover:shadow-sm transition space-y-2 group"
+                  className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-200 hover:border-slate-200 hover:shadow-sm transition space-y-2 group"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 text-xs font-bold flex items-center justify-center">
+                      <span className="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">
                         {s.index}
                       </span>
-                      <h4 className="font-bold text-slate-900 text-sm group-hover:text-amber-800 transition">
+                      <h4 className="font-bold text-slate-900 text-sm group-hover:text-slate-700 transition">
                         {s.name} ({s.sanskrit})
                       </h4>
                     </div>
                     <button
                       onClick={() => playSynthesizedSwara(s.cents, s.swara)}
-                      className="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-200 text-amber-800 transition"
+                      className="p-1.5 rounded-lg bg-slate-50 hover:bg-amber-200 text-slate-700 transition"
                       title="Play Microtone"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
@@ -2778,11 +2778,11 @@ function DashboardContent() {
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-amber-800 font-bold">{s.swara_type}</span>
+                    <span className="text-slate-700 font-bold">{s.swara_type}</span>
                     <span className="font-mono text-slate-600 font-medium">{s.cents} cents ({s.ratio_str})</span>
                   </div>
 
-                  <div className="text-[11px] text-slate-500 italic pt-1 border-t border-amber-100">
+                  <div className="text-[11px] text-slate-500 italic pt-1 border-t border-slate-200">
                     {s.rasa}
                   </div>
                 </div>
@@ -2803,7 +2803,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
       <Navbar />
       <Suspense fallback={
-        <div className="flex-1 flex items-center justify-center text-amber-600">
+        <div className="flex-1 flex items-center justify-center text-slate-600">
           <RefreshCw className="w-6 h-6 animate-spin" />
         </div>
       }>

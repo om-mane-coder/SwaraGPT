@@ -5,21 +5,16 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AudioRecorder from '@/components/audio/AudioRecorder';
-import { 
-  Upload, Sparkles, CheckCircle2, ArrowRight, RefreshCw, 
-  Layers, ShieldAlert, Music, FileAudio, Clock
-} from 'lucide-react';
+import { RefreshCw, CheckCircle2 } from 'lucide-react';
 import { audioApi } from '@/lib/api';
 import { useSwaraStore } from '@/lib/store';
 import { decodeAndAnalyzeAudio } from '@/lib/mir/audioDecoder';
 
 const PIPELINE_STAGES = [
-  { step: 1, name: 'Audio Preprocessing', desc: 'Resampling to 22.05 kHz, 80 Hz HPF, normalization & VAD trimming' },
-  { step: 2, name: 'Tonic (Sa) Detection', desc: 'Long-term pitch distribution peak histogram estimation' },
-  { step: 3, name: 'pYIN Pitch Extraction', desc: 'Probabilistic fundamental frequency (F0) tracking & unvoiced suppression' },
-  { step: 4, name: 'Swara & Shruti Mapping', desc: 'Microtonal cent conversion C = 1200 log2(f/fSa) & 22-shruti alignment' },
-  { step: 5, name: 'Melodic & Raga Analysis', desc: 'Aroha/Avaroha scale compliance, Vadi energy & Pakad sequence matching' },
-  { step: 6, name: 'Guru Feedback Generation', desc: 'Multi-factor weighted scoring & constructive vocal corrections' },
+  { step: 1, name: 'Audio Preprocessing' },
+  { step: 2, name: 'Tonic (Sa) Detection' },
+  { step: 3, name: 'Pitch & Swara Extraction' },
+  { step: 4, name: 'Raga & Intonation Analysis' },
 ];
 
 export default function AnalyzePage() {
@@ -30,18 +25,16 @@ export default function AnalyzePage() {
   const [tonicHz, setTonicHz] = useState<number>(selectedTonicHz || 138.59);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [currentStage, setCurrentStage] = useState<number>(1);
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   const runPipelineAnimation = async () => {
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 4; i++) {
       setCurrentStage(i);
-      await new Promise((res) => setTimeout(res, 500));
+      await new Promise((res) => setTimeout(res, 450));
     }
   };
 
   const handleAudioReady = async (blob: Blob, file?: File) => {
     setIsProcessing(true);
-    setAnalysisError(null);
     const uploadFile = file || new File([blob], 'vocal_recording.webm', { type: blob.type || 'audio/webm' });
 
     try {
@@ -53,7 +46,6 @@ export default function AnalyzePage() {
       formData.append('user_sa_hz', tonicHz.toString());
       formData.append('user_sa', tonicHz.toString());
 
-      // Start visual pipeline progress animation in parallel
       const animationPromise = runPipelineAnimation();
       const apiPromise = audioApi.analyze(formData);
 
@@ -63,15 +55,8 @@ export default function AnalyzePage() {
       const sessionId = response.data.session_id || 'latest';
       router.push(`/analyze/${sessionId}`);
     } catch (err: unknown) {
-      console.warn("Audio analysis API response error, running client-side MIR engine:", err);
-      const errData = (err as any)?.response?.data;
-      if (errData && (errData.status === 'unclear_audio' || errData.status === 'silent_audio' || errData.is_valid_audio === false)) {
-        setLastAnalysis(errData);
-        router.push(`/analyze/quality-alert`);
-        return;
-      }
+      console.warn("API response error, falling back to in-browser MIR analysis:", err);
       
-      // Attempt client-side MIR audio decoding of the actual recording
       try {
         const clientResult = await decodeAndAnalyzeAudio(uploadFile, {
           targetRaga,
@@ -93,90 +78,80 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8">
         
-        {/* Page Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-mono mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Automated MIR Vocal Evaluator</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-serif tracking-tight mb-3">
-            Analyze Vocal Performance
+        {/* Header */}
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1.5">
+            Analyze Vocal Riyaz
           </h1>
-          <p className="text-sm text-gray-400">
-            Upload or record singing audio to extract pitch contours, identify swaras, check raga adherence, and receive AI Guru critique.
+          <p className="text-xs text-slate-500">
+            Record or upload singing audio to evaluate pitch accuracy, swara alignment, and raga adherence.
           </p>
         </div>
 
         {/* Target Raga & Tonic Selection */}
-        <div className="glass-card p-6 rounded-2xl border border-amber-500/20 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-mono text-gray-400 block mb-2">
-              Target Raga Benchmark:
+            <label className="text-[11px] font-medium text-slate-600 block mb-1.5">
+              Target Raga:
             </label>
             <select
               value={targetRaga}
               onChange={(e) => setTargetRaga(e.target.value)}
-              className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-400"
             >
               {['Yaman', 'Bhairav', 'Bhairavi', 'Bhupali', 'Bageshri', 'Darbari Kanada', 'Malkauns', 'Kafi', 'Todi', 'Marwa', 'Desh', 'Hamsadhwani'].map((r) => (
                 <option key={r} value={r}>Raga {r}</option>
               ))}
             </select>
-            <span className="text-[11px] text-gray-500 mt-1 block">
-              Evaluation rules and canonical shrutis are configured per raga.
-            </span>
           </div>
 
           <div>
-            <label className="text-xs font-mono text-gray-400 block mb-2">
-              Fundamental Sa Reference (Hz):
+            <label className="text-[11px] font-medium text-slate-600 block mb-1.5">
+              Tonic Sa (Hz):
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <input
                 type="number"
                 value={tonicHz}
                 step="0.1"
                 onChange={(e) => setTonicHz(parseFloat(e.target.value) || 130.81)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-300 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-slate-400"
               />
-              <span className="text-xs font-mono text-gray-400 shrink-0">
-                {tonicHz < 150 ? 'Male Voice' : 'Female Voice'}
+              <span className="text-[11px] font-mono text-slate-500 shrink-0">
+                {tonicHz < 150 ? 'Male' : 'Female'}
               </span>
             </div>
-            <span className="text-[11px] text-gray-500 mt-1 block">
-              Set your personal tonic or leave for automated long-term estimation.
-            </span>
           </div>
         </div>
 
-        {/* Audio Recorder & Uploader Component */}
+        {/* Audio Recorder Component */}
         {!isProcessing ? (
           <AudioRecorder
             onAudioReady={handleAudioReady}
             tonicFrequency={tonicHz}
-            className="mb-8"
+            className="mb-6"
           />
         ) : (
-          /* Animated 6-Stage Analysis Processing View */
-          <div className="glass-card p-8 rounded-2xl border border-amber-500/30 text-center mb-8 relative overflow-hidden">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto mb-6 animate-pulse">
-              <RefreshCw className="w-7 h-7 animate-spin" />
+          /* Clean Minimal Processing View */
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-2xs text-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 mx-auto mb-4">
+              <RefreshCw className="w-5 h-5 animate-spin" />
             </div>
 
-            <h3 className="text-xl font-bold text-white font-serif mb-2">
-              Analyzing Vocal Performance
+            <h3 className="text-base font-semibold text-slate-900 mb-1">
+              Analyzing Audio
             </h3>
-            <p className="text-xs text-gray-400 mb-8 max-w-md mx-auto">
-              Please wait while the Music Information Retrieval engine extracts pitch contours and evaluates intonation.
+            <p className="text-xs text-slate-400 mb-6">
+              Extracting pitch contour and evaluating swaras...
             </p>
 
-            {/* Stages Step-by-Step Indicator */}
-            <div className="space-y-3 max-w-xl mx-auto text-left">
+            {/* Stages Step-by-Step */}
+            <div className="space-y-2 max-w-sm mx-auto text-left">
               {PIPELINE_STAGES.map((s) => {
                 const isDone = currentStage > s.step;
                 const isCurrent = currentStage === s.step;
@@ -184,30 +159,26 @@ export default function AnalyzePage() {
                 return (
                   <div
                     key={s.step}
-                    className={`p-3 rounded-xl border transition-all duration-300 flex items-center gap-3 ${
+                    className={`p-2.5 rounded-xl border text-xs flex items-center gap-2.5 transition-colors ${
                       isDone
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                         : isCurrent
-                        ? 'bg-amber-500/10 border-amber-500/40 text-amber-300 shadow-md'
-                        : 'bg-[#090D16] border-gray-800/80 text-gray-500'
+                        ? 'bg-slate-100 border-slate-300 text-slate-900 font-semibold'
+                        : 'bg-white border-slate-200 text-slate-400'
                     }`}
                   >
                     <div className="shrink-0">
                       {isDone ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       ) : isCurrent ? (
-                        <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
+                        <RefreshCw className="w-4 h-4 text-slate-700 animate-spin" />
                       ) : (
-                        <div className="w-5 h-5 rounded-full border border-gray-700 flex items-center justify-center text-[10px] font-mono">
+                        <div className="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] font-mono text-slate-400">
                           {s.step}
                         </div>
                       )}
                     </div>
-
-                    <div className="flex-1">
-                      <div className="text-xs font-bold">{s.name}</div>
-                      <div className="text-[10px] text-gray-400">{s.desc}</div>
-                    </div>
+                    <span>{s.name}</span>
                   </div>
                 );
               })}

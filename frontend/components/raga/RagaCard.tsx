@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Music, Clock, Sparkles, ArrowRight, BookOpen, Mic } from 'lucide-react';
+import { Music, Clock, Sparkles, BookOpen, Mic } from 'lucide-react';
 
 export interface RagaData {
   id: string;
@@ -27,90 +27,90 @@ interface RagaCardProps {
 
 export default function RagaCard({ raga, className = '' }: RagaCardProps) {
   return (
-    <div className={`glass-card p-6 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all duration-300 flex flex-col justify-between group ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between shadow-2xs ${className}`}>
       {/* Top Header */}
       <div>
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start justify-between gap-3 mb-2">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
                 {raga.tradition}
               </span>
               {raga.thaat && (
-                <span className="text-[11px] text-gray-400 font-mono">
-                  Thaat: {raga.thaat}
+                <span className="text-[10px] text-slate-400 font-mono">
+                  {raga.thaat}
                 </span>
               )}
             </div>
-            <h3 className="text-xl font-bold text-white font-serif mt-2 group-hover:text-amber-300 transition-colors">
+            <h3 className="text-base font-semibold text-slate-900 mt-1">
               {raga.name}
             </h3>
           </div>
 
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-            <Music className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+            <Music className="w-4 h-4" />
           </div>
         </div>
 
         {/* Time and Rasa tags */}
-        <div className="flex flex-wrap items-center gap-2 mb-4 text-xs text-gray-400 font-sans">
-          {raga.time_of_day && (
-            <div className="flex items-center gap-1 bg-[#090D16] px-2.5 py-1 rounded-md border border-gray-800">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
-              <span>{raga.time_of_day}</span>
-            </div>
-          )}
-          {raga.rasa && (
-            <div className="flex items-center gap-1 bg-[#090D16] px-2.5 py-1 rounded-md border border-gray-800">
-              <Sparkles className="w-3.5 h-3.5 text-rose-400" />
-              <span>{raga.rasa}</span>
-            </div>
-          )}
-        </div>
+        {(raga.time_of_day || raga.rasa) && (
+          <div className="flex flex-wrap items-center gap-1.5 mb-3 text-[11px] text-slate-500">
+            {raga.time_of_day && (
+              <span className="bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                {raga.time_of_day}
+              </span>
+            )}
+            {raga.rasa && (
+              <span className="bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                {raga.rasa}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Swara Details Box */}
-        <div className="space-y-2 p-3.5 rounded-xl bg-[#090D16] border border-gray-800/80 text-xs font-mono mb-4">
+        <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono mb-3">
           <div>
-            <span className="text-gray-500 text-[11px]">Aroha: </span>
-            <span className="text-emerald-300 font-semibold">{raga.aroha}</span>
+            <span className="text-slate-400 text-[10px]">Aroha: </span>
+            <span className="text-slate-800 font-medium">{raga.aroha}</span>
           </div>
           <div>
-            <span className="text-gray-500 text-[11px]">Avaroha: </span>
-            <span className="text-sky-300 font-semibold">{raga.avaroha}</span>
+            <span className="text-slate-400 text-[10px]">Avaroha: </span>
+            <span className="text-slate-800 font-medium">{raga.avaroha}</span>
           </div>
-          <div className="flex items-center justify-between pt-1 border-t border-gray-800/60 text-[11px]">
+          <div className="flex items-center justify-between pt-1 border-t border-slate-200 text-[10px]">
             <div>
-              <span className="text-gray-500">Vadi: </span>
-              <span className="text-amber-300 font-bold">{raga.vadi}</span>
+              <span className="text-slate-400">Vadi: </span>
+              <span className="text-slate-800 font-medium">{raga.vadi}</span>
             </div>
             <div>
-              <span className="text-gray-500">Samvadi: </span>
-              <span className="text-amber-300 font-bold">{raga.samvadi}</span>
+              <span className="text-slate-400">Samvadi: </span>
+              <span className="text-slate-800 font-medium">{raga.samvadi}</span>
             </div>
           </div>
         </div>
 
-        {/* Pakad phrase preview */}
+        {/* Pakad */}
         {raga.pakad && (
-          <div className="text-xs text-gray-300 mb-4 line-clamp-2">
-            <span className="text-gray-500 font-mono text-[11px]">Pakad: </span>
-            <span className="italic text-gray-300">&ldquo;{raga.pakad}&rdquo;</span>
+          <div className="text-xs text-slate-600 mb-3 line-clamp-1">
+            <span className="text-slate-400 text-[10px] font-mono">Pakad: </span>
+            <span className="font-mono text-slate-700">{raga.pakad}</span>
           </div>
         )}
       </div>
 
       {/* Action CTA Buttons */}
-      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-gray-800/80">
+      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
         <Link
           href={`/practice?raga=${encodeURIComponent(raga.name)}`}
-          className="px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:brightness-110 transition-all flex items-center justify-center gap-1.5"
+          className="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white font-medium text-xs hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5"
         >
           <Mic className="w-3.5 h-3.5" />
           <span>Practice</span>
         </Link>
         <Link
           href={`/ragas/${encodeURIComponent(raga.id || raga.name.toLowerCase())}`}
-          className="px-3 py-2 rounded-xl bg-[#090D16] border border-amber-500/30 text-amber-300 font-medium text-xs hover:bg-amber-500/10 transition-all flex items-center justify-center gap-1.5"
+          className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-medium text-xs hover:bg-slate-50 transition-colors flex items-center justify-center gap-1.5"
         >
           <BookOpen className="w-3.5 h-3.5" />
           <span>Details</span>

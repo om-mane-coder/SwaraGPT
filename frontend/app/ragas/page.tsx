@@ -4,150 +4,149 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import RagaCard, { RagaData } from '@/components/raga/RagaCard';
-import { Search, Filter, Music, Sparkles, BookOpen } from 'lucide-react';
+import { Search, Music } from 'lucide-react';
 import { ragasApi } from '@/lib/api';
 
-// Canonical Master Raga Catalog for seed / fallback
 const SEED_RAGAS: RagaData[] = [
   {
     id: "yaman",
     name: "Yaman",
     tradition: "Hindustani",
     thaat: "Kalyan",
-    time_of_day: "First Prahar of Night (6 PM - 9 PM)",
-    rasa: "Shanta (Peaceful), Sringara (Devotional Love)",
+    time_of_day: "Evening (6 PM - 9 PM)",
+    rasa: "Shanta, Sringara",
     aroha: "N R G, M' D N S'",
     avaroha: "S' N D P, M' G R S",
-    vadi: "Ga (Gandhar)",
-    samvadi: "Ni (Nishad)",
+    vadi: "Ga",
+    samvadi: "Ni",
     pakad: "N R G, R G M' P, D P M' G R, .N R S",
-    description: "The cornerstone of Hindustani classical music featuring sharp Ma (Tivra Ma). Bypasses Sa in ascent."
+    description: "Features sharp Ma (Tivra Ma) and starts on Mandra Ni."
   },
   {
     id: "bhairav",
     name: "Bhairav",
     tradition: "Hindustani",
     thaat: "Bhairav",
-    time_of_day: "Dawn (First Prahar of Day: 4 AM - 7 AM)",
-    rasa: "Karuna (Pathos), Bhakti (Devotion), Gambhir (Majestic)",
+    time_of_day: "Dawn (4 AM - 7 AM)",
+    rasa: "Bhakti, Gambhir",
     aroha: "S r G M P d N S'",
     avaroha: "S' N d P M G r S",
-    vadi: "dha (Komal Dhaivat)",
-    samvadi: "re (Komal Rishabh)",
+    vadi: "dha (Komal)",
+    samvadi: "re (Komal)",
     pakad: "G M (d)d P, G M (r)r S",
-    description: "The solemn dawn raga defined by slow microtonal oscillations (andolan) on Komal Re and Komal Dha."
+    description: "Dawn raga with microtonal oscillations on Komal Re and Komal Dha."
   },
   {
     id: "bhairavi",
     name: "Bhairavi",
-    tradition: "Hindustani / Carnatic (Sindhu Bhairavi)",
+    tradition: "Hindustani / Carnatic",
     thaat: "Bhairavi",
-    time_of_day: "Morning / Concluding Raga of Any Concert",
-    rasa: "Karuna, Bhakti, Vairagya (Detachment)",
+    time_of_day: "Morning / Concert Finale",
+    rasa: "Karuna, Bhakti",
     aroha: "S r g M P d n S'",
     avaroha: "S' n d P M g r S",
-    vadi: "ma (Shuddha Madhyam)",
-    samvadi: "Sa (Shadja)",
+    vadi: "ma",
+    samvadi: "Sa",
     pakad: "M P d P M g, r S .n .d S",
-    description: "The universal queen of ragas featuring all four komal swaras (re, ga, dha, ni). Often sung as concert finale."
+    description: "Features all four komal notes (re, ga, dha, ni)."
   },
   {
     id: "bhupali",
     name: "Bhupali (Bhoop)",
-    tradition: "Hindustani / Carnatic (Mohanam)",
+    tradition: "Hindustani / Carnatic",
     thaat: "Kalyan",
-    time_of_day: "First Prahar of Night (7 PM - 10 PM)",
-    rasa: "Shanta, Bhakti, Veera (Sublime Peace)",
+    time_of_day: "Night (7 PM - 10 PM)",
+    rasa: "Shanta, Bhakti",
     aroha: "S R G P D S'",
     avaroha: "S' D P G R S",
-    vadi: "Ga (Gandhar)",
-    samvadi: "Dha (Dhaivat)",
+    vadi: "Ga",
+    samvadi: "Dha",
     pakad: "S R G, P G, D P G R S",
-    description: "Audav-Audav (pentatonic) raga omitting Ma and Ni. Pure pristine harmonies with vocal meends between Ga and Pa."
+    description: "Pentatonic raga omitting Ma and Ni."
   },
   {
     id: "bageshri",
     name: "Bageshri",
     tradition: "Hindustani",
     thaat: "Kafi",
-    time_of_day: "Late Night (Second Prahar of Night)",
-    rasa: "Sringara (Longing), Viraha (Separation)",
+    time_of_day: "Late Night",
+    rasa: "Sringara",
     aroha: "S g M D n S'",
     avaroha: "S' n D, M P D g, M g R S",
-    vadi: "Ma (Shuddha Madhyam)",
-    samvadi: "Sa (Shadja)",
+    vadi: "Ma",
+    samvadi: "Sa",
     pakad: "S .n D .n S, M, D n D M, M g R S",
-    description: "Poignant late-night melody depicting the sweet melancholy of waiting for the beloved. Omits Pa in ascent."
+    description: "Late-night melody omitting Pa in ascent."
   },
   {
     id: "darbari-kanada",
     name: "Darbari Kanada",
     tradition: "Hindustani",
     thaat: "Asavari",
-    time_of_day: "Deep Midnight (12 AM - 3 AM)",
-    rasa: "Gambhir (Grave), Vairagya, Majesty",
+    time_of_day: "Midnight",
+    rasa: "Gambhir, Vairagya",
     aroha: "S R (g)g M P (d)d n S'",
     avaroha: "S' d n P, M P (g)g M R S",
-    vadi: "re (Komal Rishabh)",
-    samvadi: "Pa (Pancham)",
+    vadi: "re (Komal)",
+    samvadi: "Pa",
     pakad: "S R (g)g M R S, d n P",
-    description: "Created by Miyan Tansen for Emperor Akbar's imperial court. Famous for slow, ultra-deep andolans on Ati-Komal Ga and Dha."
+    description: "Slow, deep oscillations on Komal Ga and Komal Dha."
   },
   {
     id: "malkauns",
     name: "Malkauns",
-    tradition: "Hindustani / Carnatic (Hindolam)",
+    tradition: "Hindustani / Carnatic",
     thaat: "Bhairavi",
-    time_of_day: "Third Prahar of Night (Midnight - 3 AM)",
-    rasa: "Veera (Heroic Meditation), Gambhir",
+    time_of_day: "Midnight - 3 AM",
+    rasa: "Veera, Gambhir",
     aroha: "S g M d n S'",
     avaroha: "S' n d M g S",
-    vadi: "ma (Shuddha Madhyam)",
-    samvadi: "Sa (Shadja)",
+    vadi: "ma",
+    samvadi: "Sa",
     pakad: "g M d M g, M g S .n S",
-    description: "Ancient pentatonic raga said to soothe Lord Shiva's cosmic fury. Strictly omits Rishabh (Re) and Pancham (Pa)."
+    description: "Pentatonic raga omitting Rishabh (Re) and Pancham (Pa)."
   },
   {
     id: "kafi",
     name: "Kafi",
-    tradition: "Hindustani / Carnatic",
+    tradition: "Hindustani",
     thaat: "Kafi",
-    time_of_day: "Late Evening / Spring (Holi season)",
-    rasa: "Sringara, Hori, Anand (Celebration)",
+    time_of_day: "Evening",
+    rasa: "Anand, Sringara",
     aroha: "S R g M P D n S'",
     avaroha: "S' n D P M g R S",
-    vadi: "Pa (Pancham)",
-    samvadi: "Sa (Shadja)",
+    vadi: "Pa",
+    samvadi: "Sa",
     pakad: "S R R g M P, M P D n D P",
-    description: "The primary scale of folk, thumri, and hori traditions. Natural minor third and minor seventh."
+    description: "Natural minor third and minor seventh."
   },
   {
     id: "todi",
     name: "Miyan Ki Todi",
     tradition: "Hindustani",
     thaat: "Todi",
-    time_of_day: "Second Prahar of Morning (8 AM - 11 AM)",
-    rasa: "Karuna, Utkantha (Yearning), Transcendental Pathos",
+    time_of_day: "Morning (8 AM - 11 AM)",
+    rasa: "Karuna, Pathos",
     aroha: "S r g M' P d N S'",
     avaroha: "S' N d P M' g r S",
-    vadi: "dha (Komal Dhaivat)",
-    samvadi: "ga (Komal Gandhar)",
+    vadi: "dha (Komal)",
+    samvadi: "ga (Komal)",
     pakad: "r g r S, M' g, d P, M' g r g r S",
-    description: "A monumental raga using Ati-Komal Re and Ga with Tivratara Ma. Intensely soulful and microtonally challenging."
+    description: "Features Komal Re, Komal Ga, and Tivra Ma."
   },
   {
     id: "hamsadhwani",
     name: "Hamsadhwani",
-    tradition: "Carnatic / Adopted into Hindustani",
-    thaat: "Shankarabharanam (29th Melakarta) / Bilawal",
-    time_of_day: "Evening / Any Auspicious Beginning",
-    rasa: "Anand, Bhakti, Mangal (Joyous Invocation)",
+    tradition: "Carnatic / Hindustani",
+    thaat: "Bilawal",
+    time_of_day: "Evening",
+    rasa: "Anand, Bhakti",
     aroha: "S R G P N S'",
     avaroha: "S' N P G R S",
-    vadi: "Sa / Pa",
-    samvadi: "Pa / Sa",
+    vadi: "Sa",
+    samvadi: "Pa",
     pakad: "S R G P N S', N P G R S",
-    description: "Created by Ramaswami Dikshitar ('Sound of Swans'). Pentatonic raga omitting Ma and Dha, creating sparkling spiritual brilliance."
+    description: "Pentatonic raga omitting Ma and Dha."
   }
 ];
 
@@ -158,19 +157,15 @@ export default function RagasCatalogPage() {
   const [selectedThaat, setSelectedThaat] = useState('All');
 
   useEffect(() => {
-    // Fetch dynamic ragas from backend if available
     ragasApi.getAll()
       .then((res: any) => {
         if (res.data && res.data.length > 0) {
           setRagasList(res.data);
         }
       })
-      .catch(() => {
-        // Fallback to seed catalog
-      });
+      .catch(() => {});
   }, []);
 
-  // Filter ragas based on search, tradition, and thaat
   const filteredRagas = ragasList.filter((r) => {
     const matchesSearch = r.name.toLowerCase().includes(search.toLowerCase()) ||
                           (r.thaat && r.thaat.toLowerCase().includes(search.toLowerCase())) ||
@@ -181,84 +176,75 @@ export default function RagasCatalogPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-mono mb-4 font-semibold shadow-2xs">
-            <BookOpen className="w-3.5 h-3.5 text-amber-700" />
-            <span>Classical Melodic Treasury</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-serif tracking-tight mb-3">
-            Raga Explorer & Master Catalog
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1.5">
+            Raga Directory
           </h1>
-          <p className="text-sm text-slate-600">
-            Explore canonical Hindustani & Carnatic ragas, their scale structures, signature Pakad phrases, and ideal times for Riyaz.
+          <p className="text-xs text-slate-500">
+            Scales, swaras, and signature phrases for Indian classical riyaz.
           </p>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="glass-card p-4 rounded-2xl border border-amber-300 mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-md">
-          
-          {/* Search Input */}
+        <div className="bg-white p-3 rounded-2xl border border-slate-200 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 items-center shadow-2xs">
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by Raga name or Thaat..."
-              className="w-full bg-white border border-amber-300 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 shadow-2xs"
+              placeholder="Search by raga or thaat..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
             />
           </div>
 
-          {/* Tradition Filter */}
           <div>
             <select
               value={selectedTradition}
               onChange={(e) => setSelectedTradition(e.target.value)}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
             >
               <option value="All">All Traditions</option>
-              <option value="Hindustani">Hindustani Tradition</option>
-              <option value="Carnatic">Carnatic Tradition</option>
+              <option value="Hindustani">Hindustani</option>
+              <option value="Carnatic">Carnatic</option>
             </select>
           </div>
 
-          {/* Thaat Filter */}
           <div>
             <select
               value={selectedThaat}
               onChange={(e) => setSelectedThaat(e.target.value)}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
             >
-              <option value="All">All Thaats / Parent Scales</option>
-              <option value="Kalyan">Kalyan Thaat</option>
-              <option value="Bhairav">Bhairav Thaat</option>
-              <option value="Bhairavi">Bhairavi Thaat</option>
-              <option value="Kafi">Kafi Thaat</option>
-              <option value="Asavari">Asavari Thaat</option>
-              <option value="Todi">Todi Thaat</option>
+              <option value="All">All Thaats</option>
+              <option value="Kalyan">Kalyan</option>
+              <option value="Bhairav">Bhairav</option>
+              <option value="Bhairavi">Bhairavi</option>
+              <option value="Kafi">Kafi</option>
+              <option value="Asavari">Asavari</option>
+              <option value="Todi">Todi</option>
+              <option value="Bilawal">Bilawal</option>
             </select>
           </div>
-
         </div>
 
         {/* Raga Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           {filteredRagas.map((raga) => (
             <RagaCard key={raga.id} raga={raga} />
           ))}
         </div>
 
         {filteredRagas.length === 0 && (
-          <div className="text-center py-12 glass-card rounded-2xl border border-gray-800">
-            <Music className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-            <div className="text-sm font-semibold text-white">No ragas matched your search</div>
-            <div className="text-xs text-gray-400 mt-1">Try searching for &quot;Yaman&quot;, &quot;Bhairav&quot;, or &quot;Kalyan&quot;.</div>
+          <div className="text-center py-10 bg-white rounded-2xl border border-slate-200">
+            <Music className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+            <div className="text-xs font-semibold text-slate-700">No ragas matched your search</div>
           </div>
         )}
 

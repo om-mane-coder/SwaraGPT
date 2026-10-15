@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Info, Sparkles } from 'lucide-react';
 
 export interface ShrutiInfo {
   index: number;
@@ -36,7 +35,7 @@ export const CANONICAL_SHRUTIS: ShrutiInfo[] = [
   { index: 19, name: "Rohini", sanskrit: "रोहिणी", swara: "Dha", swara_type: "Chatushruti Dha (Shuddha)", cents: 884.4, ratio_str: "5/3", rasa: "Auspicious Grandeur (Yaman, Bhoop)" },
   { index: 20, name: "Ramya", sanskrit: "रम्यास", swara: "Dha+", swara_type: "Tivra Dha", cents: 905.9, ratio_str: "27/16", rasa: "Enchanting" },
   { index: 21, name: "Ugra", sanskrit: "उग्रा", swara: "ni", swara_type: "Komal Ni (Kaisiki)", cents: 1017.6, ratio_str: "9/5", rasa: "Soulful Yearning (Kafi, Khamaj)" },
-  { index: 22, name: "Kshobhini", sanskrit: "क्षोभिणी", swara: "Ni", swara_type: "Shuddha Ni (Kakali)", cents: 1088.3, ratio_str: "15/8", rasa: "Ecstatic Surrender to Taar Sa" },
+  { index: 22, name: "Kshobhini", sanskrit: "क्षोभिणी", swara: "Ni", swara_type: "Shuddha Ni (Kakali)", cents: 1088.3, ratio_str: "15/8", rasa: "Taar Sa Transition" },
 ];
 
 interface ShrutiDialProps {
@@ -52,13 +51,11 @@ export default function ShrutiDial({
 }: ShrutiDialProps) {
   const [selectedShruti, setSelectedShruti] = useState<ShrutiInfo>(CANONICAL_SHRUTIS[0]);
 
-  // Radius configuration for SVG rendering
-  const size = 320;
+  const size = 300;
   const center = size / 2;
-  const outerRadius = 130;
-  const innerRadius = 90;
+  const outerRadius = 120;
+  const innerRadius = 82;
 
-  // Map cents [0, 1200] to angle in radians. Start at top (-90 degrees)
   const centsToAngle = (c: number) => {
     const normalizedCents = ((c % 1200) + 1200) % 1200;
     return (normalizedCents / 1200) * 2 * Math.PI - Math.PI / 2;
@@ -69,33 +66,26 @@ export default function ShrutiDial({
   const needleY = center + innerRadius * 0.9 * Math.sin(needleAngle);
 
   return (
-    <div className={`glass-card p-6 rounded-2xl border border-amber-500/20 flex flex-col items-center ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col items-center ${className}`}>
       <div className="w-full flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-white">22-Shruti Radial Intonation</h3>
-        </div>
-        <span className="text-[11px] font-mono text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-          Natya Shastra
+        <h3 className="text-xs font-semibold text-slate-800">22-Shruti Microtones</h3>
+        <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+          {Math.round(currentCents)}¢
         </span>
       </div>
 
-      <p className="text-[11px] text-gray-400 text-center mb-4 max-w-xs">
-        Analytical 22-shruti reference system mapping subtle microtonal intonations across the octave.
-      </p>
-
       {/* SVG Radial Wheel */}
-      <div className="relative w-[320px] h-[320px]">
+      <div className="relative w-[300px] h-[300px]">
         <svg width={size} height={size} className="overflow-visible">
-          {/* Outer circle track */}
+          {/* Outer track */}
           <circle
             cx={center}
             cy={center}
             r={outerRadius}
             fill="none"
-            stroke="#1E293B"
-            strokeWidth="3"
-            strokeDasharray="4 4"
+            stroke="#E2E8F0"
+            strokeWidth="2"
+            strokeDasharray="3 3"
           />
 
           {/* Inner decorative circle */}
@@ -103,23 +93,21 @@ export default function ShrutiDial({
             cx={center}
             cy={center}
             r={innerRadius}
-            fill="#090D16"
-            stroke="#334155"
+            fill="#F8FAFC"
+            stroke="#E2E8F0"
             strokeWidth="1.5"
           />
 
-          {/* 22 Shruti tick marks and clickable nodes */}
+          {/* 22 Shruti nodes */}
           {CANONICAL_SHRUTIS.map((shruti) => {
             const angle = centsToAngle(shruti.cents);
             const xOuter = center + outerRadius * Math.cos(angle);
             const yOuter = center + outerRadius * Math.sin(angle);
-            const xInner = center + (innerRadius + 8) * Math.cos(angle);
-            const yInner = center + (innerRadius + 8) * Math.sin(angle);
+            const xInner = center + (innerRadius + 6) * Math.cos(angle);
+            const yInner = center + (innerRadius + 6) * Math.sin(angle);
 
             const isSelected = selectedShruti.index === shruti.index;
             const isNearest = nearestShrutiName === shruti.name;
-
-            // Highlight major swaras (Sa, Re, Ga, Ma, Pa, Dha, Ni)
             const isMajorSwara = ["Sa", "Re", "Ga", "Ma", "Pa", "Dha", "Ni"].includes(shruti.swara);
 
             return (
@@ -134,26 +122,25 @@ export default function ShrutiDial({
                   y1={yInner}
                   x2={xOuter}
                   y2={yOuter}
-                  stroke={isNearest ? '#F59E0B' : isSelected ? '#38BDF8' : isMajorSwara ? '#E2E8F0' : '#475569'}
-                  strokeWidth={isNearest || isSelected ? 2.5 : isMajorSwara ? 2 : 1}
+                  stroke={isNearest ? '#0F172A' : isSelected ? '#334155' : isMajorSwara ? '#94A3B8' : '#CBD5E1'}
+                  strokeWidth={isNearest || isSelected ? 2 : isMajorSwara ? 1.5 : 1}
                 />
 
                 {/* Shruti node circle */}
                 <circle
                   cx={xOuter}
                   cy={yOuter}
-                  r={isNearest ? 6 : isSelected ? 5.5 : isMajorSwara ? 4.5 : 3}
-                  fill={isNearest ? '#F59E0B' : isSelected ? '#38BDF8' : isMajorSwara ? '#F8FAFC' : '#64748B'}
-                  className="transition-all duration-200 group-hover:scale-125"
+                  r={isNearest ? 5 : isSelected ? 4.5 : isMajorSwara ? 3.5 : 2.5}
+                  fill={isNearest ? '#0F172A' : isSelected ? '#334155' : isMajorSwara ? '#64748B' : '#CBD5E1'}
                 />
 
                 {/* Shruti label for major nodes */}
                 {isMajorSwara && (
                   <text
-                    x={center + (outerRadius + 16) * Math.cos(angle)}
-                    y={center + (outerRadius + 16) * Math.sin(angle) + 4}
-                    fill={isNearest ? '#F59E0B' : '#E2E8F0'}
-                    fontSize="11"
+                    x={center + (outerRadius + 14) * Math.cos(angle)}
+                    y={center + (outerRadius + 14) * Math.sin(angle) + 3.5}
+                    fill={isNearest ? '#0F172A' : '#64748B'}
+                    fontSize="10"
                     fontFamily="monospace"
                     fontWeight="bold"
                     textAnchor="middle"
@@ -173,30 +160,29 @@ export default function ShrutiDial({
                 y1={center}
                 x2={needleX}
                 y2={needleY}
-                stroke="#F59E0B"
-                strokeWidth="2.5"
+                stroke="#0F172A"
+                strokeWidth="2"
                 strokeLinecap="round"
-                className="transition-all duration-100"
               />
               <circle
                 cx={needleX}
                 cy={needleY}
-                r="4.5"
-                fill="#EF4444"
-                stroke="#F59E0B"
-                strokeWidth="1.5"
+                r="3.5"
+                fill="#10B981"
+                stroke="#0F172A"
+                strokeWidth="1"
               />
             </>
           )}
 
           {/* Center Hub Indicator */}
-          <circle cx={center} cy={center} r="18" fill="#111827" stroke="#F59E0B" strokeWidth="2" />
+          <circle cx={center} cy={center} r="16" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
           <text
             x={center}
-            y={center + 4}
+            y={center + 3.5}
             textAnchor="middle"
-            fill="#F59E0B"
-            fontSize="10"
+            fill="#334155"
+            fontSize="9"
             fontFamily="monospace"
             fontWeight="bold"
           >
@@ -205,35 +191,19 @@ export default function ShrutiDial({
         </svg>
       </div>
 
-      {/* Selected / Nearest Shruti Details Card */}
-      <div className="w-full mt-4 p-4 rounded-xl bg-[#090D16] border border-gray-800">
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-base font-bold text-amber-400 font-serif">
-              {selectedShruti.name}
-            </span>
-            <span className="text-xs text-gray-400 font-sans">
-              ({selectedShruti.sanskrit})
-            </span>
+      {/* Selected Shruti Details Pill */}
+      <div className="w-full mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+        <div className="flex items-center justify-between text-xs">
+          <div className="font-semibold text-slate-800">
+            {selectedShruti.name} <span className="text-slate-400 font-normal">({selectedShruti.sanskrit})</span>
           </div>
-          <span className="text-xs font-mono font-bold text-sky-400 bg-sky-950/40 px-2 py-0.5 rounded border border-sky-800/40">
-            {selectedShruti.swara} ({selectedShruti.cents.toFixed(1)}¢)
+          <span className="font-mono text-[11px] font-semibold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200">
+            {selectedShruti.swara} • {selectedShruti.cents.toFixed(1)}¢
           </span>
         </div>
-
-        <div className="grid grid-cols-2 gap-2 text-[11px] text-gray-300 font-mono mt-2 pt-2 border-t border-gray-800/60">
-          <div>
-            <span className="text-gray-500">Ratio: </span>
-            <span>{selectedShruti.ratio_str}</span>
-          </div>
-          <div>
-            <span className="text-gray-500">Type: </span>
-            <span className="text-amber-200/90">{selectedShruti.swara_type}</span>
-          </div>
-          <div className="col-span-2 text-[11px] text-gray-400 italic font-sans flex items-center gap-1.5 mt-0.5">
-            <Info className="w-3.5 h-3.5 text-amber-500/80 shrink-0" />
-            <span>Rasa / Context: {selectedShruti.rasa}</span>
-          </div>
+        <div className="text-[11px] text-slate-500 font-mono mt-1 flex justify-between">
+          <span>Ratio: {selectedShruti.ratio_str}</span>
+          <span>{selectedShruti.swara_type}</span>
         </div>
       </div>
     </div>

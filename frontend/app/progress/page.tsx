@@ -65,7 +65,7 @@ export default function ProgressPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -73,7 +73,7 @@ export default function ProgressPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-mono mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-500/10 border border-slate-200 text-slate-600 text-xs font-mono mb-2">
               <TrendingUp className="w-3.5 h-3.5" />
               <span>Riyaz Longitudinal Analytics</span>
             </div>
@@ -90,7 +90,7 @@ export default function ProgressPage() {
                 onClick={() => setTimeRange(range)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase transition-all ${
                   timeRange === range
-                    ? 'bg-amber-500 text-black shadow'
+                    ? 'bg-slate-500 text-black shadow'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
@@ -102,10 +102,10 @@ export default function ProgressPage() {
 
         {/* Top 4 Stat Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="glass-card p-5 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-5 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono text-gray-400">Total Riyaz Time</span>
-              <Clock className="w-4 h-4 text-amber-400" />
+              <Clock className="w-4 h-4 text-slate-500" />
             </div>
             <div className="text-2xl font-bold font-mono text-white">{stats.totalMinutes} mins</div>
             <div className="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
@@ -113,7 +113,7 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <div className="glass-card p-5 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-5 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono text-gray-400">Current Streak</span>
               <Flame className="w-4 h-4 text-rose-400" />
@@ -122,7 +122,7 @@ export default function ProgressPage() {
             <div className="text-[11px] text-gray-400 mt-1">Dedication unbroken</div>
           </div>
 
-          <div className="glass-card p-5 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-5 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono text-gray-400">Best Intonation Score</span>
               <Award className="w-4 h-4 text-emerald-400" />
@@ -131,7 +131,7 @@ export default function ProgressPage() {
             <div className="text-[11px] text-gray-400 mt-1">Raga Bhupali session</div>
           </div>
 
-          <div className="glass-card p-5 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-5 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono text-gray-400">Completed Sessions</span>
               <CheckCircle className="w-4 h-4 text-sky-400" />
@@ -145,13 +145,13 @@ export default function ProgressPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           
           {/* Historical Intonation Trend Area Chart */}
-          <div className="glass-card p-6 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-6 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-white">Intonation Score Evolution</h3>
                 <p className="text-xs text-gray-400">Progressive improvement in pitch & swara accuracy</p>
               </div>
-              <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+              <span className="text-xs font-mono font-bold text-slate-500 bg-slate-500/10 px-2 py-0.5 rounded">
                 Trend: +21%
               </span>
             </div>
@@ -178,7 +178,7 @@ export default function ProgressPage() {
           </div>
 
           {/* Swara Accuracy Breakdown Bar Chart */}
-          <div className="glass-card p-6 rounded-2xl border border-amber-500/20">
+          <div className="glass-card p-6 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-white">Swara-by-Swara Intonation Accuracy</h3>
@@ -207,9 +207,9 @@ export default function ProgressPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           
           {/* Swara Diagnostics */}
-          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-4">
+          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <BarChart2 className="w-5 h-5 text-amber-400" />
+              <BarChart2 className="w-5 h-5 text-slate-500" />
               <span>Microtonal Diagnostics</span>
             </h3>
 
@@ -223,8 +223,8 @@ export default function ProgressPage() {
                 <div className="text-[11px] text-gray-400 mt-1 font-mono">96% intonation accuracy</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#090D16] border border-amber-500/30">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-400 mb-1">
+              <div className="p-4 rounded-xl bg-[#090D16] border border-slate-200">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 mb-1">
                   <AlertTriangle className="w-4 h-4" />
                   <span>Drifting Swara</span>
                 </div>
@@ -239,9 +239,9 @@ export default function ProgressPage() {
           </div>
 
           {/* Raga Mastery Progress */}
-          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-4">
+          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Music className="w-5 h-5 text-amber-400" />
+              <Music className="w-5 h-5 text-slate-500" />
               <span>Raga Mastery Progress</span>
             </h3>
 
@@ -255,7 +255,7 @@ export default function ProgressPage() {
                 <div key={idx} className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-white font-serif">{raga.name}</span>
-                    <span className="font-mono font-bold text-amber-300">{raga.percent}%</span>
+                    <span className="font-mono font-bold text-slate-600">{raga.percent}%</span>
                   </div>
                   <div className="h-2 w-full bg-[#090D16] rounded-full overflow-hidden border border-gray-800">
                     <div

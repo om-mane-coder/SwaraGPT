@@ -44,14 +44,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md glass-card p-8 rounded-2xl border border-amber-300 shadow-xl relative">
+        <div className="w-full max-w-md glass-card p-8 rounded-2xl border border-slate-200 shadow-xl relative">
           
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold mx-auto mb-4 shadow-md shadow-amber-500/20">
+            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center text-white font-bold mx-auto mb-4 shadow-md shadow-2xs">
               <Music className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 font-serif">Begin Your Swara Journey</h1>
@@ -80,7 +80,7 @@ export default function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Om Ramesh Mane"
-                  className="w-full bg-white border border-amber-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-colors shadow-2xs"
+                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
                 />
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@wce.ac.in"
-                  className="w-full bg-white border border-amber-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-colors shadow-2xs"
+                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full bg-white border border-amber-300 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-colors shadow-2xs"
+                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
                 />
               </div>
             </div>
@@ -132,11 +132,11 @@ export default function RegisterPage() {
                   onClick={() => setRole('student')}
                   className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     role === 'student'
-                      ? 'bg-amber-100 border-amber-400 text-amber-900 font-bold shadow-2xs'
-                      : 'bg-white border-amber-200 text-slate-600 hover:text-slate-900'
+                      ? 'bg-slate-100 border-slate-200 text-slate-800 font-bold shadow-2xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <GraduationCap className="w-4 h-4 text-amber-700" />
+                  <GraduationCap className="w-4 h-4 text-slate-700" />
                   <span>Music Student</span>
                 </button>
                 <button
@@ -144,11 +144,11 @@ export default function RegisterPage() {
                   onClick={() => setRole('teacher')}
                   className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     role === 'teacher'
-                      ? 'bg-amber-100 border-amber-400 text-amber-900 font-bold shadow-2xs'
-                      : 'bg-white border-amber-200 text-slate-600 hover:text-slate-900'
+                      ? 'bg-slate-100 border-slate-200 text-slate-800 font-bold shadow-2xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 text-amber-700" />
+                  <Sparkles className="w-4 h-4 text-slate-700" />
                   <span>Guru / Teacher</span>
                 </button>
               </div>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               id="register-submit-btn"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white font-bold text-sm shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-6 cursor-pointer"
+              className="w-full py-3 rounded-xl bg-slate-900 text-white text-white font-bold text-sm shadow-lg shadow-2xs hover:shadow-2xs hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-6 cursor-pointer"
             >
               {loading ? (
                 <span>Creating Account...</span>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
 
           <p className="text-xs text-slate-500 text-center mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-amber-800 font-bold hover:underline">
+            <Link href="/login" className="text-slate-700 font-bold hover:underline">
               Sign In
             </Link>
           </p>

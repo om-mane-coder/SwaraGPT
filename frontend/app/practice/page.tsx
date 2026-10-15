@@ -10,7 +10,7 @@ import PitchGraph, { PitchPoint } from '@/components/pitch/PitchGraph';
 import AudioRecorder from '@/components/audio/AudioRecorder';
 import { 
   Music, Mic, Settings, Play, Pause, Award, 
-  Sparkles, Layers, Sliders, ArrowRight, CheckCircle, RefreshCw, Volume2 
+  Layers, Sliders, ArrowRight, CheckCircle, RefreshCw, Volume2 
 } from 'lucide-react';
 import { useSwaraStore } from '@/lib/store';
 import { audioApi, ragasApi } from '@/lib/api';
@@ -68,8 +68,7 @@ function PracticeContent() {
   const micStreamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  // McLeod Pitch Method (MPM) / Normalized Square Difference Function (NSDF)
-  // Provides sub-cent frequency accuracy and eliminates octave jumping
+  // McLeod Pitch Method (MPM) with Normalized Square Difference Function (NSDF)
   const detectPitchMPM = (buf: Float32Array, sampleRate: number): number => {
     const SIZE = buf.length;
     let rms = 0;
@@ -77,11 +76,10 @@ function PracticeContent() {
       rms += buf[i] * buf[i];
     }
     rms = Math.sqrt(rms / SIZE);
-    if (rms < 0.015) return -1; // Unvoiced / silence threshold
+    if (rms < 0.015) return -1;
 
-    // Autocorrelation and Normalized Square Difference
-    const maxLag = Math.min(SIZE - 1, Math.floor(sampleRate / 60)); // ~60 Hz lowest note
-    const minLag = Math.floor(sampleRate / 1050); // ~1050 Hz highest note
+    const maxLag = Math.min(SIZE - 1, Math.floor(sampleRate / 60));
+    const minLag = Math.floor(sampleRate / 1050);
     const nsdf = new Float32Array(maxLag);
 
     for (let tau = 0; tau < maxLag; tau++) {
@@ -94,7 +92,6 @@ function PracticeContent() {
       nsdf[tau] = m > 0 ? (2 * acf) / m : 0;
     }
 
-    // Find candidate peak with highest normalized autocorrelation above threshold
     let maxVal = -1;
     let bestLag = -1;
     for (let tau = minLag; tau < maxLag - 1; tau++) {
@@ -108,7 +105,6 @@ function PracticeContent() {
 
     if (bestLag === -1 || maxVal < 0.48) return -1;
 
-    // 3-point parabolic peak interpolation for sub-sample precision (<0.1 Hz resolution)
     const x1 = nsdf[bestLag - 1];
     const x2 = nsdf[bestLag];
     const x3 = nsdf[bestLag + 1];
@@ -120,15 +116,12 @@ function PracticeContent() {
     return sampleRate / refinedLag;
   };
 
-  // Convert Hz to Swara & 22-Shruti with Just Intonation precision
   const mapFrequencyToSwara = useCallback((freq: number, saFreq: number) => {
     if (freq <= 40 || freq > 1500) return;
 
-    // C = 1200 * log2(freq / saFreq)
     const rawCents = 1200 * Math.log2(freq / saFreq);
     const modCents = ((rawCents % 1200) + 1200) % 1200;
 
-    // Find nearest 22-Shruti
     let bestShruti = CANONICAL_SHRUTIS[0];
     let minShrutiDist = 99999;
     for (const sh of CANONICAL_SHRUTIS) {
@@ -138,19 +131,16 @@ function PracticeContent() {
         bestShruti = sh;
       }
     }
-    // Wrap around 1200 cents
     if (Math.abs(modCents - 1200) < minShrutiDist) {
       bestShruti = CANONICAL_SHRUTIS[0];
       minShrutiDist = Math.abs(modCents - 1200);
     }
 
-    // Find nearest 12-semitone note
     const semitone = Math.round(modCents / 100) % 12;
     const targetCents = semitone * 100;
     const dev = modCents - targetCents;
     const matchedSwara = NOMINAL_SWARAS[semitone].name;
 
-    // Shruti microtonal deviation
     let shrutiDev = modCents - bestShruti.cents;
     if (shrutiDev > 600) shrutiDev -= 1200;
     else if (shrutiDev < -600) shrutiDev += 1200;
@@ -163,7 +153,6 @@ function PracticeContent() {
     setLiveCents(modCents);
     setLiveDeviation(displayDev);
 
-    // Update real-time contour history
     setPitchHistory((prev) => {
       const now = prev.length > 0 ? prev[prev.length - 1].time + 0.1 : 0;
       const nextPoint: PitchPoint = {
@@ -178,7 +167,6 @@ function PracticeContent() {
     });
   }, [analysisMode]);
 
-  // Start live mic pitch tracking
   const startLivePitchTracker = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -234,7 +222,6 @@ function PracticeContent() {
     setSelectedTonic(newVal);
   };
 
-  // Submit audio blob for comprehensive server-side MIR analysis
   const handleAudioReady = async (blob: Blob, file?: File) => {
     setAnalyzingBlob(true);
     const uploadFile = file || new File([blob], 'riyaz_practice.webm', { type: blob.type || 'audio/webm' });
@@ -259,7 +246,6 @@ function PracticeContent() {
         return;
       }
       
-      // Client-side real audio decoding fallback
       try {
         const clientAnalysis = await decodeAndAnalyzeAudio(uploadFile, {
           targetRaga: ragaName,
@@ -272,7 +258,6 @@ function PracticeContent() {
         console.error("Client practice audio decoding failed:", clientErr);
       }
 
-      // Fallback: navigate with state
       router.push(`/analyze/latest?raga=${encodeURIComponent(ragaName)}&tonic=${tonic}`);
     } finally {
       setAnalyzingBlob(false);
@@ -286,53 +271,50 @@ function PracticeContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 font-semibold">
-                Interactive Riyaz Studio
-              </span>
-              <span className="text-xs text-slate-500 font-mono font-medium">Real-Time Pitch & Intonation</span>
-            </div>
-            <h1 className="text-3xl font-extrabold text-slate-900 font-serif tracking-tight">
-              Sadhana & Live Vocal Practice
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Practice Studio
             </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Real-time fundamental frequency tracking & intonation gauge
+            </p>
           </div>
 
-          {/* Live Mic pitch tracker switch */}
-          <div className="flex items-center gap-3">
+          {/* Clean Mic Button */}
+          <div>
             <button
               onClick={isLiveListening ? stopLivePitchTracker : startLivePitchTracker}
-              className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shadow-md cursor-pointer ${
+              className={`px-4 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
                 isLiveListening
-                  ? 'bg-rose-500 text-white animate-pulse shadow-rose-500/30'
-                  : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20'
+                  ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+                  : 'bg-slate-900 text-white hover:bg-slate-800'
               }`}
             >
-              <Mic className="w-4 h-4" />
-              <span>{isLiveListening ? 'Stop Live Pitch Sensor' : 'Start Live Pitch Sensor'}</span>
+              <Mic className="w-3.5 h-3.5" />
+              <span>{isLiveListening ? 'Stop Pitch Tracker' : 'Start Live Pitch'}</span>
             </button>
           </div>
         </div>
 
-        {/* Configuration Bar: Tonic Sa + Raga + Exercise + Mode */}
-        <div className="glass-card p-4 rounded-2xl border border-amber-300 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center shadow-md">
+        {/* Minimalist Configuration Bar */}
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center shadow-2xs">
           
-          {/* Tonic Sa Selector */}
+          {/* Tonic Sa */}
           <div>
-            <label className="text-[11px] font-mono text-slate-600 block mb-1 font-semibold">
-              Tonic Sa (Fundamental Pitch):
+            <label className="text-[11px] text-slate-500 block mb-1">
+              Tonic Sa:
             </label>
             <select
               value={tonic}
               onChange={(e) => handleTonicChange(parseFloat(e.target.value))}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-mono text-amber-900 font-bold focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-slate-400"
             >
               {TONIC_OPTIONS.map((opt) => (
                 <option key={opt.val} value={opt.val}>
@@ -342,9 +324,9 @@ function PracticeContent() {
             </select>
           </div>
 
-          {/* Raga Selector */}
+          {/* Target Raga */}
           <div>
-            <label className="text-[11px] font-mono text-slate-600 block mb-1 font-semibold">
+            <label className="text-[11px] text-slate-500 block mb-1">
               Target Raga:
             </label>
             <select
@@ -353,7 +335,7 @@ function PracticeContent() {
                 setRagaName(e.target.value);
                 setSelectedRaga(e.target.value);
               }}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 font-semibold focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-slate-400"
             >
               {['Yaman', 'Bhairav', 'Bhairavi', 'Bhupali', 'Bageshri', 'Darbari Kanada', 'Malkauns', 'Kafi', 'Todi', 'Marwa', 'Desh', 'Hamsadhwani'].map((r) => (
                 <option key={r} value={r}>Raga {r}</option>
@@ -361,36 +343,36 @@ function PracticeContent() {
             </select>
           </div>
 
-          {/* Exercise Selector */}
+          {/* Drill */}
           <div>
-            <label className="text-[11px] font-mono text-slate-600 block mb-1 font-semibold">
-              Practice Drill:
+            <label className="text-[11px] text-slate-500 block mb-1">
+              Drill:
             </label>
             <select
               value={exercise}
               onChange={(e) => setExercise(e.target.value)}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-slate-400"
             >
               <option value="Sa-Pa Stability Practice">Sa-Pa Stability Practice</option>
               <option value="Aroha & Avaroha Slow Ascent">Aroha & Avaroha Slow Ascent</option>
               <option value="Pakad Signature Phrase">Pakad Signature Phrase</option>
               <option value="Alankar: Sa-Re-Ga, Re-Ga-Ma">Alankar: S-R-G, R-G-M</option>
               <option value="Long Note Gandhar Hold">Long Note Gandhar Hold</option>
-              <option value="Free Riyaz / Khayal Alap">Free Riyaz / Khayal Alap</option>
+              <option value="Free Riyaz / Khayal Alap">Free Riyaz</option>
             </select>
           </div>
 
-          {/* Analysis View Mode */}
+          {/* Mode */}
           <div>
-            <label className="text-[11px] font-mono text-slate-600 block mb-1 font-semibold">
-              Visualization Mode:
+            <label className="text-[11px] text-slate-500 block mb-1">
+              Mode:
             </label>
-            <div className="grid grid-cols-2 gap-1 bg-amber-50/80 p-1 rounded-xl border border-amber-200">
+            <div className="grid grid-cols-2 gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
               <button
                 onClick={() => setAnalysisMode('swara')}
-                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   analysisMode === 'swara'
-                    ? 'bg-amber-500 text-white shadow-sm'
+                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -398,9 +380,9 @@ function PracticeContent() {
               </button>
               <button
                 onClick={() => setAnalysisMode('shruti')}
-                className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   analysisMode === 'shruti'
-                    ? 'bg-amber-500 text-white shadow-sm'
+                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -412,10 +394,10 @@ function PracticeContent() {
         </div>
 
         {/* Central Practice Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           
-          {/* Left Column: Intonation Indicators (Swara / 22-Shruti Dial) */}
-          <div className="lg:col-span-1 space-y-6">
+          {/* Left Column: Intonation Gauge */}
+          <div className="lg:col-span-1 space-y-4">
             <SwaraIndicator
               swara={liveSwara}
               frequency={liveFreq}
@@ -431,45 +413,28 @@ function PracticeContent() {
                 nearestShrutiName={liveSwara}
               />
             )}
-
-            {/* Target Raga Quick Guide */}
-            <div className="glass-card p-5 rounded-2xl border border-amber-500/20 text-xs">
-              <div className="flex items-center gap-2 mb-3">
-                <Music className="w-4 h-4 text-amber-400" />
-                <h4 className="font-bold text-white font-serif text-sm">Raga {ragaName} Guidelines</h4>
-              </div>
-              <p className="text-gray-400 text-[11px] leading-relaxed mb-3">
-                Maintain steady breath control. Listen carefully to the drone frequency of Sa ({tonic.toFixed(1)} Hz) and Pa ({(tonic * 1.5).toFixed(1)} Hz).
-              </p>
-              <div className="p-2.5 rounded-lg bg-[#090D16] border border-gray-800 font-mono text-[11px] text-amber-200">
-                Drill: {exercise}
-              </div>
-            </div>
           </div>
 
-          {/* Right Column (2 cols): Real-Time Pitch Contour Chart & Audio Capture */}
-          <div className="lg:col-span-2 space-y-6">
-            
-            {/* Live Pitch Contour */}
+          {/* Right Column: Live Pitch Trajectory & Audio Capture */}
+          <div className="lg:col-span-2 space-y-4">
             <PitchGraph
               pitchPoints={pitchHistory}
               referenceSa={tonic}
               targetRaga={ragaName}
-              title={`Live Melodic Contour — Raga ${ragaName}`}
-              subtitle="Fundamental frequency contour mapped relative to selected tonic Sa"
-              height={320}
+              title={`Pitch Trajectory — Raga ${ragaName}`}
+              subtitle="Live F0 contour relative to Sa"
+              height={300}
             />
 
-            {/* Audio Capture Studio */}
             <AudioRecorder
               onAudioReady={handleAudioReady}
               tonicFrequency={tonic}
             />
 
             {analyzingBlob && (
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center gap-3 text-amber-300 text-sm animate-pulse">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Processing singing audio through MIR pipeline (pYIN + Swara + Raga evaluation)...</span>
+              <div className="p-3 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center gap-2 text-slate-700 text-xs">
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <span>Evaluating vocal intonation & raga adherence...</span>
               </div>
             )}
           </div>
@@ -485,7 +450,7 @@ function PracticeContent() {
 
 export default function PracticePage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[#FAF8F5]" />}>
+    <React.Suspense fallback={<div className="min-h-screen bg-[#F8FAFC]" />}>
       <PracticeContent />
     </React.Suspense>
   );

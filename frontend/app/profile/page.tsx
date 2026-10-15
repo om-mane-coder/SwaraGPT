@@ -70,14 +70,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header */}
         <div className="flex items-center gap-4 mb-8 pb-4 border-b border-gray-800">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-black font-extrabold text-2xl shadow-xl shadow-amber-500/20">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-black font-extrabold text-2xl shadow-xl shadow-2xs">
             {name.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -93,7 +93,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <form onSubmit={handleSave} className="glass-card p-6 sm:p-8 rounded-2xl border border-amber-500/20 space-y-6">
+        <form onSubmit={handleSave} className="glass-card p-6 sm:p-8 rounded-2xl border border-slate-200 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             
             {/* Full Name */}
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
               />
             </div>
 
@@ -124,7 +124,7 @@ export default function ProfilePage() {
               <select
                 value={tradition}
                 onChange={(e) => setTradition(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
               >
                 <option value="Hindustani">Hindustani Tradition</option>
                 <option value="Carnatic">Carnatic Tradition</option>
@@ -138,7 +138,7 @@ export default function ProfilePage() {
               <select
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
               >
                 <option value="Beginner">Beginner (Prathamik / Basic Swaras)</option>
                 <option value="Intermediate">Intermediate (Madhyama / Ragas & Bandishes)</option>
@@ -154,7 +154,7 @@ export default function ProfilePage() {
                 step="0.01"
                 value={tonicHz}
                 onChange={(e) => setTonicHz(parseFloat(e.target.value) || 130.81)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-300 focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-600 focus:outline-none focus:border-slate-300"
               />
             </div>
 
@@ -165,7 +165,7 @@ export default function ProfilePage() {
                 type="text"
                 value={targetRaga}
                 onChange={(e) => setTargetRaga(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
               />
             </div>
 
@@ -176,7 +176,7 @@ export default function ProfilePage() {
                 type="number"
                 value={dailyGoal}
                 onChange={(e) => setDailyGoal(parseInt(e.target.value) || 30)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-slate-300"
               />
             </div>
 
@@ -186,7 +186,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-amber-500/20"
+              className="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium text-xs hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-2xs"
             >
               <Save className="w-4 h-4" />
               <span>{saving ? 'Saving...' : 'Save Profile Changes'}</span>
