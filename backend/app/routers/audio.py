@@ -84,9 +84,11 @@ async def analyze_audio_direct(
     file: Optional[UploadFile] = File(None),
     file_path: Optional[str] = Form(None),
     target_raga: Optional[str] = Form("Yaman"),
+    target_song: Optional[str] = Form(None),
     user_sa_hz: Optional[float] = Form(None),
     user_sa: Optional[float] = Form(None),
     manual_tonic_hz: Optional[float] = Form(None),
+    is_demo: Optional[bool] = Form(False),
     current_user: Optional[User] = Depends(get_current_user_optional),
     db: AsyncSession = Depends(get_db),
 ):
@@ -99,9 +101,11 @@ async def analyze_audio_direct(
         file=file,
         file_path=file_path,
         target_raga=target_raga,
+        target_song=target_song,
         user_sa_hz=user_sa_hz,
         user_sa=user_sa,
         manual_tonic_hz=manual_tonic_hz,
+        is_demo=is_demo,
         current_user=current_user,
         db=db,
     )

@@ -54,7 +54,7 @@ def detect_swaras(
 
         # Silence or unvoiced frame
         if freq < 55.0:
-            if current_label and len(pitches_in_note) >= 2:
+            if current_label and len(pitches_in_note) >= 1:
                 event = _build_note_event(
                     current_label, current_shruti, start_time, t,
                     pitches_in_note, deltas_in_note, sa_hz
@@ -78,7 +78,9 @@ def detect_swaras(
         else:
             octave = "Madhya"
 
-        swara_key = f"{shruti_info['swara']} ({octave})"
+        # Canonical swara key for note segmentation (prevents microtonal jitter fragmentation)
+        canonical_name = shruti_info.get("canonical_swara", shruti_info["swara"])
+        swara_key = f"{canonical_name} ({octave})"
 
         if current_label is None:
             current_label = swara_key
@@ -91,7 +93,7 @@ def detect_swaras(
             deltas_in_note.append(shruti_info["delta_cents"])
         else:
             # Swara transition
-            if len(pitches_in_note) >= 2:
+            if len(pitches_in_note) >= 1:
                 event = _build_note_event(
                     current_label, current_shruti, start_time, t,
                     pitches_in_note, deltas_in_note, sa_hz
@@ -106,7 +108,7 @@ def detect_swaras(
             deltas_in_note = [shruti_info["delta_cents"]]
 
     # Flush final note
-    if current_label and len(pitches_in_note) >= 2:
+    if current_label and len(pitches_in_note) >= 1:
         end_time = pitch_contour[-1].get("time", start_time + 0.3)
         event = _build_note_event(
             current_label, current_shruti, start_time, end_time,
@@ -141,10 +143,10 @@ def detect_swaras(
 
 def _build_note_event(
     label: str, shruti: Optional[str], start_time: float, end_time: float,
-    pitches: List[float], deltas: List[float], sa_hz: float
+    pitches: List[float], deltas: List[float], sa_hz: float, min_duration: float = 0.075
 ) -> Optional[Dict[str, Any]]:
-    duration = end_time - start_time
-    if duration < 0.08:  # Filter brief micro-artifacts
+    duration = max(0.046, end_time - start_time)
+    if duration < min_duration and len(pitches) < 3:  # Filter transient glide frames & micro-artifacts
         return None
 
     mean_pitch = float(np.mean(pitches))
@@ -157,7 +159,9 @@ def _build_note_event(
     stability = float(max(20.0, min(100.0, 100.0 - (std_pitch / max(1.0, mean_pitch) * 200.0))))
 
     abs_delta = abs(mean_delta)
-    if abs_delta <= 25.0:
+    if abs_delta <= 12.0:
+        status = "Exact Sur (Perfect Intonation)"
+    elif abs_delta <= 25.0:
         status = "In Tune (Sur)"
     elif abs_delta <= 50.0:
         status = "Mild Deviation"
@@ -166,6 +170,9 @@ def _build_note_event(
 
     swara_name = label.split(" ")[0] if " " in label else label
     octave = label.split("(")[1].replace(")", "") if "(" in label else "Madhya"
+
+    # Precise cents from Sa
+    cents_from_sa = float(1200.0 * np.log2(max(1.0, mean_pitch) / sa_hz))
 
     return {
         "swara": swara_name,
@@ -176,10 +183,13 @@ def _build_note_event(
         "end_time": round(end_time, 2),
         "duration": round(duration, 2),
         "mean_pitch": round(mean_pitch, 1),
+        "cents_from_sa": round(cents_from_sa, 1),
+        "cents_deviation": round(mean_delta, 1),
         "accuracy": round(accuracy, 1),
         "delta_cents": round(mean_delta, 1),
         "stability": round(stability, 1),
         "intonation_status": status,
+        "is_in_tune": bool(abs_delta <= 25.0),
     }
 
 

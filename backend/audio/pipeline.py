@@ -7,7 +7,7 @@ from audio.raga import identify_raga_candidates
 from audio.rhythm import analyze_rhythm_and_tempo
 
 class AudioIntelligencePipeline:
-    def __init__(self, user_preferred_tonic='A#'):
+    def __init__(self, user_preferred_tonic=None):
         self.user_preferred_tonic = user_preferred_tonic
 
     def process(self, audio_path, user_tonic_override=None):
@@ -21,8 +21,9 @@ class AudioIntelligencePipeline:
         times, f0_array, voiced_flag, voiced_probs = extract_pitch_contour(audio_path)
         duration = float(times[-1]) if len(times) > 0 else 0.0
 
-        # 2. Tonic / Sa Detection
-        tonic_info = detect_tonic_pitch(f0_array, self.user_preferred_tonic)
+        # 2. Tonic / Sa Detection (Auto-detect if not overridden)
+        preferred = user_tonic_override or self.user_preferred_tonic
+        tonic_info = detect_tonic_pitch(f0_array, user_preferred_tonic=preferred)
         if user_tonic_override:
             tonic_info["tonic_note"] = user_tonic_override
             tonic_info["method"] = "user_override"
@@ -33,10 +34,27 @@ class AudioIntelligencePipeline:
         swara_results = analyze_swara_sequence(times, f0_array, tonic_hz)
 
         # 4. Raga Candidate Identification
-        raga_candidates = identify_raga_candidates(
-            swara_results["swara_distribution"],
-            swara_results["events"]
-        )
+        try:
+            from app.ai.raga_recognizer import recognize_raga
+            ai_events = [
+                {"swara": e.get("swara"), "duration": e.get("duration", 0.5)}
+                for e in swara_results.get("events", [])
+            ]
+            raw_candidates = recognize_raga(ai_events)
+            raga_candidates = [
+                {
+                    "raga": c["raga_name"],
+                    "confidence": c["confidence"],
+                    "evidence": c.get("evidence", []),
+                    "thaat": c.get("thaat", "Kalyan")
+                }
+                for c in raw_candidates
+            ]
+        except Exception:
+            raga_candidates = identify_raga_candidates(
+                swara_results["swara_distribution"],
+                swara_results["events"]
+            )
 
         # 5. Rhythm & Tempo Analysis
         rhythm_info = analyze_rhythm_and_tempo(audio_path)

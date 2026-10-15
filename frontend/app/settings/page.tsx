@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { 
   Settings as SettingsIcon, Sliders, Mic, Shield, Trash2, 
-  CheckCircle, Globe, Moon, Volume2, AlertTriangle 
+  CheckCircle, Globe, Moon, Volume2, AlertTriangle, Sparkles, ExternalLink 
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -137,6 +137,61 @@ export default function SettingsPage() {
                   >
                     22-Shruti Radial Intonation Mode
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Musicology Engine & Free API Tier Section */}
+          <div className="glass-card p-6 rounded-2xl border border-amber-500/20 space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span>AI Musicology Engine & Free API Tier</span>
+              </h3>
+              <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1.5 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Active: Hybrid DSP + Gemini Free Oracle
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-400 leading-relaxed">
+              SwaraGPT combines local high-speed Digital Signal Processing (pYIN + Just Intonation 22-Shruti Math) with the free Google Gemini Flash API for 100% musicological cross-verification.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-[#090D16] border border-gray-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white">Google Gemini Free API</span>
+                  <span className="text-[10px] text-amber-300 font-mono">100% Free Tier</span>
+                </div>
+                <p className="text-[11px] text-gray-400">
+                  Google Gemini 2.5 Flash / 1.5 Flash provides free multimodal musicological reasoning, Pakad catchphrase alignment, and raga validation with up to 15 RPM.
+                </p>
+                <div className="pt-2 flex items-center justify-between text-[11px]">
+                  <span className="text-gray-400 font-mono">Config: backend/.env</span>
+                  <a
+                    href="https://aistudio.google.com/app/apikey"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1"
+                  >
+                    <span>Get Free Key</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#090D16] border border-gray-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white">22-Shruti Math & MPM DSP</span>
+                  <span className="text-[10px] text-emerald-400 font-mono">Offline / Zero Latency</span>
+                </div>
+                <p className="text-[11px] text-gray-400">
+                  Runs directly on device with zero internet latency: McLeod Pitch Method (MPM), 22 Just Intonation harmonic ratios (81/80, 25/24, 16/15, 9/8, etc.), and 35+ canonical ragas.
+                </p>
+                <div className="pt-2 text-[11px] text-emerald-400/90 font-mono">
+                  Precision: Sub-cent microtonal accuracy
                 </div>
               </div>
             </div>

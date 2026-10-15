@@ -46,4 +46,9 @@ def extract_pitch_contour(audio_path, sr=22050, fmin=65.0, fmax=1046.5):
     voiced_flag = np.nan_to_num(voiced_flag, nan=False)
     voiced_probs = np.nan_to_num(voiced_probs, nan=0.0)
 
+    # 3-point median filter to suppress transient microphone octave glitches
+    if len(f0) > 3:
+        f0_smooth = scipy.signal.medfilt(f0, kernel_size=3)
+        f0 = np.where((f0 > 55.0) & (f0_smooth > 50.0), f0_smooth, f0)
+
     return times, f0, voiced_flag, voiced_probs

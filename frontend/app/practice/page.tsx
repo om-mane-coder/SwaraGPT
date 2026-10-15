@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SwaraIndicator from '@/components/swara/SwaraIndicator';
-import ShrutiDial from '@/components/swara/ShrutiDial';
+import ShrutiDial, { CANONICAL_SHRUTIS } from '@/components/swara/ShrutiDial';
 import PitchGraph, { PitchPoint } from '@/components/pitch/PitchGraph';
 import AudioRecorder from '@/components/audio/AudioRecorder';
 import { 
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useSwaraStore } from '@/lib/store';
 import { audioApi, ragasApi } from '@/lib/api';
+import { decodeAndAnalyzeAudio } from '@/lib/mir/audioDecoder';
 
 const TONIC_OPTIONS = [
   { label: "C3 (130.81 Hz)", val: 130.81, note: "C3" },
@@ -67,57 +68,59 @@ function PracticeContent() {
   const micStreamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  // Auto-correlation pitch detection for real-time responsiveness
-  const autoCorrelate = (buf: Float32Array, sampleRate: number): number => {
-    let SIZE = buf.length;
+  // McLeod Pitch Method (MPM) / Normalized Square Difference Function (NSDF)
+  // Provides sub-cent frequency accuracy and eliminates octave jumping
+  const detectPitchMPM = (buf: Float32Array, sampleRate: number): number => {
+    const SIZE = buf.length;
     let rms = 0;
     for (let i = 0; i < SIZE; i++) {
-      const val = buf[i];
-      rms += val * val;
+      rms += buf[i] * buf[i];
     }
     rms = Math.sqrt(rms / SIZE);
-    if (rms < 0.02) return -1; // Unvoiced / silence threshold
+    if (rms < 0.015) return -1; // Unvoiced / silence threshold
 
-    let r1 = 0, r2 = SIZE - 1, thres = 0.2;
-    for (let i = 0; i < SIZE / 2; i++) {
-      if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+    // Autocorrelation and Normalized Square Difference
+    const maxLag = Math.min(SIZE - 1, Math.floor(sampleRate / 60)); // ~60 Hz lowest note
+    const minLag = Math.floor(sampleRate / 1050); // ~1050 Hz highest note
+    const nsdf = new Float32Array(maxLag);
+
+    for (let tau = 0; tau < maxLag; tau++) {
+      let acf = 0;
+      let m = 0;
+      for (let i = 0; i < SIZE - tau; i++) {
+        acf += buf[i] * buf[i + tau];
+        m += buf[i] * buf[i] + buf[i + tau] * buf[i + tau];
+      }
+      nsdf[tau] = m > 0 ? (2 * acf) / m : 0;
     }
-    for (let i = 1; i < SIZE / 2; i++) {
-      if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
-    }
 
-    buf = buf.slice(r1, r2);
-    SIZE = buf.length;
-
-    const c = new Float32Array(SIZE);
-    for (let i = 0; i < SIZE; i++) {
-      for (let j = 0; j < SIZE - i; j++) {
-        c[i] = c[i] + buf[j] * buf[j + i];
+    // Find candidate peak with highest normalized autocorrelation above threshold
+    let maxVal = -1;
+    let bestLag = -1;
+    for (let tau = minLag; tau < maxLag - 1; tau++) {
+      if (nsdf[tau] > 0.45 && nsdf[tau] > nsdf[tau - 1] && nsdf[tau] >= nsdf[tau + 1]) {
+        if (nsdf[tau] > maxVal) {
+          maxVal = nsdf[tau];
+          bestLag = tau;
+        }
       }
     }
 
-    let d = 0;
-    while (c[d] > c[d + 1]) d++;
-    let maxval = -1, maxpos = -1;
-    for (let i = d; i < SIZE; i++) {
-      if (c[i] > maxval) {
-        maxval = c[i];
-        maxpos = i;
-      }
-    }
-    let T0 = maxpos;
-    if (maxval < 0.01) return -1;
+    if (bestLag === -1 || maxVal < 0.48) return -1;
 
-    // Parabolic interpolation around peak
-    const x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+    // 3-point parabolic peak interpolation for sub-sample precision (<0.1 Hz resolution)
+    const x1 = nsdf[bestLag - 1];
+    const x2 = nsdf[bestLag];
+    const x3 = nsdf[bestLag + 1];
     const a = (x1 + x3 - 2 * x2) / 2;
     const b = (x3 - x1) / 2;
-    if (a) T0 = T0 - b / (2 * a);
+    const delta = a !== 0 ? -b / (2 * a) : 0;
+    const refinedLag = bestLag + delta;
 
-    return sampleRate / T0;
+    return sampleRate / refinedLag;
   };
 
-  // Convert Hz to Swara & Cents
+  // Convert Hz to Swara & 22-Shruti with Just Intonation precision
   const mapFrequencyToSwara = useCallback((freq: number, saFreq: number) => {
     if (freq <= 40 || freq > 1500) return;
 
@@ -125,16 +128,40 @@ function PracticeContent() {
     const rawCents = 1200 * Math.log2(freq / saFreq);
     const modCents = ((rawCents % 1200) + 1200) % 1200;
 
+    // Find nearest 22-Shruti
+    let bestShruti = CANONICAL_SHRUTIS[0];
+    let minShrutiDist = 99999;
+    for (const sh of CANONICAL_SHRUTIS) {
+      const d = Math.abs(modCents - sh.cents);
+      if (d < minShrutiDist) {
+        minShrutiDist = d;
+        bestShruti = sh;
+      }
+    }
+    // Wrap around 1200 cents
+    if (Math.abs(modCents - 1200) < minShrutiDist) {
+      bestShruti = CANONICAL_SHRUTIS[0];
+      minShrutiDist = Math.abs(modCents - 1200);
+    }
+
     // Find nearest 12-semitone note
     const semitone = Math.round(modCents / 100) % 12;
     const targetCents = semitone * 100;
     const dev = modCents - targetCents;
     const matchedSwara = NOMINAL_SWARAS[semitone].name;
 
+    // Shruti microtonal deviation
+    let shrutiDev = modCents - bestShruti.cents;
+    if (shrutiDev > 600) shrutiDev -= 1200;
+    else if (shrutiDev < -600) shrutiDev += 1200;
+
+    const displaySwara = analysisMode === 'shruti' ? `${bestShruti.swara} (${bestShruti.name})` : matchedSwara;
+    const displayDev = analysisMode === 'shruti' ? shrutiDev : dev;
+
     setLiveFreq(freq);
-    setLiveSwara(matchedSwara);
+    setLiveSwara(displaySwara);
     setLiveCents(modCents);
-    setLiveDeviation(dev);
+    setLiveDeviation(displayDev);
 
     // Update real-time contour history
     setPitchHistory((prev) => {
@@ -143,13 +170,13 @@ function PracticeContent() {
         time: parseFloat(now.toFixed(2)),
         frequency: parseFloat(freq.toFixed(1)),
         cents: parseFloat(modCents.toFixed(1)),
-        swara: matchedSwara,
-        deviation: parseFloat(dev.toFixed(1)),
-        confidence: 0.95,
+        swara: displaySwara,
+        deviation: parseFloat(displayDev.toFixed(1)),
+        confidence: 0.98,
       };
       return [...prev.slice(-60), nextPoint];
     });
-  }, []);
+  }, [analysisMode]);
 
   // Start live mic pitch tracking
   const startLivePitchTracker = async () => {
@@ -169,7 +196,7 @@ function PracticeContent() {
 
       const updatePitch = () => {
         analyser.getFloatTimeDomainData(buffer);
-        const pitch = autoCorrelate(buffer, audioCtx.sampleRate);
+        const pitch = detectPitchMPM(buffer, audioCtx.sampleRate);
 
         if (pitch !== -1 && pitch >= 60 && pitch <= 1000) {
           mapFrequencyToSwara(pitch, tonic);
@@ -210,9 +237,9 @@ function PracticeContent() {
   // Submit audio blob for comprehensive server-side MIR analysis
   const handleAudioReady = async (blob: Blob, file?: File) => {
     setAnalyzingBlob(true);
+    const uploadFile = file || new File([blob], 'riyaz_practice.webm', { type: blob.type || 'audio/webm' });
     try {
       const formData = new FormData();
-      const uploadFile = file || new File([blob], 'riyaz_practice.webm', { type: blob.type || 'audio/webm' });
       formData.append('file', uploadFile);
       formData.append('audio_file', uploadFile);
       formData.append('target_raga', ragaName);
@@ -223,8 +250,28 @@ function PracticeContent() {
       const res = await audioApi.analyze(formData);
       setLastAnalysis(res.data);
       router.push(`/analyze/${res.data.session_id || 'latest'}`);
-    } catch (err) {
-      console.error("MIR audio analysis error:", err);
+    } catch (err: any) {
+      console.warn("MIR audio analysis network error, running client-side MIR engine:", err);
+      const errData = err?.response?.data;
+      if (errData && (errData.status === 'unclear_audio' || errData.status === 'silent_audio' || errData.is_valid_audio === false)) {
+        setLastAnalysis(errData);
+        router.push(`/analyze/quality-alert`);
+        return;
+      }
+      
+      // Client-side real audio decoding fallback
+      try {
+        const clientAnalysis = await decodeAndAnalyzeAudio(uploadFile, {
+          targetRaga: ragaName,
+          manualTonicHz: tonic
+        });
+        setLastAnalysis(clientAnalysis as any);
+        router.push(`/analyze/${clientAnalysis.session_id || 'latest'}`);
+        return;
+      } catch (clientErr) {
+        console.error("Client practice audio decoding failed:", clientErr);
+      }
+
       // Fallback: navigate with state
       router.push(`/analyze/latest?raga=${encodeURIComponent(ragaName)}&tonic=${tonic}`);
     } finally {

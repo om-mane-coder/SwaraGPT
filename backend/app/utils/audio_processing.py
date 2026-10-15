@@ -103,8 +103,17 @@ def preprocess_audio(file_path: str, target_sr: int = 22050) -> Tuple[np.ndarray
     except Exception:
         y_filtered = y
 
-    # Normalize to -1.0 dBFS (~0.89 max amplitude)
-    max_val = np.max(np.abs(y_filtered))
+    # Check raw signal energy before amplifying
+    raw_peak = float(np.max(np.abs(y_filtered)))
+    raw_rms = float(np.sqrt(np.mean(y_filtered ** 2)))
+
+    # If raw signal is silent or background room noise, DO NOT boost it by 500x!
+    if raw_peak < 0.015 or raw_rms < 0.003:
+        duration = float(len(y_filtered) / sr)
+        return y_filtered.astype(np.float32), sr, duration
+
+    # Normalize genuine singing audio to -1.0 dBFS (~0.89 max amplitude)
+    max_val = raw_peak
     if max_val > 1e-4:
         y_normalized = (y_filtered / max_val) * 0.891
     else:
@@ -122,3 +131,104 @@ def preprocess_audio(file_path: str, target_sr: int = 22050) -> Tuple[np.ndarray
 
     duration = float(len(final_y) / sr)
     return final_y.astype(np.float32), sr, duration
+
+
+def validate_audio_quality(y: np.ndarray, sr: int = 22050) -> dict:
+    """
+    Evaluates raw audio signal quality before MIR analysis:
+    - Checks for silence, extremely low volume, clipping, spectral flatness (unvoiced noise vs singing),
+      and lack of voiced harmonic content.
+    - Returns structured diagnostics explaining whether audio is clear for practice.
+    """
+    import librosa
+
+    if y is None or len(y) == 0:
+        return {
+            "is_valid": False,
+            "status": "silent_audio",
+            "message": "⚠️ No audio data received. Your recording is empty.",
+            "instructions": "Please ensure your microphone is enabled and unmute your input before recording.",
+            "metrics": {"rms": 0.0, "peak": 0.0, "duration_sec": 0.0}
+        }
+
+    duration = float(len(y) / sr)
+    if duration < 0.35:
+        return {
+            "is_valid": False,
+            "status": "too_short",
+            "message": "⚠️ Audio recording is too short for analysis.",
+            "instructions": "Please sing and sustain a vocal phrase for at least 1-2 seconds (e.g. Sa... Re... Ga...).",
+            "metrics": {"duration_sec": round(duration, 2)}
+        }
+
+    peak = float(np.max(np.abs(y)))
+    rms = float(np.sqrt(np.mean(y ** 2)))
+
+    # Silence / near-silence threshold
+    if peak < 0.015 or rms < 0.004:
+        return {
+            "is_valid": False,
+            "status": "silent_audio",
+            "message": "⚠️ Recording is silent or too faint to detect singing.",
+            "instructions": "Your microphone volume is very low or silent. Please check your mic settings, unmute, sing louder, and stay within 15–30 cm of the mic.",
+            "metrics": {
+                "rms": round(rms, 5),
+                "peak": round(peak, 4),
+                "duration_sec": round(duration, 2)
+            }
+        }
+
+    # Spectral flatness check: genuine singing has prominent harmonic peaks (flatness < 0.35),
+    # while white noise, static hiss, or mic friction has flatness > 0.40.
+    try:
+        flatness = float(np.mean(librosa.feature.spectral_flatness(y=y)))
+        if flatness > 0.38:
+            return {
+                "is_valid": False,
+                "status": "unclear_audio",
+                "message": "⚠️ Unvoiced noise or background static detected instead of singing voice.",
+                "instructions": "Please sing audible sustained vowels (e.g. Aaa, Ooo) or swaras (Sa, Re, Ga) clearly into the microphone.",
+                "metrics": {
+                    "rms": round(rms, 5),
+                    "peak": round(peak, 4),
+                    "spectral_flatness": round(flatness, 3),
+                    "duration_sec": round(duration, 2)
+                }
+            }
+    except Exception:
+        pass
+
+    # Voice energy check using short-time RMS
+    try:
+        frame_rms = librosa.feature.rms(y=y, frame_length=2048, hop_length=512)[0]
+        voiced_energy_ratio = float(np.mean(frame_rms > 0.02))
+    except Exception:
+        voiced_energy_ratio = 1.0
+
+    if voiced_energy_ratio < 0.08:
+        return {
+            "is_valid": False,
+            "status": "unclear_audio",
+            "message": "⚠️ Audio has very low vocal energy or is masked by room silence.",
+            "instructions": "Please sing clearly and sustain your notes with steady vocal volume.",
+            "metrics": {
+                "rms": round(rms, 5),
+                "peak": round(peak, 4),
+                "voiced_energy_ratio": round(voiced_energy_ratio, 3),
+                "duration_sec": round(duration, 2)
+            }
+        }
+
+    return {
+        "is_valid": True,
+        "status": "clear_audio",
+        "message": "Audio signal is clear and ready for MIR intonation analysis.",
+        "instructions": "Vocal input verified.",
+        "metrics": {
+            "rms": round(rms, 4),
+            "peak": round(peak, 4),
+            "voiced_energy_ratio": round(voiced_energy_ratio, 3),
+            "duration_sec": round(duration, 2)
+        }
+    }
+

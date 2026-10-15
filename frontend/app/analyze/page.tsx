@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { audioApi } from '@/lib/api';
 import { useSwaraStore } from '@/lib/store';
+import { decodeAndAnalyzeAudio } from '@/lib/mir/audioDecoder';
 
 const PIPELINE_STAGES = [
   { step: 1, name: 'Audio Preprocessing', desc: 'Resampling to 22.05 kHz, 80 Hz HPF, normalization & VAD trimming' },
@@ -41,11 +42,10 @@ export default function AnalyzePage() {
   const handleAudioReady = async (blob: Blob, file?: File) => {
     setIsProcessing(true);
     setAnalysisError(null);
-    setCurrentStage(1);
+    const uploadFile = file || new File([blob], 'vocal_recording.webm', { type: blob.type || 'audio/webm' });
 
     try {
       const formData = new FormData();
-      const uploadFile = file || new File([blob], 'vocal_recording.webm', { type: blob.type || 'audio/webm' });
       formData.append('file', uploadFile);
       formData.append('audio_file', uploadFile);
       formData.append('target_raga', targetRaga);
@@ -63,8 +63,28 @@ export default function AnalyzePage() {
       const sessionId = response.data.session_id || 'latest';
       router.push(`/analyze/${sessionId}`);
     } catch (err: unknown) {
-      console.error("Audio analysis failed:", err);
-      // If server error or offline demo, generate rich fallback and proceed
+      console.warn("Audio analysis API response error, running client-side MIR engine:", err);
+      const errData = (err as any)?.response?.data;
+      if (errData && (errData.status === 'unclear_audio' || errData.status === 'silent_audio' || errData.is_valid_audio === false)) {
+        setLastAnalysis(errData);
+        router.push(`/analyze/quality-alert`);
+        return;
+      }
+      
+      // Attempt client-side MIR audio decoding of the actual recording
+      try {
+        const clientResult = await decodeAndAnalyzeAudio(uploadFile, {
+          targetRaga,
+          manualTonicHz: tonicHz
+        });
+        setLastAnalysis(clientResult as any);
+        await runPipelineAnimation();
+        router.push(`/analyze/${clientResult.session_id || 'latest'}`);
+        return;
+      } catch (clientErr) {
+        console.error("Client MIR decoding error:", clientErr);
+      }
+
       await runPipelineAnimation();
       router.push(`/analyze/latest?raga=${encodeURIComponent(targetRaga)}&tonic=${tonicHz}`);
     } finally {

@@ -13,7 +13,8 @@ from app.ai.shrutis import find_nearest_shruti
 def extract_pitch_contour(
     y: np.ndarray,
     sr: int = 22050,
-    user_sa_hz: Optional[float] = None
+    user_sa_hz: Optional[float] = None,
+    allow_mock: bool = False
 ) -> Dict[str, Any]:
     """
     Extract continuous pitch contour f0(t) using adaptive YIN/pYIN algorithm:
@@ -25,9 +26,19 @@ def extract_pitch_contour(
     """
     import librosa
 
-    if len(y) < sr * 0.3:
-        return _mock_pitch_data(user_sa_hz)
+    if len(y) < sr * 0.35:
+        if allow_mock:
+            return _mock_pitch_data(user_sa_hz)
+        return {
+            "is_valid": False,
+            "status": "too_short",
+            "message": "⚠️ Audio recording is too short (less than 0.4s). Please sing and hold notes for at least 1-2 seconds.",
+            "instructions": "Sing a sustained note or phrase into the microphone.",
+            "voiced_frame_count": 0,
+            "total_frame_count": 0
+        }
 
+    # Adaptive hop length for performance: keep frame processing fast & responsive
     # Adaptive hop length for performance: keep frame processing fast & responsive
     audio_dur = len(y) / sr
     if audio_dur > 20.0:
@@ -35,32 +46,69 @@ def extract_pitch_contour(
     else:
         hop_len = 512
 
-    # Fundamental frequency estimation via YIN / pYIN
+    # Fundamental frequency estimation via pYIN (probabilistic HMM) / YIN
     f0 = None
     confidences = None
 
     try:
-        # Fast & robust YIN extraction
-        f0 = librosa.yin(
-            y,
-            fmin=librosa.note_to_hz('C2'),  # ~65 Hz
-            fmax=librosa.note_to_hz('C6'),  # ~1047 Hz
-            sr=sr,
-            frame_length=2048,
-            hop_length=hop_len,
-            trough_threshold=0.15,
-        )
-        f0 = np.nan_to_num(f0, nan=0.0)
-
-        # Estimate confidence using RMS energy & pitch bounds
+        # Precompute normalized RMS energy for silence/noise gating
         rms = librosa.feature.rms(y=y, frame_length=2048, hop_length=hop_len)[0]
         rms_norm = rms / (np.max(rms) + 1e-6)
-        confidences = np.where((f0 > 55.0) & (f0 < 1100.0) & (rms_norm > 0.08), 0.95, 0.0)
-    except Exception:
-        pass
+
+        # 1. First attempt: Probabilistic YIN (pYIN) with Viterbi decoding
+        # pYIN suppresses octave jumping by evaluating pitch trajectory probabilities
+        if audio_dur <= 25.0:
+            try:
+                pyin_f0, voiced_flags, voiced_probs = librosa.pyin(
+                    y,
+                    fmin=librosa.note_to_hz('C2'),  # ~65 Hz
+                    fmax=librosa.note_to_hz('C6'),  # ~1047 Hz
+                    sr=sr,
+                    frame_length=2048,
+                    hop_length=hop_len,
+                    fill_na=0.0
+                )
+                if pyin_f0 is not None and np.sum(voiced_flags) > 5:
+                    f0 = np.nan_to_num(pyin_f0, nan=0.0)
+                    confidences = np.nan_to_num(voiced_probs, nan=0.0)
+            except Exception as pe:
+                print(f"[pYIN] Note: {pe}, using optimized YIN algorithm.")
+
+        # 2. Fast & robust YIN extraction fallback / validation
+        if f0 is None or np.sum(f0 > 55.0) < 5:
+            yin_f0 = librosa.yin(
+                y,
+                fmin=librosa.note_to_hz('C2'),
+                fmax=librosa.note_to_hz('C6'),
+                sr=sr,
+                frame_length=2048,
+                hop_length=hop_len,
+                trough_threshold=0.15,
+            )
+            f0 = np.nan_to_num(yin_f0, nan=0.0)
+            confidences = np.where((f0 > 55.0) & (f0 < 1100.0) & (rms_norm > 0.06), 0.95, 0.0)
+
+        # 3. Apply 3-point median filter on voiced contours to remove spurious single-frame octave spikes
+        if f0 is not None and len(f0) > 3:
+            import scipy.signal
+            f0_smooth = scipy.signal.medfilt(f0, kernel_size=3)
+            # Retain non-zero pitch continuity
+            f0 = np.where((f0 > 55.0) & (f0_smooth > 50.0), f0_smooth, f0)
+
+    except Exception as e:
+        print(f"[PitchExtractor] Signal error: {e}")
 
     if f0 is None or len(f0) == 0:
-        return _mock_pitch_data(user_sa_hz)
+        if allow_mock:
+            return _mock_pitch_data(user_sa_hz)
+        return {
+            "is_valid": False,
+            "status": "unclear_audio",
+            "message": "⚠️ No vocal pitch detected in the audio signal. The recording is silent or muffled.",
+            "instructions": "Please ensure your microphone is enabled, sing louder and clearer within 15–30 cm of the mic.",
+            "voiced_frame_count": 0,
+            "total_frame_count": 0
+        }
 
     timestamps = librosa.times_like(f0, sr=sr, hop_length=hop_len)
 
@@ -69,7 +117,16 @@ def extract_pitch_contour(
     voiced_f0 = f0[voiced_mask]
 
     if len(voiced_f0) < 5:
-        return _mock_pitch_data(user_sa_hz)
+        if allow_mock:
+            return _mock_pitch_data(user_sa_hz)
+        return {
+            "is_valid": False,
+            "status": "unclear_audio",
+            "message": "⚠️ No clear singing voice detected. The recording lacked sustained vocal pitch.",
+            "instructions": "Please sing clearly and sustain your notes (e.g. Sa... Re... Ga...) so our microtone sensor can measure your sur.",
+            "voiced_frame_count": int(len(voiced_f0)),
+            "total_frame_count": int(len(f0))
+        }
 
     # Tonic Estimation
     tonic_data = estimate_tonic_from_f0(voiced_f0, user_specified_hz=user_sa_hz)
@@ -81,8 +138,8 @@ def extract_pitch_contour(
     # Real stability calculation from frequency variations of sustained segments
     stability = float(max(20.0, min(99.0, 100.0 - (std_pitch / max(1.0, mean_pitch) * 115.0))))
 
-    # Downsample points for snappy frontend transfer (max 300 points)
-    step = max(1, len(f0) // 250)
+    # Retain dense pitch points for high-precision note segmentation and MIR analysis (up to 3500 points)
+    step = max(1, len(f0) // 3500)
     pitch_points: List[Dict[str, Any]] = []
     shruti_deviations: List[float] = []
 
@@ -102,6 +159,7 @@ def extract_pitch_contour(
                 "pitch": round(freq, 1),
                 "confidence": round(conf, 2),
                 "swara": str(s_info["swara"]),
+                "canonical_swara": str(s_info.get("canonical_swara", s_info["swara"])),
                 "shruti": str(s_info["shruti_name"]),
                 "delta_cents": round(float(s_info["delta_cents"]), 1),
                 "is_in_tune": bool(s_info["is_in_tune"])
@@ -112,6 +170,7 @@ def extract_pitch_contour(
                 "pitch": 0.0,
                 "confidence": 0.0,
                 "swara": "-",
+                "canonical_swara": "-",
                 "shruti": "-",
                 "delta_cents": 0.0,
                 "is_in_tune": False
@@ -120,13 +179,20 @@ def extract_pitch_contour(
     mean_dev = float(np.mean(shruti_deviations)) if shruti_deviations else 8.5
     shruti_precision = float(max(15.0, min(99.0, 100.0 - (mean_dev * 1.6))))
 
+    # Downsampled display contour (~250 points) for lightweight canvas rendering
+    display_step = max(1, len(pitch_points) // 250)
+    display_contour = pitch_points[::display_step]
+
     return {
+        "is_valid": True,
+        "status": "clear_audio",
         "tonic": tonic_data,
         "mean_pitch_hz": round(mean_pitch, 1),
         "pitch_stability": round(stability, 1),
         "shruti_precision": round(shruti_precision, 1),
         "mean_shruti_deviation_cents": round(mean_dev, 1),
         "pitch_contour": pitch_points,
+        "display_pitch_contour": display_contour,
         "voiced_frame_count": int(len(voiced_f0)),
         "total_frame_count": int(len(f0)),
     }

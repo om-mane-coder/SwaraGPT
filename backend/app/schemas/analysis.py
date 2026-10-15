@@ -18,23 +18,36 @@ class ScoreBreakdown(BaseModel):
 
 class FullAnalysisResponse(BaseModel):
     session_id: str
-    duration_seconds: float
-    tonic: TonicEstimate
-    score: ScoreBreakdown
-    detected_raga: str
-    raga_confidence: float
-    raga_candidates: List[RagaCandidate]
-    pitch_stability: float
-    shruti_precision: float
-    mean_shruti_deviation_cents: float
-    strong_swaras: List[str]
-    weak_swaras: List[str]
-    pitch_contour: List[PitchPoint]
-    swara_timeline: List[SwaraEvent]
-    ornament_segments: List[OrnamentSegment]
-    feedback_text: str
-    recommendations: List[str]
+    duration_seconds: float = 0.0
+    tonic: Optional[TonicEstimate] = None
+    score: Optional[ScoreBreakdown] = None
+    detected_raga: Optional[str] = "Yaman"
+    raga_confidence: Optional[float] = 0.85
+    raga_candidates: Optional[List[RagaCandidate]] = None
+    pitch_stability: Optional[float] = 0.0
+    shruti_precision: Optional[float] = 0.0
+    mean_shruti_deviation_cents: Optional[float] = 0.0
+    strong_swaras: Optional[List[str]] = None
+    weak_swaras: Optional[List[str]] = None
+    pitch_contour: Optional[List[PitchPoint]] = None
+    swara_timeline: Optional[List[SwaraEvent]] = None
+    ornament_segments: Optional[List[OrnamentSegment]] = None
+    feedback_text: Optional[str] = ""
+    recommendations: Optional[List[str]] = None
     is_demo: bool = False
+
+    # Audio Validation & Diagnostics
+    status: str = "success"  # "success", "unclear_audio", "silent_audio", "too_short"
+    is_valid_audio: bool = True
+    error_code: Optional[str] = None
+    detail: Optional[str] = None
+    message: Optional[str] = None
+    instructions: Optional[str] = None
+    audio_quality: Optional[Dict[str, Any]] = None
+
+    # Original Master Comparison & Song Recognition
+    identified_song: Optional[Dict[str, Any]] = None
+    master_comparison: Optional[Dict[str, Any]] = None
 
     # Frontend Compatibility & Direct Mapping Aliases
     overall_score: Optional[float] = None

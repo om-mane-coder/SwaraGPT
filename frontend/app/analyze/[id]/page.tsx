@@ -124,11 +124,26 @@ function PerformanceReportContent() {
   const [ragaCandidates, setRagaCandidates] = useState<any[]>([]);
   const [pitchPoints, setPitchPoints] = useState<any[]>([]);
   const [detectedOrnaments, setDetectedOrnaments] = useState<any[]>([]);
+  const [audioQualityError, setAudioQualityError] = useState<any>(null);
+  const [masterComparison, setMasterComparison] = useState<any>(null);
 
   useEffect(() => {
     // 1. If store has lastAnalysis from recent session, use it
     if (lastAnalysis) {
       const l = lastAnalysis as any;
+      if (l.is_valid_audio === false || l.status === 'silent_audio' || l.status === 'unclear_audio') {
+        setAudioQualityError({
+          title: l.message || "⚠️ No Clear Vocal Audio Detected",
+          detail: l.detail || "Your recording was either silent, too quiet, or lacked clear singing pitch.",
+          instructions: l.instructions || "Please sing clearly and sustain your notes within 15–30 cm of the microphone.",
+          metrics: l.audio_quality || null
+        });
+      } else {
+        setAudioQualityError(null);
+      }
+      if (l.master_comparison) {
+        setMasterComparison(l.master_comparison);
+      }
       const rName = l.detected_raga || l.target_raga || "Yaman";
       const saVal = Number(l.sa_estimate ?? l.tonic?.estimated_sa_hz ?? 138.59);
       const ovScore = Number(l.overall_score ?? (typeof l.score === 'object' ? l.score?.overall_score : l.score) ?? 86.5);
@@ -281,6 +296,48 @@ function PerformanceReportContent() {
           </div>
         </div>
 
+        {/* Audio Quality Error Banner */}
+        {audioQualityError && (
+          <div className="p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/60 backdrop-blur-md shadow-md mb-8 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span>{audioQualityError.title}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-900 border border-amber-500/30 uppercase font-mono font-semibold">
+                      Quality Gate
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-700 mt-1 leading-relaxed">{audioQualityError.detail}</p>
+                </div>
+              </div>
+              <Link
+                href="/dashboard?tab=analyzer"
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs hover:brightness-105 shadow-sm transition"
+              >
+                Record Again
+              </Link>
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/90 border border-amber-200 text-xs text-slate-600 space-y-1 shadow-2xs">
+              <strong className="text-amber-950 block">Guidance for 100% Precision:</strong>
+              <p>{audioQualityError.instructions}</p>
+              {audioQualityError.metrics && (
+                <div className="pt-1 flex flex-wrap gap-2 text-[10px] font-mono text-slate-500">
+                  <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
+                    Peak: {audioQualityError.metrics.peak_db !== undefined ? `${audioQualityError.metrics.peak_db} dB` : 'Silent'}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
+                    Voiced Ratio: {audioQualityError.metrics.voiced_frame_ratio !== undefined ? `${Math.round(audioQualityError.metrics.voiced_frame_ratio * 100)}%` : '0%'}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Top Summary Banner */}
         <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl border border-amber-200/80 shadow-xs mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80">
@@ -300,6 +357,67 @@ function PerformanceReportContent() {
             <div className="text-base font-bold text-emerald-700 font-mono">{Math.round(confidence * 100)}%</div>
           </div>
         </div>
+
+        {/* Master Comparison Card */}
+        {masterComparison && (
+          <div className="bg-gradient-to-br from-amber-500/5 via-white to-amber-500/10 p-6 rounded-3xl border-2 border-amber-300 shadow-md mb-8 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-amber-200">
+              <div>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold uppercase tracking-wider">
+                  Canonical Master Benchmark
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-1.5">
+                  {masterComparison.master_song?.title} — {masterComparison.master_song?.singer}
+                </h3>
+                <p className="text-xs text-slate-600">
+                  Raga {masterComparison.master_song?.raga} • {masterComparison.master_song?.composer} • {masterComparison.master_song?.canonical_bpm} BPM ({masterComparison.master_song?.tala})
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs text-slate-500 block">Master Fidelity Match</span>
+                <span className="text-3xl font-black text-amber-700 font-mono">
+                  {masterComparison.fidelity_scores?.overall_match}%
+                </span>
+              </div>
+            </div>
+
+            {/* Matrix table */}
+            <div className="overflow-x-auto bg-white/90 rounded-2xl border border-amber-200">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-amber-50/70 text-slate-700 font-semibold border-b border-amber-200">
+                    <th className="py-2.5 px-4">Feature</th>
+                    <th className="py-2.5 px-4">Your Sung Riyaz</th>
+                    <th className="py-2.5 px-4">Canonical Master Benchmark</th>
+                    <th className="py-2.5 px-4">Fidelity %</th>
+                    <th className="py-2.5 px-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-amber-100">
+                  {(masterComparison.comparative_matrix || []).map((row: any, i: number) => (
+                    <tr key={i} className="hover:bg-amber-50/30">
+                      <td className="py-2.5 px-4 font-medium text-slate-900">{row.feature}</td>
+                      <td className="py-2.5 px-4 font-mono font-semibold text-amber-900">{row.user_val}</td>
+                      <td className="py-2.5 px-4 text-slate-600">{row.master_val}</td>
+                      <td className="py-2.5 px-4 font-bold text-emerald-700">{row.fidelity}</td>
+                      <td className="py-2.5 px-4">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                          {row.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {masterComparison.master_critique && (
+              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-sans whitespace-pre-line">
+                {masterComparison.master_critique}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Score & Pitch Contour Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

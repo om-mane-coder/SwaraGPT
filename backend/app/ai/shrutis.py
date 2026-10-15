@@ -273,28 +273,116 @@ SHRUTIS: List[Dict[str, Any]] = [
     }
 ]
 
+# Mapping from 1-based Shruti index (1..22) to Canonical 12-Swara Notation
+# {"Sa", "re", "Re", "ga", "Ga", "Ma", "Ma'", "Pa", "dha", "Dha", "ni", "Ni"}
+CANONICAL_SWARA_BY_SHRUTI: Dict[int, str] = {
+    1: "Sa", 2: "Sa",
+    3: "re", 4: "re",
+    5: "Re", 6: "Re",
+    7: "ga", 8: "ga",
+    9: "Ga", 10: "Ga",
+    11: "Ma", 12: "Ma",
+    13: "Ma'", 14: "Ma'",
+    15: "Pa", 16: "Pa",
+    17: "dha", 18: "dha",
+    19: "Dha", 20: "Dha",
+    21: "ni", 22: "Ni"
+}
 
-def find_nearest_shruti(cents_from_sa: float, target_swara: Optional[str] = None) -> Dict[str, Any]:
+# Raga-specific canonical microtonal Shruti index preferences
+RAGA_SHRUTI_PREFERENCES: Dict[str, Dict[str, int]] = {
+    "Yaman": {"Sa": 1, "Re": 6, "Ga": 9, "Ma'": 13, "Pa": 15, "Dha": 19, "Ni": 22},
+    "Bhairav": {"Sa": 1, "re": 3, "Ga": 9, "Ma": 11, "Pa": 15, "dha": 18, "Ni": 22},
+    "Bhairavi": {"Sa": 1, "re": 4, "ga": 8, "Ma": 11, "Pa": 15, "dha": 18, "ni": 21},
+    "Bhupali": {"Sa": 1, "Re": 6, "Ga": 9, "Pa": 15, "Dha": 19},
+    "Bageshri": {"Sa": 1, "Re": 6, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21},
+    "Darbari Kanada": {"Sa": 1, "Re": 6, "ga": 7, "Ma": 11, "Pa": 15, "dha": 17, "ni": 21},
+    "Malkauns": {"Sa": 1, "ga": 8, "Ma": 11, "dha": 18, "ni": 21},
+    "Kafi": {"Sa": 1, "Re": 5, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21},
+    "Todi": {"Sa": 1, "re": 4, "ga": 7, "Ma'": 14, "Pa": 15, "dha": 18, "Ni": 22},
+    "Marwa": {"Sa": 1, "re": 3, "Ga": 9, "Ma'": 13, "Dha": 20, "Ni": 22},
+    "Desh": {"Sa": 1, "Re": 6, "Ga": 9, "Ma": 11, "Pa": 15, "Dha": 19, "Ni": 22, "ni": 21},
+    "Hamsadhwani": {"Sa": 1, "Re": 6, "Ga": 9, "Pa": 15, "Ni": 22},
+    "Bhimpalasi": {"Sa": 1, "Re": 6, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21},
+    "Bihag": {"Sa": 1, "Re": 6, "Ga": 9, "Ma": 11, "Ma'": 13, "Pa": 15, "Ni": 22},
+    "Ahir Bhairav": {"Sa": 1, "re": 3, "Ga": 9, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21},
+}
+
+
+def normalize_to_canonical_swara(swara_str: str) -> str:
+    """
+    Normalizes any microtonal or variant swara symbol to the standard 12-swara alphabet:
+    {"Sa", "re", "Re", "ga", "Ga", "Ma", "Ma'", "Pa", "dha", "Dha", "ni", "Ni"}.
+    """
+    if not swara_str:
+        return "Sa"
+    s = swara_str.strip()
+    # Strip octave indicators like (Madhya), (Taar), etc.
+    if "(" in s:
+        s = s.split("(")[0].strip()
+    # Canonical replacements
+    s_clean = s.rstrip("+-*~")
+    mapping = {
+        "sa": "Sa", "Sa": "Sa", "S": "Sa", "sa'": "Sa", "Sa'": "Sa",
+        "re": "re", "r": "re", "komal re": "re", "ati-komal re": "re",
+        "Re": "Re", "R": "Re", "shuddha re": "Re",
+        "ga": "ga", "g": "ga", "komal ga": "ga", "ati-komal ga": "ga",
+        "Ga": "Ga", "G": "Ga", "shuddha ga": "Ga",
+        "Ma": "Ma", "ma": "Ma", "M": "Ma", "m": "Ma", "shuddha ma": "Ma",
+        "ma'": "Ma'", "Ma'": "Ma'", "M'": "Ma'", "tivra ma": "Ma'", "prati ma": "Ma'",
+        "pa": "Pa", "Pa": "Pa", "P": "Pa",
+        "dha": "dha", "d": "dha", "komal dha": "dha", "ati-komal dha": "dha",
+        "Dha": "Dha", "D": "Dha", "shuddha dha": "Dha",
+        "ni": "ni", "n": "ni", "komal ni": "ni",
+        "Ni": "Ni", "N": "Ni", "shuddha ni": "Ni",
+    }
+    return mapping.get(s, mapping.get(s_clean, "Sa"))
+
+
+def find_nearest_shruti(
+    cents_from_sa: float,
+    target_swara: Optional[str] = None,
+    raga_context: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Find nearest canonical shruti for a cent value (normalized to 0 - 1200 cents).
-    If target_swara is specified, evaluates intonation deviation relative to that swara.
+    Incorporates exact Just Intonation math and optional Raga microtonal context.
     """
-    # Octave wrap
+    # Octave wrap to [0, 1200)
     octave_offset = int(np.floor(cents_from_sa / 1200.0))
     normalized_cents = cents_from_sa - (octave_offset * 1200.0)
 
     # Filter candidate shrutis if target_swara requested
     pool = SHRUTIS
     if target_swara:
-        filtered = [s for s in SHRUTIS if target_swara.lower() == s["swara"].lower()]
-        if filtered:
-            pool = filtered
+        exact = [s for s in SHRUTIS if target_swara.lower() == s["swara"].lower()]
+        if exact:
+            pool = exact
+        else:
+            canonical_target = normalize_to_canonical_swara(target_swara)
+            filtered = [
+                s for s in SHRUTIS
+                if CANONICAL_SWARA_BY_SHRUTI.get(s["index"]) == canonical_target
+            ]
+            if filtered:
+                pool = filtered
+
+    # If raga_context is provided, check if the raga specifies a preferred shruti
+    preferred_index = None
+    if raga_context and raga_context in RAGA_SHRUTI_PREFERENCES:
+        c_swara = normalize_to_canonical_swara(target_swara) if target_swara else None
+        if c_swara and c_swara in RAGA_SHRUTI_PREFERENCES[raga_context]:
+            preferred_index = RAGA_SHRUTI_PREFERENCES[raga_context][c_swara]
 
     best_shruti = pool[0]
     min_dist = 999999.0
 
     for s in pool:
         dist = abs(normalized_cents - s["cents"])
+        # Slight bias towards raga-specific preferred shruti if within 18 cents
+        if preferred_index and s["index"] == preferred_index and dist < 25.0:
+            dist -= 8.0
+
         if dist < min_dist:
             min_dist = dist
             best_shruti = s
@@ -312,7 +400,7 @@ def find_nearest_shruti(cents_from_sa: float, target_swara: Optional[str] = None
     elif delta < -600:
         delta += 1200
 
-    # Section 16 & 53 Intonation Classification
+    # High-precision intonation classification (Sur / Mild / Besur)
     abs_delta = abs(delta)
     if abs_delta <= 25.0:
         status = "In Tune (Sur)"
@@ -324,15 +412,20 @@ def find_nearest_shruti(cents_from_sa: float, target_swara: Optional[str] = None
         status = "Besur (Significant Deviation)"
         is_in_tune = False
 
+    canonical_name = CANONICAL_SWARA_BY_SHRUTI.get(best_shruti["index"], best_shruti["swara"])
+
     return {
         "shruti_index": best_shruti["index"],
         "shruti_name": best_shruti["name"],
         "sanskrit": best_shruti["sanskrit"],
         "swara": best_shruti["swara"],
+        "canonical_swara": canonical_name,
         "swara_type": best_shruti["swara_type"],
+        "ratio_str": best_shruti["ratio_str"],
+        "exact_ratio": best_shruti["ratio"],
         "ideal_cents": best_shruti["cents"],
-        "actual_cents": round(normalized_cents, 1),
-        "delta_cents": round(delta, 1),
+        "actual_cents": round(normalized_cents, 2),
+        "delta_cents": round(delta, 2),
         "is_in_tune": is_in_tune,
         "intonation_status": status,
         "rasa": best_shruti["rasa"],
@@ -342,3 +435,4 @@ def find_nearest_shruti(cents_from_sa: float, target_swara: Optional[str] = None
 def get_all_shrutis() -> List[Dict[str, Any]]:
     """Return all 22 Shrutis with theoretical ratios and cent values."""
     return SHRUTIS
+
