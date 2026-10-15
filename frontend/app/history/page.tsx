@@ -108,7 +108,7 @@ export default function HistoryPage() {
   const session2 = sessions.find((s) => s.id === selectedForCompare[1]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -116,11 +116,11 @@ export default function HistoryPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-500/10 border border-slate-200 text-slate-600 text-xs font-mono mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-50 border border-pink-200/70 text-pink-800 text-xs font-mono mb-2 font-semibold">
               <Calendar className="w-3.5 h-3.5" />
               <span>Riyaz Archives</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-white font-serif tracking-tight">
+            <h1 className="text-3xl font-extrabold text-slate-900 font-serif tracking-tight">
               Practice Session History
             </h1>
           </div>
@@ -129,7 +129,7 @@ export default function HistoryPage() {
           {selectedForCompare.length === 2 && (
             <button
               onClick={() => setShowCompareModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs shadow-lg shadow-2xs hover:scale-105 transition-all flex items-center gap-2 animate-bounce-slow"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs shadow-2xs hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer"
             >
               <ArrowLeftRight className="w-4 h-4" />
               <span>Compare Selected Sessions</span>
@@ -138,13 +138,13 @@ export default function HistoryPage() {
         </div>
 
         {/* Sessions Table / List */}
-        <div className="glass-card rounded-2xl border border-slate-200 overflow-hidden mb-12">
-          <div className="p-4 bg-[#090D16] border-b border-gray-800 flex items-center justify-between text-xs text-gray-400 font-mono">
+        <div className="bg-white rounded-2xl border border-pink-100/90 shadow-2xs overflow-hidden mb-12">
+          <div className="p-4 bg-pink-50/30 border-b border-pink-100 flex items-center justify-between text-xs text-slate-500 font-mono">
             <span>Select any 2 sessions to compare Before vs After</span>
             <span>{sessions.length} Recorded Sessions</span>
           </div>
 
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-pink-100/60">
             {sessions.map((s) => {
               const isSelected = selectedForCompare.includes(s.id);
 
@@ -152,18 +152,18 @@ export default function HistoryPage() {
                 <div
                   key={s.id}
                   className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                    isSelected ? 'bg-slate-500/5' : 'hover:bg-white/[0.02]'
+                    isSelected ? 'bg-pink-50/60' : 'hover:bg-slate-50/50'
                   }`}
                 >
                   {/* Left: Checkbox + Raga + Date */}
                   <div className="flex items-center gap-3.5">
                     <button
                       onClick={() => toggleSelectForCompare(s.id)}
-                      className="text-gray-400 hover:text-slate-500 transition-colors"
+                      className="text-slate-400 hover:text-pink-700 transition-colors cursor-pointer"
                       title="Select for comparison"
                     >
                       {isSelected ? (
-                        <CheckSquare className="w-5 h-5 text-slate-500" />
+                        <CheckSquare className="w-5 h-5 text-pink-600" />
                       ) : (
                         <Square className="w-5 h-5" />
                       )}
@@ -171,14 +171,14 @@ export default function HistoryPage() {
 
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-base font-bold text-white font-serif">
+                        <span className="text-base font-bold text-slate-900 font-serif">
                           Raga {s.raga}
                         </span>
-                        <span className="text-xs font-mono text-gray-400">
+                        <span className="text-xs font-mono text-slate-500">
                           ({Math.floor(s.duration_seconds / 60)}m {s.duration_seconds % 60}s)
                         </span>
                       </div>
-                      <div className="text-xs text-gray-400 font-mono mt-0.5">
+                      <div className="text-xs text-slate-500 font-mono mt-0.5">
                         {s.date} • Sa: {s.tonic_hz.toFixed(1)} Hz
                       </div>
                     </div>
@@ -187,22 +187,22 @@ export default function HistoryPage() {
                   {/* Middle: Scores */}
                   <div className="flex items-center gap-6">
                     <div className="text-center sm:text-right">
-                      <div className="text-xs text-gray-400 font-mono">Overall</div>
+                      <div className="text-xs text-slate-500 font-mono">Overall</div>
                       <div className={`text-base font-bold font-mono ${
-                        s.overall_score >= 80 ? 'text-emerald-400' : s.overall_score >= 65 ? 'text-slate-500' : 'text-rose-400'
+                        s.overall_score >= 80 ? 'text-emerald-700' : s.overall_score >= 65 ? 'text-pink-800' : 'text-slate-700'
                       }`}>
                         {Math.round(s.overall_score)}%
                       </div>
                     </div>
                     <div className="text-center sm:text-right">
-                      <div className="text-xs text-gray-400 font-mono">Pitch</div>
-                      <div className="text-sm font-semibold text-gray-200 font-mono">
+                      <div className="text-xs text-slate-500 font-mono">Pitch</div>
+                      <div className="text-sm font-semibold text-slate-700 font-mono">
                         {Math.round(s.pitch_accuracy)}%
                       </div>
                     </div>
                     <div className="text-center sm:text-right">
-                      <div className="text-xs text-gray-400 font-mono">Swara</div>
-                      <div className="text-sm font-semibold text-gray-200 font-mono">
+                      <div className="text-xs text-slate-500 font-mono">Swara</div>
+                      <div className="text-sm font-semibold text-slate-700 font-mono">
                         {Math.round(s.swara_accuracy)}%
                       </div>
                     </div>
@@ -212,10 +212,10 @@ export default function HistoryPage() {
                   <div>
                     <Link
                       href={`/analyze/${s.id}`}
-                      className="px-3.5 py-2 rounded-xl bg-[#090D16] border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-500/10 transition-all flex items-center justify-center gap-1.5"
+                      className="px-3.5 py-2 rounded-xl bg-white border border-pink-200/70 text-pink-950 font-semibold text-xs hover:bg-pink-50 transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                     >
                       <span>View Report</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3.5 h-3.5 text-pink-600" />
                     </Link>
                   </div>
                 </div>
@@ -226,18 +226,18 @@ export default function HistoryPage() {
 
         {/* Compare Sessions Modal */}
         {showCompareModal && session1 && session2 && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="glass-card max-w-2xl w-full p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xl relative">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-800">
+          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white max-w-2xl w-full p-6 sm:p-8 rounded-2xl border border-pink-100 shadow-2xl relative">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-pink-100">
                 <div className="flex items-center gap-2">
-                  <ArrowLeftRight className="w-5 h-5 text-slate-500" />
-                  <h3 className="text-lg font-bold text-white font-serif">
+                  <ArrowLeftRight className="w-5 h-5 text-pink-700" />
+                  <h3 className="text-lg font-bold text-slate-900 font-serif">
                     Side-by-Side Session Comparison
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowCompareModal(false)}
-                  className="text-gray-400 hover:text-white text-xs font-mono"
+                  className="text-slate-400 hover:text-slate-700 text-xs font-mono cursor-pointer"
                 >
                   ✕ Close
                 </button>
@@ -246,57 +246,57 @@ export default function HistoryPage() {
               {/* Side-by-Side Cards */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {/* Session 1 */}
-                <div className="p-4 rounded-xl bg-[#090D16] border border-gray-800 space-y-3">
-                  <div className="text-xs font-mono text-gray-400">{session1.date}</div>
-                  <div className="text-base font-bold text-slate-600 font-serif">Raga {session1.raga}</div>
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="text-xs font-mono text-slate-500">{session1.date}</div>
+                  <div className="text-base font-bold text-pink-950 font-serif">Raga {session1.raga}</div>
                   <div className="space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Overall:</span>
-                      <strong className="text-white">{Math.round(session1.overall_score)}%</strong>
+                      <span className="text-slate-500">Overall:</span>
+                      <strong className="text-slate-900">{Math.round(session1.overall_score)}%</strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Pitch Acc:</span>
-                      <strong className="text-white">{Math.round(session1.pitch_accuracy)}%</strong>
+                      <span className="text-slate-500">Pitch Acc:</span>
+                      <strong className="text-slate-900">{Math.round(session1.pitch_accuracy)}%</strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Swara Acc:</span>
-                      <strong className="text-white">{Math.round(session1.swara_accuracy)}%</strong>
+                      <span className="text-slate-500">Swara Acc:</span>
+                      <strong className="text-slate-900">{Math.round(session1.swara_accuracy)}%</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* Session 2 */}
-                <div className="p-4 rounded-xl bg-[#090D16] border border-gray-800 space-y-3">
-                  <div className="text-xs font-mono text-gray-400">{session2.date}</div>
-                  <div className="text-base font-bold text-slate-600 font-serif">Raga {session2.raga}</div>
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="text-xs font-mono text-slate-500">{session2.date}</div>
+                  <div className="text-base font-bold text-pink-950 font-serif">Raga {session2.raga}</div>
                   <div className="space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Overall:</span>
-                      <strong className="text-white">{Math.round(session2.overall_score)}%</strong>
+                      <span className="text-slate-500">Overall:</span>
+                      <strong className="text-slate-900">{Math.round(session2.overall_score)}%</strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Pitch Acc:</span>
-                      <strong className="text-white">{Math.round(session2.pitch_accuracy)}%</strong>
+                      <span className="text-slate-500">Pitch Acc:</span>
+                      <strong className="text-slate-900">{Math.round(session2.pitch_accuracy)}%</strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Swara Acc:</span>
-                      <strong className="text-white">{Math.round(session2.swara_accuracy)}%</strong>
+                      <span className="text-slate-500">Swara Acc:</span>
+                      <strong className="text-slate-900">{Math.round(session2.swara_accuracy)}%</strong>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Differential Delta calculation */}
-              <div className="p-4 rounded-xl bg-slate-500/10 border border-slate-200 text-xs space-y-1.5">
-                <div className="text-slate-600 font-bold">Progression Delta:</div>
-                <div className="text-gray-300 font-mono">
+              <div className="p-4 rounded-xl bg-pink-50/50 border border-pink-100 text-xs space-y-1.5">
+                <div className="text-pink-950 font-bold">Progression Delta:</div>
+                <div className="text-slate-700 font-mono">
                   Overall Score Change: {' '}
-                  <span className={session2.overall_score >= session1.overall_score ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                  <span className={session2.overall_score >= session1.overall_score ? 'text-emerald-700 font-bold' : 'text-pink-800 font-bold'}>
                     {(session2.overall_score - session1.overall_score) >= 0 ? '+' : ''}
                     {(session2.overall_score - session1.overall_score).toFixed(1)}%
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-400 font-sans">
+                <p className="text-[11px] text-slate-600 font-sans">
                   {session2.overall_score >= session1.overall_score
                     ? 'Improvement observed in tonic stability and shruti placement on principal swaras.'
                     : 'Mild pitch drift observed in the second session during rapid melodic transitions.'}

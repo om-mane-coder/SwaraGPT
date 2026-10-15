@@ -27,13 +27,13 @@ interface RagaCardProps {
 
 export default function RagaCard({ raga, className = '' }: RagaCardProps) {
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between shadow-2xs ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 hover:border-pink-200 hover:shadow-md hover:shadow-pink-50/40 transition-all flex flex-col justify-between shadow-2xs ${className}`}>
       {/* Top Header */}
       <div>
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-pink-800 bg-pink-50 px-2 py-0.5 rounded border border-pink-100">
                 {raga.tradition}
               </span>
               {raga.thaat && (
@@ -47,7 +47,7 @@ export default function RagaCard({ raga, className = '' }: RagaCardProps) {
             </h3>
           </div>
 
-          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-700 shrink-0">
             <Music className="w-4 h-4" />
           </div>
         </div>

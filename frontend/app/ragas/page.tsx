@@ -176,14 +176,14 @@ export default function RagasCatalogPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
         
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1.5">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1.5 font-serif">
             Raga Directory
           </h1>
           <p className="text-xs text-slate-500">
@@ -192,7 +192,7 @@ export default function RagasCatalogPage() {
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="bg-white p-3 rounded-2xl border border-slate-200 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 items-center shadow-2xs">
+        <div className="bg-white p-3 rounded-2xl border border-pink-100/90 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 items-center shadow-2xs">
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -200,7 +200,7 @@ export default function RagasCatalogPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by raga or thaat..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400"
+              className="w-full bg-pink-50/20 border border-pink-100/80 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-pink-300"
             />
           </div>
 
@@ -208,7 +208,7 @@ export default function RagasCatalogPage() {
             <select
               value={selectedTradition}
               onChange={(e) => setSelectedTradition(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
+              className="w-full bg-pink-50/20 border border-pink-100/80 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-pink-300 cursor-pointer"
             >
               <option value="All">All Traditions</option>
               <option value="Hindustani">Hindustani</option>
@@ -220,7 +220,7 @@ export default function RagasCatalogPage() {
             <select
               value={selectedThaat}
               onChange={(e) => setSelectedThaat(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-slate-400"
+              className="w-full bg-pink-50/20 border border-pink-100/80 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-pink-300 cursor-pointer"
             >
               <option value="All">All Thaats</option>
               <option value="Kalyan">Kalyan</option>
@@ -242,8 +242,8 @@ export default function RagasCatalogPage() {
         </div>
 
         {filteredRagas.length === 0 && (
-          <div className="text-center py-10 bg-white rounded-2xl border border-slate-200">
-            <Music className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+          <div className="text-center py-10 bg-white rounded-2xl border border-pink-100/90 shadow-2xs">
+            <Music className="w-6 h-6 text-pink-300 mx-auto mb-2" />
             <div className="text-xs font-semibold text-slate-700">No ragas matched your search</div>
           </div>
         )}

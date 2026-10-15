@@ -78,7 +78,7 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8">
@@ -94,7 +94,7 @@ export default function AnalyzePage() {
         </div>
 
         {/* Target Raga & Tonic Selection */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-[11px] font-medium text-slate-600 block mb-1.5">
               Target Raga:
@@ -102,7 +102,7 @@ export default function AnalyzePage() {
             <select
               value={targetRaga}
               onChange={(e) => setTargetRaga(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-400"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-pink-300"
             >
               {['Yaman', 'Bhairav', 'Bhairavi', 'Bhupali', 'Bageshri', 'Darbari Kanada', 'Malkauns', 'Kafi', 'Todi', 'Marwa', 'Desh', 'Hamsadhwani'].map((r) => (
                 <option key={r} value={r}>Raga {r}</option>

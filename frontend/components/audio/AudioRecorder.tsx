@@ -255,20 +255,20 @@ export default function AudioRecorder({
   };
 
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs ${className}`}>
       {/* Header & Tabs */}
       <div className="flex items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-2">
-          <Mic className="w-4 h-4 text-slate-700" />
+          <Mic className="w-4 h-4 text-pink-700" />
           <h3 className="text-xs font-semibold text-slate-800">Audio Input</h3>
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+        <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-lg">
           <button
             onClick={() => setMode('record')}
             className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
               mode === 'record'
-                ? 'bg-white text-slate-900 shadow-2xs'
+                ? 'bg-white text-pink-950 border border-pink-200/50 shadow-2xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -278,7 +278,7 @@ export default function AudioRecorder({
             onClick={() => setMode('upload')}
             className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
               mode === 'upload'
-                ? 'bg-white text-slate-900 shadow-2xs'
+                ? 'bg-white text-pink-950 border border-pink-200/50 shadow-2xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -288,20 +288,20 @@ export default function AudioRecorder({
       </div>
 
       {/* Tanpura Drone Control */}
-      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 mb-4 text-xs">
+      <div className="p-2.5 rounded-xl bg-pink-50/30 border border-pink-100 flex items-center justify-between gap-3 mb-4 text-xs">
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTanpura}
             className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
               isTanpuraActive 
-                ? 'bg-slate-800 text-white' 
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                ? 'bg-slate-900 text-white shadow-2xs' 
+                : 'bg-white border border-pink-200/70 text-pink-900 hover:bg-pink-50'
             }`}
           >
-            <Music className="w-3.5 h-3.5" />
+            <Music className="w-3.5 h-3.5 text-pink-600" />
             <span>{isTanpuraActive ? 'Stop Drone' : 'Drone (Tanpura)'}</span>
           </button>
-          <span className="font-mono text-slate-500 text-[11px]">
+          <span className="font-mono text-pink-900/80 text-[11px]">
             Sa: {tonicFrequency.toFixed(1)} Hz
           </span>
         </div>

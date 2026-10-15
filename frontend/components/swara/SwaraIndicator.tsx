@@ -35,13 +35,13 @@ export default function SwaraIndicator({
   } else if (absDev > 50) {
     status = 'besur';
     statusText = 'Deviation >50¢';
-    statusColor = 'text-rose-600 bg-rose-50 border-rose-200';
+    statusColor = 'text-rose-700 bg-rose-50 border-rose-200';
     badgeIcon = <XCircle className="w-3.5 h-3.5 text-rose-500" />;
   } else if (absDev > 25) {
     status = 'mild';
     statusText = 'Slight Drift';
-    statusColor = 'text-slate-700 bg-slate-100 border-slate-200';
-    badgeIcon = <AlertCircle className="w-3.5 h-3.5 text-slate-500" />;
+    statusColor = 'text-pink-800 bg-pink-50 border-pink-200/70';
+    badgeIcon = <AlertCircle className="w-3.5 h-3.5 text-pink-500" />;
   }
 
   // Cent gauge position: -50 cents to +50 cents mapped to 0% - 100%
@@ -49,7 +49,7 @@ export default function SwaraIndicator({
   const needlePercent = ((clampedDev + 50) / 100) * 100;
 
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs ${className}`}>
       <div className="flex items-center justify-between mb-3">
         <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Current Swara</span>
         <div className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium border flex items-center gap-1.5 ${statusColor}`}>
@@ -107,7 +107,7 @@ export default function SwaraIndicator({
                 status === 'sur' 
                   ? 'bg-emerald-600' 
                   : status === 'mild' 
-                  ? 'bg-slate-600' 
+                  ? 'bg-pink-500' 
                   : 'bg-rose-500'
               }`}
               style={{ left: `${needlePercent}%` }}

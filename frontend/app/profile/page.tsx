@@ -70,61 +70,61 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8 pb-4 border-b border-gray-800">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-black font-extrabold text-2xl shadow-xl shadow-2xs">
+        <div className="flex items-center gap-4 mb-8 pb-4 border-b border-pink-100/80">
+          <div className="w-16 h-16 rounded-2xl bg-pink-100 border border-pink-200/80 flex items-center justify-center text-pink-900 font-extrabold text-2xl shadow-2xs">
             {name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white font-serif">{name}&apos;s Sadhak Profile</h1>
-            <p className="text-xs text-gray-400 font-mono">{email} • Role: {user?.role || 'Classical Student'}</p>
+            <h1 className="text-2xl font-bold text-slate-900 font-serif">{name}&apos;s Profile</h1>
+            <p className="text-xs text-slate-500 font-mono">{email} • {user?.role || 'Classical Student'}</p>
           </div>
         </div>
 
         {saveSuccess && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
+          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
             <span>Profile and musical preferences successfully updated!</span>
           </div>
         )}
 
-        <form onSubmit={handleSave} className="glass-card p-6 sm:p-8 rounded-2xl border border-slate-200 space-y-6">
+        <form onSubmit={handleSave} className="bg-white p-6 sm:p-8 rounded-2xl border border-pink-100/90 shadow-2xs space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             
             {/* Full Name */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Full Name:</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Full Name:</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-pink-300"
               />
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Email Address:</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Email Address:</label>
               <input
                 type="email"
                 value={email}
                 disabled
-                className="w-full bg-[#090D16]/50 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-gray-400 cursor-not-allowed"
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-400 cursor-not-allowed"
               />
             </div>
 
             {/* Classical Tradition */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Primary Tradition:</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Primary Tradition:</label>
               <select
                 value={tradition}
                 onChange={(e) => setTradition(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-pink-300"
               >
                 <option value="Hindustani">Hindustani Tradition</option>
                 <option value="Carnatic">Carnatic Tradition</option>
@@ -134,11 +134,11 @@ export default function ProfilePage() {
 
             {/* Experience Level */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Experience Level:</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Experience Level:</label>
               <select
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-pink-300"
               >
                 <option value="Beginner">Beginner (Prathamik / Basic Swaras)</option>
                 <option value="Intermediate">Intermediate (Madhyama / Ragas & Bandishes)</option>
@@ -148,45 +148,45 @@ export default function ProfilePage() {
 
             {/* Preferred Sa Tonic */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Preferred Tonic Sa (Hz):</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Preferred Tonic Sa (Hz):</label>
               <input
                 type="number"
                 step="0.01"
                 value={tonicHz}
                 onChange={(e) => setTonicHz(parseFloat(e.target.value) || 130.81)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-600 focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-pink-900 focus:outline-none focus:border-pink-300"
               />
             </div>
 
             {/* Target Raga */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Target Raga:</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Target Raga:</label>
               <input
                 type="text"
                 value={targetRaga}
                 onChange={(e) => setTargetRaga(e.target.value)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-pink-300"
               />
             </div>
 
             {/* Daily Goal Minutes */}
             <div>
-              <label className="text-xs font-mono text-gray-400 block mb-2">Daily Practice Goal (Minutes):</label>
+              <label className="text-xs font-semibold text-slate-700 block mb-2">Daily Practice Goal (Minutes):</label>
               <input
                 type="number"
                 value={dailyGoal}
                 onChange={(e) => setDailyGoal(parseInt(e.target.value) || 30)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-pink-300"
               />
             </div>
 
           </div>
 
-          <div className="pt-4 border-t border-gray-800 flex justify-end">
+          <div className="pt-4 border-t border-pink-100 flex justify-end">
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium text-xs hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-2xs"
+              className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-medium text-xs hover:bg-slate-800 transition-all flex items-center gap-2 shadow-2xs cursor-pointer"
             >
               <Save className="w-4 h-4" />
               <span>{saving ? 'Saving...' : 'Save Profile Changes'}</span>

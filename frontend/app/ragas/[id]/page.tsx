@@ -139,7 +139,7 @@ export default function RagaDetailPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
@@ -147,36 +147,36 @@ export default function RagaDetailPage() {
         {/* Back Link */}
         <Link
           href="/ragas"
-          className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-slate-500 transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-xs font-medium text-slate-500 hover:text-pink-900 transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Raga Catalog</span>
+          <span>Back to Ragas</span>
         </Link>
 
         {/* Hero Header */}
-        <div className="glass-card p-6 sm:p-8 rounded-2xl border border-slate-200 mb-8 relative overflow-hidden">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-pink-100/90 shadow-2xs mb-8 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <span className="text-xs font-mono uppercase tracking-wider text-slate-500 bg-slate-500/10 px-2.5 py-0.5 rounded border border-slate-200">
+                <span className="text-xs font-mono uppercase tracking-wider text-pink-800 bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200/60 font-semibold">
                   {raga.tradition} • Thaat {raga.thaat}
                 </span>
-                <span className="text-xs text-gray-400 font-mono">{raga.time}</span>
+                <span className="text-xs text-slate-500 font-mono">{raga.time}</span>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-extrabold text-white font-serif tracking-tight">
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-serif tracking-tight">
                 Raga {raga.name}
               </h1>
-              <p className="text-xs text-rose-300 font-serif mt-1">Rasa: {raga.rasa}</p>
+              <p className="text-xs text-pink-800 font-serif mt-1">Rasa: {raga.rasa}</p>
             </div>
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={playScaleAudio}
-                className={`px-4 py-3 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shadow-lg ${
+                className={`px-4 py-3 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shadow-2xs cursor-pointer ${
                   isPlayingScale
-                    ? 'bg-rose-500 text-white animate-pulse'
-                    : 'bg-slate-500 text-black hover:bg-amber-400'
+                    ? 'bg-pink-600 text-white animate-pulse'
+                    : 'bg-slate-900 text-white hover:bg-slate-800'
                 }`}
               >
                 {isPlayingScale ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -185,9 +185,9 @@ export default function RagaDetailPage() {
 
               <Link
                 href={`/practice?raga=${encodeURIComponent(raga.name)}`}
-                className="px-4 py-3 rounded-xl bg-[#090D16] border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-500/10 transition-all flex items-center gap-2"
+                className="px-4 py-3 rounded-xl bg-white border border-pink-200/70 text-pink-950 font-bold text-xs hover:bg-pink-50 transition-all flex items-center gap-2 shadow-2xs"
               >
-                <Mic className="w-4 h-4 text-slate-500" />
+                <Mic className="w-4 h-4 text-pink-700" />
                 <span>Practice Raga</span>
               </Link>
             </div>
@@ -198,51 +198,51 @@ export default function RagaDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           
           {/* Aroha, Avaroha, Pakad */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Music className="w-4 h-4 text-slate-500" />
+          <div className="bg-white p-6 rounded-2xl border border-pink-100/90 shadow-2xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Music className="w-4 h-4 text-pink-700" />
               <span>Melodic Structure & Notation</span>
             </h3>
 
             <div className="space-y-3 font-mono text-xs">
-              <div className="p-3 rounded-xl bg-[#090D16] border border-gray-800">
-                <span className="text-gray-500 text-[11px] block mb-0.5">Aroha (Ascent):</span>
-                <span className="text-emerald-300 font-bold text-sm">{raga.aroha}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span className="text-slate-500 text-[11px] block mb-0.5">Aroha (Ascent):</span>
+                <span className="text-emerald-700 font-bold text-sm">{raga.aroha}</span>
               </div>
-              <div className="p-3 rounded-xl bg-[#090D16] border border-gray-800">
-                <span className="text-gray-500 text-[11px] block mb-0.5">Avaroha (Descent):</span>
-                <span className="text-sky-300 font-bold text-sm">{raga.avaroha}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span className="text-slate-500 text-[11px] block mb-0.5">Avaroha (Descent):</span>
+                <span className="text-pink-900 font-bold text-sm">{raga.avaroha}</span>
               </div>
-              <div className="p-3 rounded-xl bg-[#090D16] border border-gray-800">
-                <span className="text-gray-500 text-[11px] block mb-0.5">Pakad (Signature Phrase):</span>
-                <span className="text-slate-600 font-bold italic text-sm">{raga.pakad}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span className="text-slate-500 text-[11px] block mb-0.5">Pakad (Signature Phrase):</span>
+                <span className="text-slate-800 font-bold italic text-sm">{raga.pakad}</span>
               </div>
             </div>
           </div>
 
           {/* Vadi, Samvadi, Notes */}
-          <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Award className="w-4 h-4 text-slate-500" />
+          <div className="bg-white p-6 rounded-2xl border border-pink-100/90 shadow-2xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Award className="w-4 h-4 text-pink-700" />
               <span>Hierarchical Swara Placement</span>
             </h3>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-3.5 rounded-xl bg-[#090D16] border border-gray-800">
-                <span className="text-[10px] text-gray-500 font-mono uppercase block">Vadi (King Note)</span>
-                <span className="text-base font-bold text-slate-500 font-serif">{raga.vadi}</span>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-mono uppercase block">Vadi (King Note)</span>
+                <span className="text-base font-bold text-pink-950 font-serif">{raga.vadi}</span>
               </div>
-              <div className="p-3.5 rounded-xl bg-[#090D16] border border-gray-800">
-                <span className="text-[10px] text-gray-500 font-mono uppercase block">Samvadi (Queen Note)</span>
-                <span className="text-base font-bold text-slate-500 font-serif">{raga.samvadi}</span>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-mono uppercase block">Samvadi (Queen Note)</span>
+                <span className="text-base font-bold text-pink-950 font-serif">{raga.samvadi}</span>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <span className="text-[11px] font-mono text-gray-400">Constituent Swaras:</span>
+              <span className="text-[11px] font-mono text-slate-500">Constituent Swaras:</span>
               <div className="flex flex-wrap gap-1.5">
                 {raga.notes_list.map((note, idx) => (
-                  <span key={idx} className="px-2.5 py-1 rounded-lg bg-[#090D16] border border-gray-800 text-xs font-mono text-gray-300">
+                  <span key={idx} className="px-2.5 py-1 rounded-lg bg-pink-50/70 border border-pink-100 text-xs font-mono text-pink-950">
                     {note}
                   </span>
                 ))}
@@ -253,22 +253,22 @@ export default function RagaDetailPage() {
         </div>
 
         {/* Musicological Insight & Practice Guidance */}
-        <div className="glass-card p-6 rounded-2xl border border-slate-200 space-y-4 mb-8">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-slate-500" />
+        <div className="bg-white p-6 rounded-2xl border border-pink-100/90 shadow-2xs space-y-4 mb-8">
+          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-pink-700" />
             <span>Classical Insight & Pedagogical Guidance</span>
           </h3>
 
-          <p className="text-xs text-gray-300 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed">
             {raga.description}
           </p>
 
-          <div className="p-4 rounded-xl bg-[#090D16] border border-slate-200">
-            <div className="text-xs font-bold text-slate-600 mb-1 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
+          <div className="p-4 rounded-xl bg-pink-50/40 border border-pink-100">
+            <div className="text-xs font-bold text-pink-900 mb-1 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-pink-600" />
               <span>Guru Practice Recommendation:</span>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed font-sans">
+            <p className="text-xs text-slate-700 leading-relaxed font-sans">
               {raga.practice_guidance}
             </p>
           </div>

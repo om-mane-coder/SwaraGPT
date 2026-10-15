@@ -271,7 +271,7 @@ function PracticeContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
@@ -283,7 +283,7 @@ function PracticeContent() {
               Practice Studio
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Real-time fundamental frequency tracking & intonation gauge
+              Real-time fundamental frequency tracking &amp; intonation gauge
             </p>
           </div>
 
@@ -291,13 +291,13 @@ function PracticeContent() {
           <div>
             <button
               onClick={isLiveListening ? stopLivePitchTracker : startLivePitchTracker}
-              className={`px-4 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
+              className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
                 isLiveListening
                   ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
-                  : 'bg-slate-900 text-white hover:bg-slate-800'
+                  : 'bg-slate-900 text-white hover:bg-slate-800 shadow-pink-950/10'
               }`}
             >
-              <Mic className="w-3.5 h-3.5" />
+              <Mic className="w-3.5 h-3.5 text-pink-300" />
               <span>{isLiveListening ? 'Stop Pitch Tracker' : 'Start Live Pitch'}</span>
             </button>
           </div>
@@ -372,7 +372,7 @@ function PracticeContent() {
                 onClick={() => setAnalysisMode('swara')}
                 className={`py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   analysisMode === 'swara'
-                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
+                    ? 'bg-white text-pink-950 border border-pink-200/60 shadow-2xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -382,7 +382,7 @@ function PracticeContent() {
                 onClick={() => setAnalysisMode('shruti')}
                 className={`py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   analysisMode === 'shruti'
-                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
+                    ? 'bg-white text-pink-950 border border-pink-200/60 shadow-2xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >

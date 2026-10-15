@@ -1654,7 +1654,7 @@ function DashboardContent() {
                 </Link>
               </div>
 
-              <div className="divide-y divide-amber-100">
+              <div className="divide-y divide-pink-100/60">
                 {[
                   { date: "Yesterday, 7:30 PM", raga: "Yaman", dur: "180s", pitch: 86, swara: 82, overall: 84.5 },
                   { date: "Oct 6, 8:15 AM", raga: "Bhairav", dur: "120s", pitch: 78, swara: 74, overall: 76.2 },
@@ -1800,8 +1800,8 @@ function DashboardContent() {
                     onClick={isRecording ? handleStopRealRecording : handleStartRealRecording}
                     className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl transition-all ${
                       isRecording
-                        ? 'bg-red-500 text-white animate-pulse shadow-red-500/40 ring-4 ring-red-500/30'
-                        : 'bg-slate-900 text-white text-slate-950 hover:scale-105 shadow-2xs'
+                        ? 'bg-pink-600 text-white animate-pulse ring-4 ring-pink-200'
+                        : 'bg-slate-900 text-white hover:scale-105 shadow-2xs'
                     }`}
                   >
                     {isRecording ? <Pause className="w-8 h-8 text-white" /> : <Mic className="w-8 h-8 text-slate-950" />}
@@ -1825,7 +1825,7 @@ function DashboardContent() {
                       </div>
                       <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-75"
+                          className="h-full bg-gradient-to-r from-pink-500 to-rose-400 transition-all duration-75"
                           style={{ width: `${liveVolume}%` }}
                         />
                       </div>
@@ -1959,7 +1959,7 @@ function DashboardContent() {
                 {/* Score Summary Deck: Composite Fidelity & 4 Key Feature Gauges */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   {/* Big Hero Card: Composite Fidelity Index */}
-                  <div className="md:col-span-2 p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden border border-slate-200">
+                  <div className="md:col-span-2 p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-pink-950/70 text-white flex flex-col justify-between shadow-md relative overflow-hidden border border-pink-900/40">
                     <div className="space-y-1">
                       <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">
                         Master Fidelity Index
@@ -1993,7 +1993,7 @@ function DashboardContent() {
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-pink-500 to-emerald-500 rounded-full"
                           style={{ width: `${masterComparisonResult.fidelity_scores?.pitch_match ?? 95.8}%` }}
                         />
                       </div>
@@ -2010,7 +2010,7 @@ function DashboardContent() {
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-blue-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full"
                           style={{ width: `${masterComparisonResult.fidelity_scores?.laya_match ?? 93.5}%` }}
                         />
                       </div>
@@ -2027,7 +2027,7 @@ function DashboardContent() {
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-indigo-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
                           style={{ width: `${masterComparisonResult.fidelity_scores?.range_match ?? 92.0}%` }}
                         />
                       </div>
@@ -2044,7 +2044,7 @@ function DashboardContent() {
                       </div>
                       <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-purple-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-pink-500 to-rose-400 rounded-full"
                           style={{ width: `${masterComparisonResult.fidelity_scores?.ornament_match ?? 95.5}%` }}
                         />
                       </div>
@@ -2076,7 +2076,7 @@ function DashboardContent() {
                           <th className="py-2.5 px-4">Status &amp; Rating</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-amber-100/80">
+                      <tbody className="divide-y divide-pink-100/60">
                         {(masterComparisonResult.comparative_matrix || []).map((row: any, i: number) => (
                           <tr key={i} className="hover:bg-slate-50/40 transition">
                             <td className="py-2.5 px-4 font-medium text-slate-900">{row.feature}</td>
@@ -2100,14 +2100,14 @@ function DashboardContent() {
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-slate-700" />
+                      <Sparkles className="w-4 h-4 text-pink-700" />
                       <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                         Virtual Guru Pedagogical Master Critique
                       </h4>
                     </div>
                     <button
                       onClick={() => speakGuruText(masterComparisonResult.master_critique || "")}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-amber-200 text-slate-800 text-[11px] font-semibold border border-slate-200 transition"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white hover:bg-pink-50 text-pink-950 text-[11px] font-semibold border border-pink-200/70 transition"
                     >
                       <Volume2 className="w-3 h-3 text-slate-700" />
                       <span>Listen</span>
@@ -2138,17 +2138,17 @@ function DashboardContent() {
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="pitchGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#d97706" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#ea580c" stopOpacity={0.05}/>
+                        <stop offset="5%" stopColor="#DB2777" stopOpacity={0.6}/>
+                        <stop offset="95%" stopColor="#F43F5E" stopOpacity={0.03}/>
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="time" stroke="#64748b" fontSize={11} />
                     <YAxis stroke="#64748b" fontSize={11} domain={['dataMin - 10', 'dataMax + 10']} unit="Hz" />
                     <Tooltip
-                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#f59e0b', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
-                      itemStyle={{ color: '#b45309' }}
+                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#FCE7F3', borderRadius: '12px', boxShadow: '0 4px 20px rgba(219,39,119,0.08)' }}
+                      itemStyle={{ color: '#9D174D' }}
                     />
-                    <Area type="monotone" dataKey="pitch" stroke="#d97706" strokeWidth={2.5} fillOpacity={1} fill="url(#pitchGrad)" />
+                    <Area type="monotone" dataKey="pitch" stroke="#DB2777" strokeWidth={2.5} fillOpacity={1} fill="url(#pitchGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -2187,11 +2187,11 @@ function DashboardContent() {
             </div>
 
             {/* Virtual Guru Master Critique */}
-            <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div className="bg-gradient-to-br from-pink-50/60 via-rose-50/30 to-white p-6 rounded-3xl border border-pink-100/90 shadow-2xs space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-pink-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold">
-                    <Sparkles className="w-5 h-5 text-slate-700" />
+                  <div className="w-9 h-9 rounded-xl bg-pink-50 text-pink-700 flex items-center justify-center font-bold">
+                    <Sparkles className="w-5 h-5 text-pink-700" />
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-base">Virtual Guru Masterclass Assessment</h3>
@@ -2201,7 +2201,7 @@ function DashboardContent() {
 
                 <button
                   onClick={() => speakGuruText(analysisResult?.ai_feedback || "")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-amber-200 text-slate-800 text-xs font-semibold border border-slate-200 transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-pink-50 text-pink-950 text-xs font-semibold border border-pink-200/70 transition"
                 >
                   <Volume2 className="w-3.5 h-3.5 text-slate-700" />
                   <span>Listen to Guru</span>
@@ -2548,7 +2548,7 @@ function DashboardContent() {
                       max={140}
                       value={tempoBpm}
                       onChange={(e) => setTempoBpm(Number(e.target.value))}
-                      className="w-full accent-amber-600"
+                      className="w-full accent-pink-600"
                     />
                   </div>
 
@@ -2558,11 +2558,11 @@ function DashboardContent() {
                       onClick={() => setTanpuraToggle(!tanpuraToggle)}
                       className={`w-full py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition ${
                         tanpuraToggle
-                          ? 'bg-slate-100 border-slate-200 text-slate-800'
+                          ? 'bg-pink-50 border-pink-200 text-pink-950'
                           : 'bg-white border-slate-200 text-slate-600'
                       }`}
                     >
-                      <Radio className="w-4 h-4 text-slate-700" />
+                      <Radio className="w-4 h-4 text-pink-700" />
                       <span>{tanpuraToggle ? 'Tanpura Drone: ON' : 'Tanpura Drone: OFF'}</span>
                     </button>
                   </div>
@@ -2593,19 +2593,19 @@ function DashboardContent() {
 
               <div className="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-13 gap-2 pt-2">
                 {[
-                  { name: "Sa", cents: 0, type: "Achal", color: "from-amber-500 to-amber-600" },
-                  { name: "re", cents: 112, type: "Komal", color: "from-rose-500 to-rose-600" },
-                  { name: "Re", cents: 204, type: "Shuddha", color: "from-amber-600 to-amber-700" },
-                  { name: "ga", cents: 316, type: "Komal", color: "from-rose-500 to-rose-600" },
-                  { name: "Ga", cents: 386, type: "Shuddha", color: "from-amber-600 to-amber-700" },
-                  { name: "Ma", cents: 498, type: "Shuddha", color: "from-emerald-500 to-emerald-600" },
-                  { name: "Ma'", cents: 590, type: "Tivra", color: "from-purple-500 to-purple-600" },
-                  { name: "Pa", cents: 702, type: "Achal", color: "from-amber-500 to-amber-600" },
-                  { name: "dha", cents: 814, type: "Komal", color: "from-rose-500 to-rose-600" },
-                  { name: "Dha", cents: 884, type: "Shuddha", color: "from-amber-600 to-amber-700" },
-                  { name: "ni", cents: 1018, type: "Komal", color: "from-rose-500 to-rose-600" },
-                  { name: "Ni", cents: 1088, type: "Shuddha", color: "from-amber-600 to-amber-700" },
-                  { name: "Sā'", cents: 1200, type: "Taar Sa", color: "from-amber-400 to-amber-500" },
+                  { name: "Sa", cents: 0, type: "Achal", color: "from-pink-600 to-rose-700" },
+                  { name: "re", cents: 112, type: "Komal", color: "from-rose-400 to-pink-500" },
+                  { name: "Re", cents: 204, type: "Shuddha", color: "from-slate-700 to-slate-800" },
+                  { name: "ga", cents: 316, type: "Komal", color: "from-rose-400 to-pink-500" },
+                  { name: "Ga", cents: 386, type: "Shuddha", color: "from-slate-700 to-slate-800" },
+                  { name: "Ma", cents: 498, type: "Shuddha", color: "from-teal-600 to-emerald-700" },
+                  { name: "Ma'", cents: 590, type: "Tivra", color: "from-purple-600 to-indigo-700" },
+                  { name: "Pa", cents: 702, type: "Achal", color: "from-pink-600 to-rose-700" },
+                  { name: "dha", cents: 814, type: "Komal", color: "from-rose-400 to-pink-500" },
+                  { name: "Dha", cents: 884, type: "Shuddha", color: "from-slate-700 to-slate-800" },
+                  { name: "ni", cents: 1018, type: "Komal", color: "from-rose-400 to-pink-500" },
+                  { name: "Ni", cents: 1088, type: "Shuddha", color: "from-slate-700 to-slate-800" },
+                  { name: "Sā'", cents: 1200, type: "Taar Sa", color: "from-pink-500 to-rose-600" },
                 ].map((key, i) => (
                   <button
                     key={i}
@@ -2646,7 +2646,7 @@ function DashboardContent() {
                   onClick={handleVoiceChat}
                   className={`p-2 rounded-xl border transition ${
                     isListeningVoice
-                      ? 'bg-red-500 text-white animate-pulse border-red-400'
+                      ? 'bg-pink-600 text-white animate-pulse border-pink-300'
                       : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                   title="Voice Input"
@@ -2770,7 +2770,7 @@ function DashboardContent() {
                     </div>
                     <button
                       onClick={() => playSynthesizedSwara(s.cents, s.swara)}
-                      className="p-1.5 rounded-lg bg-slate-50 hover:bg-amber-200 text-slate-700 transition"
+                      className="p-1.5 rounded-lg bg-pink-50/60 hover:bg-pink-100 text-pink-900 transition"
                       title="Play Microtone"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
@@ -2800,7 +2800,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
+    <div className="min-h-screen bg-[#FAF8F9] flex flex-col">
       <Navbar />
       <Suspense fallback={
         <div className="flex-1 flex items-center justify-center text-slate-600">

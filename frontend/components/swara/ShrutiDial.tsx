@@ -66,10 +66,10 @@ export default function ShrutiDial({
   const needleY = center + innerRadius * 0.9 * Math.sin(needleAngle);
 
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col items-center ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs flex flex-col items-center ${className}`}>
       <div className="w-full flex items-center justify-between mb-2">
         <h3 className="text-xs font-semibold text-slate-800">22-Shruti Microtones</h3>
-        <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+        <span className="text-[10px] font-mono text-pink-800 bg-pink-50 border border-pink-100 px-2 py-0.5 rounded">
           {Math.round(currentCents)}¢
         </span>
       </div>
@@ -192,18 +192,18 @@ export default function ShrutiDial({
       </div>
 
       {/* Selected Shruti Details Pill */}
-      <div className="w-full mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+      <div className="w-full mt-3 p-3 rounded-xl bg-pink-50/40 border border-pink-100">
         <div className="flex items-center justify-between text-xs">
           <div className="font-semibold text-slate-800">
             {selectedShruti.name} <span className="text-slate-400 font-normal">({selectedShruti.sanskrit})</span>
           </div>
-          <span className="font-mono text-[11px] font-semibold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200">
+          <span className="font-mono text-[11px] font-semibold text-pink-900 bg-white px-1.5 py-0.5 rounded border border-pink-200">
             {selectedShruti.swara} • {selectedShruti.cents.toFixed(1)}¢
           </span>
         </div>
         <div className="text-[11px] text-slate-500 font-mono mt-1 flex justify-between">
           <span>Ratio: {selectedShruti.ratio_str}</span>
-          <span>{selectedShruti.swara_type}</span>
+          <span className="text-pink-800/80">{selectedShruti.swara_type}</span>
         </div>
       </div>
     </div>

@@ -161,13 +161,13 @@ function ChatContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col">
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-200">
+        <div className="flex items-center justify-between mb-5 pb-3 border-b border-pink-100/80">
           <div>
             <h1 className="text-xl font-bold text-slate-900">Virtual Guru</h1>
             <p className="text-xs text-slate-500">Musicology tutor for Indian classical music, ragas, and riyaz.</p>
@@ -181,7 +181,7 @@ function ChatContent() {
               <button
                 key={idx}
                 onClick={() => handleSendMessage(prompt)}
-                className="text-xs text-slate-600 bg-white hover:bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg transition-colors shadow-2xs font-medium cursor-pointer"
+                className="text-xs text-slate-700 bg-white hover:bg-pink-50 hover:text-pink-900 border border-pink-100/90 px-3 py-1 rounded-full transition-colors shadow-2xs font-medium cursor-pointer"
               >
                 {prompt}
               </button>
@@ -190,14 +190,14 @@ function ChatContent() {
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs overflow-y-auto max-h-[60vh] space-y-4 mb-4">
+        <div className="flex-1 bg-white p-4 sm:p-5 rounded-2xl border border-pink-100/90 shadow-2xs overflow-y-auto max-h-[60vh] space-y-4 mb-4">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'guru' && (
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-pink-50 border border-pink-100/80 flex items-center justify-center text-pink-700 shrink-0 mt-0.5">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
@@ -205,10 +205,10 @@ function ChatContent() {
               <div className={`max-w-xl rounded-xl p-3.5 text-xs ${
                 msg.sender === 'user'
                   ? 'bg-slate-900 text-white'
-                  : 'bg-slate-50 border border-slate-200 text-slate-800'
+                  : 'bg-pink-50/40 border border-pink-100/80 text-slate-800'
               }`}>
                 <div className={`flex items-center justify-between text-[10px] mb-1.5 font-mono ${
-                  msg.sender === 'user' ? 'text-slate-300' : 'text-slate-400'
+                  msg.sender === 'user' ? 'text-slate-300' : 'text-pink-900/60'
                 }`}>
                   <span className="font-semibold">{msg.sender === 'user' ? studentName : 'Guru'}</span>
                   <span>{msg.timestamp}</span>
@@ -223,16 +223,16 @@ function ChatContent() {
                 )}
 
                 {msg.sender === 'guru' && msg.suggested_drills && msg.suggested_drills.length > 0 && (
-                  <div className="mt-3 pt-2.5 border-t border-slate-200">
+                  <div className="mt-3 pt-2.5 border-t border-pink-100">
                     <div className="flex flex-wrap gap-1.5">
                       {msg.suggested_drills.map((drill, dIdx) => (
                         <button
                           key={dIdx}
                           onClick={() => handleSendMessage(`Guide me through: "${drill}"`)}
-                          className="text-[11px] bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-2 py-1 rounded transition-colors flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] bg-white hover:bg-pink-50 text-pink-950 border border-pink-200/60 px-2 py-1 rounded transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <span>{drill}</span>
-                          <ArrowRight className="w-2.5 h-2.5 text-slate-400" />
+                          <ArrowRight className="w-2.5 h-2.5 text-pink-400" />
                         </button>
                       ))}
                     </div>
@@ -249,7 +249,7 @@ function ChatContent() {
           ))}
 
           {loading && (
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-mono">
+            <div className="flex items-center gap-2 text-pink-800 text-xs font-mono">
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               <span>Analyzing...</span>
             </div>
@@ -264,15 +264,15 @@ function ChatContent() {
             e.preventDefault();
             handleSendMessage();
           }}
-          className="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-2xs focus-within:border-slate-400"
+          className="flex items-center gap-2 bg-white p-2 rounded-xl border border-pink-100/90 shadow-2xs focus-within:border-pink-300"
         >
           <button
             type="button"
             onClick={toggleVoiceInput}
             className={`p-2 rounded-lg transition-colors cursor-pointer ${
               isListeningSpeech
-                ? 'bg-rose-500 text-white'
-                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                ? 'bg-pink-600 text-white'
+                : 'text-slate-500 hover:text-pink-900 hover:bg-pink-50'
             }`}
             title="Voice input"
           >

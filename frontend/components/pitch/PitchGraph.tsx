@@ -72,7 +72,7 @@ export default function PitchGraph({
   });
 
   return (
-    <div className="w-full bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+    <div className="w-full bg-white rounded-2xl border border-pink-100/90 p-4 shadow-2xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 text-xs gap-2">
         <div>
           <div className="font-semibold text-slate-800 text-xs">{title}</div>
@@ -84,12 +84,12 @@ export default function PitchGraph({
             <span className="w-2 h-2 rounded-full bg-slate-600"></span>
             F0 (Hz)
           </span>
-          <span className="flex items-center gap-1.5 text-emerald-600">
+          <span className="flex items-center gap-1.5 text-emerald-700">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
             Sur (±25¢)
           </span>
           <span>
-            Sa: <strong className="text-slate-700">{baseSa.toFixed(1)} Hz</strong>
+            Sa: <strong className="text-pink-800">{baseSa.toFixed(1)} Hz</strong>
           </span>
         </div>
       </div>
@@ -113,10 +113,10 @@ export default function PitchGraph({
             <Tooltip
               contentStyle={{
                 backgroundColor: '#FFFFFF',
-                border: '1px solid #E2E8F0',
+                border: '1px solid #FCE7F3',
                 borderRadius: '8px',
                 fontSize: '11px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 color: '#0F172A',
               }}
               formatter={(value: any, name: any, item: any) => {
@@ -125,8 +125,8 @@ export default function PitchGraph({
               }}
               labelFormatter={(label) => `Time: ${Number(label).toFixed(2)}s`}
             />
-            {/* Reference tonic line */}
-            <ReferenceLine y={baseSa} stroke="#64748B" strokeDasharray="3 3" label={{ value: 'Sa', fill: '#64748B', fontSize: 10 }} />
+            {/* Reference tonic line in faint rose */}
+            <ReferenceLine y={baseSa} stroke="#DB2777" strokeDasharray="3 3" label={{ value: 'Sa', fill: '#DB2777', fontSize: 10 }} />
             {/* Pancham reference line */}
             <ReferenceLine y={baseSa * 1.5} stroke="#94A3B8" strokeDasharray="3 3" label={{ value: 'Pa', fill: '#94A3B8', fontSize: 10 }} />
 
@@ -136,7 +136,7 @@ export default function PitchGraph({
               stroke="#334155"
               strokeWidth={2}
               dot={{ r: 1.5, fill: '#334155' }}
-              activeDot={{ r: 4, fill: '#10B981' }}
+              activeDot={{ r: 4, fill: '#DB2777' }}
               connectNulls={false}
               isAnimationActive={false}
             />

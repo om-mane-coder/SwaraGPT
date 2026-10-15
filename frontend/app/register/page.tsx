@@ -44,23 +44,23 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md glass-card p-8 rounded-2xl border border-slate-200 shadow-xl relative">
+        <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-pink-100/90 shadow-2xs relative">
           
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center text-white font-bold mx-auto mb-4 shadow-md shadow-2xs">
+            <div className="w-12 h-12 rounded-xl bg-pink-50 border border-pink-200/80 flex items-center justify-center text-pink-700 font-bold mx-auto mb-4 shadow-2xs">
               <Music className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 font-serif">Begin Your Swara Journey</h1>
-            <p className="text-slate-600 text-xs sm:text-sm mt-1">Register for AI Virtual Guru & Vocal Performance Evaluation</p>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">Register for AI Virtual Guru & Vocal Riyaz Practice</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-3 rounded-lg bg-rose-100 border border-rose-300 flex items-center gap-2 text-rose-800 text-xs font-medium">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="mb-6 p-3 rounded-lg bg-pink-50 border border-pink-200 flex items-center gap-2 text-pink-900 text-xs font-medium">
+              <AlertCircle className="w-4 h-4 shrink-0 text-pink-600" />
               <span>{error}</span>
             </div>
           )}
@@ -80,7 +80,7 @@ export default function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Om Ramesh Mane"
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-300 transition-colors"
                 />
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@wce.ac.in"
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-300 transition-colors"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-300 transition-colors"
                 />
               </div>
             </div>
@@ -132,11 +132,11 @@ export default function RegisterPage() {
                   onClick={() => setRole('student')}
                   className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     role === 'student'
-                      ? 'bg-slate-100 border-slate-200 text-slate-800 font-bold shadow-2xs'
+                      ? 'bg-pink-50 border-pink-200 text-pink-950 font-bold shadow-2xs'
                       : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <GraduationCap className="w-4 h-4 text-slate-700" />
+                  <GraduationCap className="w-4 h-4 text-pink-700" />
                   <span>Music Student</span>
                 </button>
                 <button
@@ -144,11 +144,11 @@ export default function RegisterPage() {
                   onClick={() => setRole('teacher')}
                   className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     role === 'teacher'
-                      ? 'bg-slate-100 border-slate-200 text-slate-800 font-bold shadow-2xs'
+                      ? 'bg-pink-50 border-pink-200 text-pink-950 font-bold shadow-2xs'
                       : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 text-slate-700" />
+                  <Sparkles className="w-4 h-4 text-pink-700" />
                   <span>Guru / Teacher</span>
                 </button>
               </div>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               id="register-submit-btn"
-              className="w-full py-3 rounded-xl bg-slate-900 text-white text-white font-bold text-sm shadow-lg shadow-2xs hover:shadow-2xs hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-6 cursor-pointer"
+              className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-2xs hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-6 cursor-pointer"
             >
               {loading ? (
                 <span>Creating Account...</span>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
 
           <p className="text-xs text-slate-500 text-center mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-slate-700 font-bold hover:underline">
+            <Link href="/login" className="text-pink-900 font-bold hover:underline">
               Sign In
             </Link>
           </p>

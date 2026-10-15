@@ -27,7 +27,7 @@ export default function PerformanceScore({
   // Score color logic - muted faint tones
   const getScoreColor = (val: number) => {
     if (val >= 80) return { text: 'text-emerald-700', stroke: '#059669', bg: 'bg-emerald-50', border: 'border-emerald-200' };
-    if (val >= 60) return { text: 'text-slate-700', stroke: '#475569', bg: 'bg-slate-100', border: 'border-slate-200' };
+    if (val >= 60) return { text: 'text-pink-900', stroke: '#DB2777', bg: 'bg-pink-50', border: 'border-pink-200' };
     return { text: 'text-rose-600', stroke: '#E11D48', bg: 'bg-rose-50', border: 'border-rose-200' };
   };
 
@@ -49,7 +49,7 @@ export default function PerformanceScore({
   ];
 
   return (
-    <div className={`bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs ${className}`}>
+    <div className={`bg-white p-5 rounded-2xl border border-pink-100/90 shadow-2xs ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-semibold text-slate-800">Performance Score</h3>

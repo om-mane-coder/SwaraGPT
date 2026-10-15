@@ -237,7 +237,7 @@ function PerformanceReportContent() {
   }, [lastAnalysis, searchParams]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
@@ -423,14 +423,14 @@ function PerformanceReportContent() {
             {/* Adjustments */}
             {issues.length > 0 && (
               <div>
-                <div className="text-[11px] font-medium text-slate-700 mb-1 flex items-center gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5 text-slate-500" />
+                <div className="text-[11px] font-medium text-pink-800 mb-1 flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 text-pink-600" />
                   <span>Notes for Adjustment</span>
                 </div>
-                <ul className="space-y-1 text-xs text-slate-600">
+                <ul className="space-y-1 text-xs text-slate-700">
                   {issues.map((iss, i) => (
-                    <li key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-200 flex items-start gap-1.5">
-                      <span className="text-slate-400 font-bold">•</span>
+                    <li key={i} className="p-2 rounded-lg bg-pink-50/70 border border-pink-100 flex items-start gap-1.5">
+                      <span className="text-pink-600 font-bold">•</span>
                       <span>{iss}</span>
                     </li>
                   ))}
@@ -441,14 +441,14 @@ function PerformanceReportContent() {
             {/* Drills */}
             {recommendations.length > 0 && (
               <div>
-                <div className="text-[11px] font-medium text-slate-700 mb-1 flex items-center gap-1.5">
-                  <Music className="w-3.5 h-3.5 text-slate-500" />
+                <div className="text-[11px] font-medium text-purple-800 mb-1 flex items-center gap-1.5">
+                  <Music className="w-3.5 h-3.5 text-purple-600" />
                   <span>Practice Routine</span>
                 </div>
-                <ul className="space-y-1 text-xs text-slate-600">
+                <ul className="space-y-1 text-xs text-slate-700">
                   {recommendations.map((rec, i) => (
-                    <li key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-200 flex items-start gap-1.5">
-                      <span className="text-slate-500 font-bold">•</span>
+                    <li key={i} className="p-2 rounded-lg bg-purple-50/60 border border-purple-100 flex items-start gap-1.5">
+                      <span className="text-purple-600 font-bold">•</span>
                       <span>{rec}</span>
                     </li>
                   ))}
@@ -469,7 +469,7 @@ function PerformanceReportContent() {
 
 export default function PerformanceReportPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[#F8FAFC]" />}>
+    <React.Suspense fallback={<div className="min-h-screen bg-[#FAF8F9]" />}>
       <PerformanceReportContent />
     </React.Suspense>
   );

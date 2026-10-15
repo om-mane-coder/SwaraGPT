@@ -42,23 +42,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F9]">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md glass-card p-8 rounded-2xl border border-slate-200 shadow-xl relative">
+        <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-pink-100/90 shadow-2xs relative">
           
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center text-white font-bold mx-auto mb-4 shadow-md shadow-2xs">
+            <div className="w-12 h-12 rounded-xl bg-pink-50 border border-pink-200/80 flex items-center justify-center text-pink-700 font-bold mx-auto mb-4 shadow-2xs">
               <Music className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 font-serif">Welcome Back to Riyaz</h1>
-            <p className="text-slate-600 text-xs sm:text-sm mt-1">Sign in to continue your music practice with SwaraGPT</p>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">Sign in to continue your music practice with SwaraGPT</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-3 rounded-lg bg-rose-100 border border-rose-300 flex items-center gap-2 text-rose-800 text-xs font-medium">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="mb-6 p-3 rounded-lg bg-pink-50 border border-pink-200 flex items-center gap-2 text-pink-900 text-xs font-medium">
+              <AlertCircle className="w-4 h-4 shrink-0 text-pink-600" />
               <span>{error}</span>
             </div>
           )}
@@ -77,7 +77,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@wce.ac.in"
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-300 transition-colors"
                 />
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 transition-colors shadow-2xs"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-300 transition-colors"
                 />
               </div>
             </div>
@@ -104,7 +104,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               id="login-submit-btn"
-              className="w-full py-3 rounded-xl bg-slate-900 text-white text-white font-bold text-sm shadow-lg shadow-2xs hover:shadow-2xs hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-2xs"
             >
               {loading ? (
                 <span>Signing in...</span>
@@ -118,22 +118,22 @@ export default function LoginPage() {
           </form>
 
           {/* Quick Demo Access Button */}
-          <div className="mt-6 pt-6 border-t border-slate-200 text-center">
+          <div className="mt-6 pt-6 border-t border-pink-100 text-center">
             <button
               onClick={() => {
                 setUser({ id: 'demo-student-1', name: 'Om Mane', email: 'om@swaragpt.ai', role: 'student' }, 'demo-jwt-token');
                 router.push('/dashboard');
               }}
               id="quick-demo-btn"
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold hover:bg-amber-200 transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-white border border-pink-200/70 text-pink-950 text-xs font-bold hover:bg-pink-50 transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-slate-700" />
+              <Sparkles className="w-3.5 h-3.5 text-pink-600" />
               <span>Explore Instant Guest Demo</span>
             </button>
 
             <p className="text-xs text-slate-500 mt-4">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-slate-700 font-bold hover:underline">
+              <Link href="/register" className="text-pink-900 font-bold hover:underline">
                 Create one now
               </Link>
             </p>

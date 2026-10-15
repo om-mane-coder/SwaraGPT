@@ -35,10 +35,12 @@ export default function Navbar() {
         
         {/* Brand Identity */}
         <Link href="/" className="flex items-center gap-2.5" id="nav-brand-logo">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white">
-            <Music className="w-4 h-4" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white shadow-2xs ring-1 ring-pink-200/50">
+            <Music className="w-4 h-4 text-pink-200" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900">SwaraGPT</span>
+          <span className="text-base font-bold tracking-tight text-slate-900">
+            Swara<span className="text-pink-600/90">GPT</span>
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -52,12 +54,12 @@ export default function Navbar() {
                 href={link.href}
                 className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs transition-colors ${
                   isActive
-                    ? 'text-slate-900 bg-slate-100 font-semibold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'text-pink-950 bg-pink-50/80 border border-pink-200/60 font-semibold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-pink-50/40'
                 }`}
                 id={`nav-${link.label.toLowerCase().replace(' ', '-')}`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-slate-900' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-pink-700' : 'text-slate-400'}`} />
                 <span>{link.label}</span>
               </Link>
             );
