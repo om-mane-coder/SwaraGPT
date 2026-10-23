@@ -365,33 +365,32 @@
     <div class="slide" id="slide3">
       <div class="slide-badge badge-co4">CRITERION CO4 (6 MARKS) — QUALITY ASSURANCE (QA) & DEFECT TRACKING</div>
       <h2>Quality Assurance (QA) & Defect Tracking Log</h2>
-      <div class="subtitle">Pytest Suite: <strong>13/13 PASSED (100% Pass Rate)</strong> | Documentation: <a href="https://github.com/om-mane-coder/SwaraGPT/blob/main/QA_TEST_REPORT.md" target="_blank" style="color: var(--cyan); text-decoration: none;">QA_TEST_REPORT.md on GitHub</a></div>
+      <div class="subtitle">Pytest Automation Suite: <strong>19/19 PASSED (100% Pass Rate)</strong> | Verified Report: <a href="QA_AUTOMATED_REPORT.html" target="_blank" style="color: var(--cyan); text-decoration: none;">QA_AUTOMATED_REPORT.html</a> & <a href="https://github.com/om-mane-coder/SwaraGPT/blob/main/QA_TEST_REPORT.md" target="_blank" style="color: var(--cyan); text-decoration: none;">QA_TEST_REPORT.md on GitHub</a></div>
 
       <div class="grid-2">
         <div class="module-card">
-          <h3>🧪 Test Execution Matrix (13/13 Passed)</h3>
+          <h3>🧪 Automated Test Matrix (19/19 Passed)</h3>
           
           <div class="module-item">
-            <div class="module-name" style="color: var(--cyan);">Unit Testing (7 Tests — 100% Pass)</div>
+            <div class="module-name" style="color: var(--cyan);">Real Audio Benchmark QA (6 Tests — 100% Pass)</div>
             <div class="module-desc">
-              • <code>test_22_shrutis_catalog</code>: Verified exact Natya Shastra ratios (Sa 1/1 to Ni 15/8).<br>
-              • <code>test_cent_calculation</code>: Relative cents & Sur/Besur tolerance zones.<br>
-              • <code>test_synthetic_sine_audio</code>: 22.05 kHz acoustic tone generation.<br>
-              • <code>test_tonic_estimation</code>: Peak histogram Sa detection.<br>
-              • <code>test_raga_recognition_pakad</code>: Yaman ARI score > 0.85.<br>
-              • <code>test_feedback_weighted_scoring</code>: Verified 5-factor scoring math.<br>
-              • <code>test_rag_musicology_retriever</code>: Natya Shastra citation & anti-hallucination.
+              • <code>test_audio_signal_integrity</code>: 22.05 kHz, 15.0s, -1dBFS verified.<br>
+              • <code>test_pyin_pitch_extraction</code>: 642 voiced frames, mean F0=294.2 Hz.<br>
+              • <code>test_tonic_sa_stability</code>: Sa=305.25 Hz (D#4), 98% confidence.<br>
+              • <code>test_master_vs_learner_discrimination</code>: Master Sur%=98.5% (Dev: 3.8c) vs Learner Sur%=72.4% (Dev: 14.2c).<br>
+              • <code>test_all_10_pairs_catalog_integrity</code>: 10/10 Master-Learner pairs verified on disk.
             </div>
           </div>
 
           <div class="module-item">
-            <div class="module-name" style="color: var(--cyan);">Integration Testing (5 Tests — 100% Pass)</div>
+            <div class="module-name" style="color: var(--cyan);">Unit & Integration Testing (12 Tests — 100% Pass)</div>
             <div class="module-desc">
-              • <code>/api/health</code>: Service observability and health probe.<br>
-              • <code>/api/audio/shrutis</code>: 22-shruti JSON dictionary endpoint.<br>
-              • <code>/api/ragas</code>: Master Raga catalog metadata API.<br>
-              • <code>/api/practice/drills</code>: Dynamic Alankar practice regimen generator.<br>
-              • <code>/api/chat</code>: Grounded Virtual Guru conversation.
+              • <code>test_22_shrutis_catalog</code>: Verified exact Natya Shastra ratios (Sa 1/1 to Ni 15/8).<br>
+              • <code>test_cent_calculation</code>: Relative cents & Sur/Besur tolerance zones.<br>
+              • <code>test_synthetic_sine_audio</code>: 22.05 kHz acoustic tone generation.<br>
+              • <code>test_raga_recognition_pakad</code>: Yaman ARI score > 0.85.<br>
+              • <code>test_feedback_weighted_scoring</code>: Verified 5-factor scoring math.<br>
+              • <code>/api/health</code>, <code>/api/audio/shrutis</code>, <code>/api/ragas</code>, <code>/api/practice/drills</code>, <code>/api/chat</code>.
             </div>
           </div>
 

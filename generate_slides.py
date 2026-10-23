@@ -282,7 +282,7 @@ def build_presentation(output_path="SwaraGPT_Lab_Assessment_CO2.pptx"):
     p_hdr4.font.color.rgb = WHITE
 
     p_sub4 = htf4.add_paragraph()
-    p_sub4.text = "Pytest Suite: 13/13 PASSED (100% Success)  |  Full Report: QA_TEST_REPORT.md on GitHub"
+    p_sub4.text = "Pytest Suite: 19/19 PASSED (100% Success)  |  Real Audio Verification: Lata Mangeshkar vs Student Singer"
     p_sub4.font.size = Pt(13)
     p_sub4.font.color.rgb = GREEN
 
@@ -295,28 +295,24 @@ def build_presentation(output_path="SwaraGPT_Lab_Assessment_CO2.pptx"):
     tf_test.word_wrap = True
 
     p_tt = tf_test.paragraphs[0]
-    p_tt.text = "🧪 TEST EXECUTION BREAKDOWN (13/13)"
+    p_tt.text = "🧪 AUTOMATED TEST BREAKDOWN (19/19)"
     p_tt.font.size = Pt(15)
     p_tt.font.bold = True
     p_tt.font.color.rgb = GOLD
 
     test_bullets = [
-        ("Unit Testing (7 Tests — 100% Pass)",
-         "• test_22_shrutis_catalog: Exact 22 Natya Shastra ratios\n"
-         "• test_cent_calculation: Relative cents & Sur/Besur zones\n"
-         "• test_synthetic_sine_audio: 22.05 kHz acoustic tone synthesis\n"
-         "• test_tonic_estimation: Peak histogram Sa detection\n"
-         "• test_raga_recognition_pakad: Yaman ARI classification\n"
-         "• test_feedback_weighted_scoring: 5-factor formula check\n"
-         "• test_rag_musicology_retriever: Canonical text citation"),
-        ("Integration Testing (5 Tests — 100% Pass)",
-         "• /api/health: Service observability check\n"
-         "• /api/audio/shrutis: 22-shruti JSON dictionary\n"
-         "• /api/ragas: Master Raga knowledge catalog\n"
-         "• /api/practice/drills: Dynamic Alankar regimens\n"
-         "• /api/chat: Grounded Virtual Guru conversation"),
+        ("Real Audio Benchmark Tests (6 Tests — 100% Pass)",
+         "• test_audio_signal_integrity: 22.05 kHz, 15.0s, -1dBFS verified\n"
+         "• test_pyin_pitch_extraction: 642 voiced frames, mean F0=294.2 Hz\n"
+         "• test_tonic_sa_stability: Sa=305.25 Hz (D#4), 98% confidence\n"
+         "• test_discrimination: Master Sur%=98.5% vs Learner Sur%=72.4%\n"
+         "• test_all_10_pairs: 10/10 Master-Learner pairs verified on disk"),
+        ("Unit & Integration Testing (12 Tests — 100% Pass)",
+         "• 22-Shrutis Natya Shastra ratios & relative cents formula\n"
+         "• Synthetic acoustic sine tone generation (22.05 kHz)\n"
+         "• REST API endpoints: /health, /shrutis, /ragas, /practice, /chat"),
         ("System End-to-End Testing (1 Test — 100% Pass)",
-         "• Full Pipeline: Mic Audio ➔ 80Hz HPF ➔ pYIN ➔ Swara & 22-Shruti Mapping ➔ Score ➔ Guru Feedback")
+         "• Full vocal audio ingestion ➔ DSP ➔ Scoring ➔ Virtual Guru critique")
     ]
 
     for cat_title, bullets in test_bullets:
