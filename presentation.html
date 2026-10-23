@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SwaraGPT — Lab Assessment Presentation (CO2)</title>
+  <title>SwaraGPT — Lab Assessment Presentation (CO2, CO3, CO4, CO5)</title>
   <style>
     :root {
       --bg: #0B0F19;
@@ -28,13 +28,14 @@
     }
     .controls {
       display: flex;
-      gap: 16px;
-      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
       position: sticky;
       top: 10px;
       z-index: 100;
-      background: rgba(19, 25, 41, 0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(19, 25, 41, 0.9);
+      backdrop-filter: blur(12px);
       padding: 10px 24px;
       border-radius: 9999px;
       border: 1px solid var(--card-border);
@@ -48,7 +49,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       transition: all 0.2s;
     }
     .btn:hover { background: #334155; border-color: var(--cyan); }
@@ -59,7 +60,7 @@
       max-width: 1200px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 36px;
     }
     .slide {
       background: var(--card-bg);
@@ -91,9 +92,18 @@
       margin-bottom: 12px;
       border: 1px solid rgba(56, 189, 248, 0.3);
     }
-    h1 { font-size: 32px; font-weight: 800; color: #FFF; margin-bottom: 6px; }
-    h2 { font-size: 24px; font-weight: 700; color: #FFF; margin-bottom: 6px; }
-    .subtitle { color: var(--gold); font-size: 16px; margin-bottom: 24px; font-weight: 500; }
+    .badge-co4 {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    .badge-co5 {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    h2 { font-size: 26px; font-weight: 800; color: #FFF; margin-bottom: 6px; }
+    .subtitle { color: var(--gold); font-size: 15.5px; margin-bottom: 24px; font-weight: 500; }
     .table-wrapper { overflow-x: auto; margin-top: 16px; }
     table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
     th {
@@ -125,6 +135,16 @@
       gap: 24px;
       margin-top: 20px;
     }
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    @media (max-width: 900px) {
+      .grid-5 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
     .module-card {
       background: rgba(11, 15, 25, 0.6);
       border: 1px solid var(--card-border);
@@ -132,7 +152,7 @@
       padding: 24px;
     }
     .module-card h3 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--gold);
       margin-bottom: 16px;
@@ -146,7 +166,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .module-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .module-name { font-weight: 700; font-size: 14.5px; color: #FFF; margin-bottom: 4px; }
+    .module-name { font-weight: 700; font-size: 14px; color: #FFF; margin-bottom: 4px; }
     .module-desc { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; line-height: 1.4; }
     .github-link {
       display: inline-flex;
@@ -154,12 +174,38 @@
       gap: 6px;
       color: var(--cyan);
       text-decoration: none;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       font-family: monospace;
       transition: color 0.2s;
     }
     .github-link:hover { text-decoration: underline; color: #7DD3FC; }
+    .workflow-card {
+      background: rgba(11, 15, 25, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .workflow-num {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .workflow-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .workflow-body {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
     .speaker-note {
       margin-top: 24px;
       background: rgba(245, 158, 11, 0.08);
@@ -175,16 +221,18 @@
 <body>
 
   <div class="controls">
-    <button class="btn" onclick="window.scrollTo({top: document.getElementById('slide1').offsetTop - 80, behavior: 'smooth'})">Slide 1: Objectives</button>
-    <button class="btn" onclick="window.scrollTo({top: document.getElementById('slide2').offsetTop - 80, behavior: 'smooth'})">Slide 2: Modules & GitHub</button>
+    <button class="btn" onclick="document.getElementById('slide1').scrollIntoView({behavior: 'smooth'})">Slide 1: Objectives (CO2)</button>
+    <button class="btn" onclick="document.getElementById('slide2').scrollIntoView({behavior: 'smooth'})">Slide 2: Modules & Links (CO2/CO3)</button>
+    <button class="btn" onclick="document.getElementById('slide3').scrollIntoView({behavior: 'smooth'})">Slide 3: QA & Defects (CO4)</button>
+    <button class="btn" onclick="document.getElementById('slide4').scrollIntoView({behavior: 'smooth'})">Slide 4: Prototype Workflow (CO5)</button>
     <button class="btn btn-gold" onclick="window.print()">🖨️ Print / Save PDF</button>
   </div>
 
   <div class="deck-container">
 
-    <!-- SLIDE 1: OBJECTIVES -->
+    <!-- SLIDE 1: CO2 OBJECTIVES -->
     <div class="slide" id="slide1">
-      <div class="slide-badge">LAB ASSESSMENT EVALUATION — CRITERION CO2</div>
+      <div class="slide-badge">CRITERION CO2 (6 MARKS) — OBJECTIVES & PROGRESS</div>
       <h2>Project Objectives & Implementation Dashboard</h2>
       <div class="subtitle">% of Planned Objectives Completed: <strong>100% [Fully Functional Across All Modules]</strong></div>
 
@@ -244,15 +292,13 @@
       </div>
     </div>
 
-    <!-- SLIDE 2: MODULES -->
+    <!-- SLIDE 2: CO2 & CO3 MODULES -->
     <div class="slide" id="slide2">
-      <div class="slide-badge">LAB ASSESSMENT EVALUATION — CRITERION CO2</div>
+      <div class="slide-badge">CRITERION CO2 & CO3 (6 MARKS) — MODULES & GITHUB VERIFICATION</div>
       <h2>System Modules & Verified GitHub Source Links</h2>
-      <div class="subtitle">Repository: <strong><a href="https://github.com/om-mane-coder/SwaraGPT" target="_blank" style="color: var(--cyan); text-decoration: none;">github.com/om-mane-coder/SwaraGPT</a></strong> | Clean Architecture</div>
+      <div class="subtitle">Repository: <strong><a href="https://github.com/om-mane-coder/SwaraGPT" target="_blank" style="color: var(--cyan); text-decoration: none;">github.com/om-mane-coder/SwaraGPT</a></strong> | Modular Code Architecture</div>
 
       <div class="grid-2">
-        
-        <!-- CORE MODULES -->
         <div class="module-card">
           <h3>🧠 Core Modules (Algorithms & MIR)</h3>
 
@@ -279,10 +325,8 @@
             <div class="module-desc">Classical musicology knowledge retriever citing Bharata Muni and Sarangadeva.</div>
             <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/rag/knowledge_base.py" target="_blank">🔗 backend/app/rag/knowledge_base.py</a>
           </div>
-
         </div>
 
-        <!-- TRANSACTION MODULES -->
         <div class="module-card">
           <h3>🔄 Transaction Modules (User Flows)</h3>
 
@@ -309,13 +353,157 @@
             <div class="module-desc">Adaptive alankar generation based on error notes and longitudinal progress analytics.</div>
             <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/routers/practice.py" target="_blank">🔗 backend/app/routers/practice.py</a>
           </div>
-
         </div>
-
       </div>
 
       <div class="speaker-note">
         <strong>🗣️ Speaker Note for Slide 2:</strong> "Our implementation cleanly separates Core Algorithmic Modules from Transaction Modules handling the student's journey. Each module is verified with comprehensive unit and integration tests, and tracked in our private GitHub repository."
+      </div>
+    </div>
+
+    <!-- SLIDE 3: CO4 QUALITY ASSURANCE -->
+    <div class="slide" id="slide3">
+      <div class="slide-badge badge-co4">CRITERION CO4 (6 MARKS) — QUALITY ASSURANCE (QA) & DEFECT TRACKING</div>
+      <h2>Quality Assurance (QA) & Defect Tracking Log</h2>
+      <div class="subtitle">Pytest Suite: <strong>13/13 PASSED (100% Pass Rate)</strong> | Documentation: <a href="https://github.com/om-mane-coder/SwaraGPT/blob/main/QA_TEST_REPORT.md" target="_blank" style="color: var(--cyan); text-decoration: none;">QA_TEST_REPORT.md on GitHub</a></div>
+
+      <div class="grid-2">
+        <div class="module-card">
+          <h3>🧪 Test Execution Matrix (13/13 Passed)</h3>
+          
+          <div class="module-item">
+            <div class="module-name" style="color: var(--cyan);">Unit Testing (7 Tests — 100% Pass)</div>
+            <div class="module-desc">
+              • <code>test_22_shrutis_catalog</code>: Verified exact Natya Shastra ratios (Sa 1/1 to Ni 15/8).<br>
+              • <code>test_cent_calculation</code>: Relative cents & Sur/Besur tolerance zones.<br>
+              • <code>test_synthetic_sine_audio</code>: 22.05 kHz acoustic tone generation.<br>
+              • <code>test_tonic_estimation</code>: Peak histogram Sa detection.<br>
+              • <code>test_raga_recognition_pakad</code>: Yaman ARI score > 0.85.<br>
+              • <code>test_feedback_weighted_scoring</code>: Verified 5-factor scoring math.<br>
+              • <code>test_rag_musicology_retriever</code>: Natya Shastra citation & anti-hallucination.
+            </div>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name" style="color: var(--cyan);">Integration Testing (5 Tests — 100% Pass)</div>
+            <div class="module-desc">
+              • <code>/api/health</code>: Service observability and health probe.<br>
+              • <code>/api/audio/shrutis</code>: 22-shruti JSON dictionary endpoint.<br>
+              • <code>/api/ragas</code>: Master Raga catalog metadata API.<br>
+              • <code>/api/practice/drills</code>: Dynamic Alankar practice regimen generator.<br>
+              • <code>/api/chat</code>: Grounded Virtual Guru conversation.
+            </div>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name" style="color: var(--cyan);">System End-to-End Testing (1 Test — 100% Pass)</div>
+            <div class="module-desc">
+              • Full vocal pipeline: Mic Audio ➔ 80Hz HPF ➔ pYIN ➔ Swara & 22-Shruti Mapping ➔ Weighted Score ➔ Dynamic Riyaz Drill.
+            </div>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <h3>🐞 Defect Tracking & Resolution Log</h3>
+
+          <div class="module-item">
+            <div class="module-name">DEF-01: Browser WebM Audio Decoding [High]</div>
+            <div class="module-desc">
+              <strong>Defect:</strong> Browser MediaRecorder WebM blobs caused format decode errors in standard WAV pipelines.<br>
+              <strong>Resolution:</strong> Integrated Web Audio API <code>AudioContext.decodeAudioData</code> with PCM float conversion.
+            </div>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">DEF-02: Low-Frequency Microphone Rumble [Medium]</div>
+            <div class="module-desc">
+              <strong>Defect:</strong> Sub-80Hz ambient room rumble distorted fundamental Sa histogram peak detection.<br>
+              <strong>Resolution:</strong> Applied 2nd-order Butterworth 80 Hz High-Pass Filter in <code>scipy.signal</code> before pYIN.
+            </div>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">DEF-03: LLM Latency & Offline Fallback [Medium]</div>
+            <div class="module-desc">
+              <strong>Defect:</strong> External LLM latency or network timeouts risked pedagogical chat failure.<br>
+              <strong>Resolution:</strong> Built resilient Offline Classical Pedagogical Guru fallback in <code>providers.py</code>.
+            </div>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">DEF-04: Cross-Origin Resource Sharing [Low]</div>
+            <div class="module-desc">
+              <strong>Defect:</strong> Strict CORS policy blocked local Next.js port 3000 requests to port 8000.<br>
+              <strong>Resolution:</strong> Configured regex origin allowlist <code>https?://(localhost|127\.0\.0\.1)(:[0-9]+)?</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note">
+        <strong>🗣️ Speaker Note for Slide 3:</strong> "Quality Assurance was conducted rigorously with Pytest, yielding a 100% success rate across 13 test cases covering unit, integration, and system layers. Real QA defects from browser audio decoding to room noise filtering were systematically logged and resolved."
+      </div>
+    </div>
+
+    <!-- SLIDE 4: CO5 WORKING PROTOTYPE -->
+    <div class="slide" id="slide4">
+      <div class="slide-badge badge-co5">CRITERION CO5 (6 MARKS) — WORKING PROTOTYPE & DEMONSTRATION</div>
+      <h2>Working Prototype & End-to-End Workflow</h2>
+      <div class="subtitle">Live Environment: <strong>Frontend (localhost:3000)</strong> | <strong>FastAPI Backend (localhost:8000)</strong> | <strong>Swagger Docs (/docs)</strong></div>
+
+      <div class="grid-5">
+        <div class="workflow-card">
+          <div class="workflow-num" style="color: var(--cyan);">STEP 1</div>
+          <div class="workflow-title">Session Setup & Sa Calibration</div>
+          <div class="workflow-body">
+            • Student authentication<br>
+            • Set user tonic Sa (e.g. C# / 138.59 Hz)<br>
+            • Select target Raga (Yaman / Bhairav / Bilawal)
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-num" style="color: var(--gold);">STEP 2</div>
+          <div class="workflow-title">Audio Capture & Tanpura Drone</div>
+          <div class="workflow-body">
+            • Web Audio API real-time microphone stream<br>
+            • Synthetic Tanpura drone oscillator active<br>
+            • WAV / WebM client ingestion
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-num" style="color: var(--cyan);">STEP 3</div>
+          <div class="workflow-title">DSP & Pitch Extraction</div>
+          <div class="workflow-body">
+            • 80 Hz Butterworth HPF<br>
+            • Voice Activity Detection (VAD)<br>
+            • pYIN fundamental pitch (F0) tracking & interactive Pitch Graph
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-num" style="color: var(--green);">STEP 4</div>
+          <div class="workflow-title">Intonation Scoring Engine</div>
+          <div class="workflow-body">
+            • 5-factor weighted formula: <code>35%P + 25%S + 15%Sh + 15%R + 10%T</code><br>
+            • Intonation tolerance zones: Sur (&le;25c), Mild (&le;50c), Besur (&gt;50c)
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-num" style="color: var(--gold);">STEP 5</div>
+          <div class="workflow-title">Virtual Guru & Riyaz Drills</div>
+          <div class="workflow-body">
+            • Pedagogical critique with citations<br>
+            • Pinpoint unstable / out-of-tune notes<br>
+            • Dynamic personalized Alankar practice drills
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note">
+        <strong>🗣️ Speaker Note for Slide 4:</strong> "Our working prototype is currently active on localhost. The student journey flows smoothly across five key transactions: tonic Sa calibration, vocal recording with tanpura drone, real-time pYIN pitch curve plotting, 5-factor transparent scoring, and actionable Virtual Guru feedback."
       </div>
     </div>
 
