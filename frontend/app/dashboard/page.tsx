@@ -1382,7 +1382,12 @@ function DashboardContent() {
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollTo({
+        top: chatEndRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [chatMessages, chatLoading]);
 
   // Chart data for pitch contour (filters silence and formats cleanly)
@@ -2657,7 +2662,7 @@ function DashboardContent() {
             </div>
 
             {/* Chat Messages Log */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+            <div ref={chatEndRef} className="flex-1 p-4 overflow-y-auto space-y-4 scroll-smooth">
               {chatMessages.map((msg) => (
                 <div
                   key={msg.id}
@@ -2696,7 +2701,6 @@ function DashboardContent() {
                   </div>
                 </div>
               )}
-              <div ref={chatEndRef} />
             </div>
 
             {/* Prompt Pills */}

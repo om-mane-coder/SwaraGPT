@@ -51,21 +51,21 @@ export default function PerformanceScore({
   ];
 
   return (
-    <div className={`glass-card p-6 rounded-2xl border border-amber-500/20 ${className}`}>
+    <div className={`glass-card p-6 rounded-2xl border border-amber-300 shadow-md ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2.5">
-          <Award className="w-5 h-5 text-amber-400" />
-          <h3 className="text-base font-bold text-white">Vocal Performance Evaluation</h3>
+          <Award className="w-5 h-5 text-amber-700" />
+          <h3 className="text-base font-bold text-slate-900 font-serif">Vocal Performance Evaluation</h3>
         </div>
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] font-mono text-amber-300">
-          <ShieldCheck className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-[11px] font-mono font-bold text-amber-950 shadow-2xs">
+          <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
           <span>Confidence: {Math.round(confidence * 100)}%</span>
         </div>
       </div>
 
       {/* Main Score & Radial Gauge */}
-      <div className="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-6 border-b border-gray-800">
+      <div className="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-6 border-b border-gray-800/60">
         <div className="relative w-[150px] h-[150px] shrink-0">
           <svg width={size} height={size} className="rotate-[-90deg]">
             {/* Background track */}
@@ -73,7 +73,7 @@ export default function PerformanceScore({
               cx={size / 2}
               cy={size / 2}
               r={radius}
-              stroke="#1E293B"
+              stroke="#EAE3D5"
               strokeWidth={strokeWidth}
               fill="transparent"
             />
@@ -95,7 +95,7 @@ export default function PerformanceScore({
             <span className={`text-4xl font-extrabold font-mono ${overallColors.text}`}>
               {Math.round(overallScore)}%
             </span>
-            <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-0.5">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-slate-600 font-bold mt-0.5">
               Overall Score
             </span>
           </div>
@@ -103,10 +103,10 @@ export default function PerformanceScore({
 
         {/* Evaluation Summary text */}
         <div className="space-y-2 text-center sm:text-left">
-          <h4 className="text-lg font-bold text-white font-serif">
+          <h4 className="text-lg font-bold text-slate-900 font-serif">
             {overallScore >= 85 ? 'Outstanding Riyaz (Uttam)' : overallScore >= 70 ? 'Proficient Intonation (Madhyam)' : 'Developing Intonation (Abhyasa)'}
           </h4>
-          <p className="text-xs text-gray-400 leading-relaxed max-w-md">
+          <p className="text-xs text-slate-700 font-medium leading-relaxed max-w-md">
             {overallScore >= 80 
               ? 'Your vocal intonation aligns strongly with canonical shruti intervals and the target raga contour.'
               : overallScore >= 60 
@@ -124,53 +124,53 @@ export default function PerformanceScore({
             <div key={idx} className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-200">{m.label}</span>
-                  <span className="text-[10px] font-mono text-gray-400 bg-gray-800/60 px-1.5 py-0.5 rounded">
+                  <span className="font-bold text-slate-900 text-sm">{m.label}</span>
+                  <span className="text-[10px] font-mono font-bold text-amber-950 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full shadow-2xs">
                     Weight: {m.weight}%
                   </span>
                 </div>
-                <span className={`font-mono font-bold ${colors.text}`}>{Math.round(m.value)}%</span>
+                <span className={`font-mono font-extrabold text-sm ${colors.text}`}>{Math.round(m.value)}%</span>
               </div>
-              <div className="h-2 w-full bg-[#090D16] rounded-full overflow-hidden border border-gray-800">
+              <div className="h-2.5 w-full bg-amber-50/80 rounded-full overflow-hidden border border-amber-200/80 shadow-inner">
                 <div
-                  className="h-full rounded-full transition-all duration-700"
+                  className="h-full rounded-full transition-all duration-700 shadow-xs"
                   style={{
                     width: `${m.value}%`,
                     backgroundColor: colors.stroke,
                   }}
                 />
               </div>
-              <div className="text-[10px] text-gray-400 font-mono">{m.desc}</div>
+              <div className="text-xs text-slate-700 font-sans font-medium">{m.desc}</div>
             </div>
           );
         })}
       </div>
 
       {/* Transparent Formula Accordion */}
-      <div className="mt-6 pt-4 border-t border-gray-800">
+      <div className="mt-6 pt-4 border-t border-gray-800/60">
         <button
           onClick={() => setShowFormula(!showFormula)}
-          className="w-full flex items-center justify-between text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors"
+          className="w-full flex items-center justify-between text-xs font-bold text-amber-800 hover:text-amber-950 transition-colors"
         >
           <span className="flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5" />
+            <Info className="w-3.5 h-3.5 text-amber-700" />
             <span>How your score was calculated</span>
           </span>
-          {showFormula ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {showFormula ? <ChevronUp className="w-4 h-4 text-amber-700" /> : <ChevronDown className="w-4 h-4 text-amber-700" />}
         </button>
 
         {showFormula && (
-          <div className="mt-3 p-4 rounded-xl bg-[#090D16] border border-gray-800/80 text-xs text-gray-300 space-y-2 font-mono">
-            <div className="text-amber-300 font-bold">Transparent Multi-Factor Scoring Formula:</div>
-            <div className="p-2.5 rounded bg-black/40 border border-gray-800 text-[11px] overflow-x-auto text-amber-200/90">
+          <div className="mt-3 p-4 rounded-xl bg-amber-50/70 border border-amber-300 text-xs text-slate-800 space-y-2 font-sans shadow-2xs">
+            <div className="text-amber-950 font-bold text-sm">Transparent Multi-Factor Scoring Formula:</div>
+            <div className="p-2.5 rounded bg-white border border-amber-200 text-xs font-mono font-bold text-amber-950 shadow-2xs overflow-x-auto">
               Score = (0.35 × Pitch) + (0.25 × Swara) + (0.15 × Shruti) + (0.15 × Raga) + (0.10 × Tonic)
             </div>
-            <ul className="list-disc list-inside text-[11px] text-gray-400 space-y-1 pt-1">
-              <li><strong>Pitch Accuracy (35%):</strong> Evaluates cent deviation and pYIN unvoiced/voiced continuity.</li>
-              <li><strong>Swara Accuracy (25%):</strong> Fraction of frames within ±25¢ of nominal note intervals.</li>
-              <li><strong>Shruti Precision (15%):</strong> Proximity to the target raga&apos;s 22-shruti microtone positions.</li>
-              <li><strong>Raga Adherence (15%):</strong> Aaroha/Avaroha scale compliance and vadi/samvadi energy ratio.</li>
-              <li><strong>Tonic Stability (10%):</strong> Variance of the fundamental Sa reference across the phrase.</li>
+            <ul className="list-disc list-inside text-xs text-slate-700 space-y-1 pt-1 font-medium">
+              <li><strong className="text-slate-900">Pitch Accuracy (35%):</strong> Evaluates cent deviation and pYIN unvoiced/voiced continuity.</li>
+              <li><strong className="text-slate-900">Swara Accuracy (25%):</strong> Fraction of frames within ±25¢ of nominal note intervals.</li>
+              <li><strong className="text-slate-900">Shruti Precision (15%):</strong> Proximity to the target raga&apos;s 22-shruti microtone positions.</li>
+              <li><strong className="text-slate-900">Raga Adherence (15%):</strong> Aaroha/Avaroha scale compliance and vadi/samvadi energy ratio.</li>
+              <li><strong className="text-slate-900">Tonic Stability (10%):</strong> Variance of the fundamental Sa reference across the phrase.</li>
             </ul>
           </div>
         )}

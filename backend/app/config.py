@@ -6,6 +6,12 @@ and Indian Classical Music analysis tolerances.
 import os
 from typing import Optional, List
 from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+
+_backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_backend_dir, ".env"))
+load_dotenv(os.path.join(os.path.dirname(_backend_dir), ".env"))
+load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -45,8 +51,12 @@ class Settings(BaseSettings):
     MONGODB_URL: str = "mongodb://localhost:27017"
     MONGODB_DB: str = "swaragpt"
 
-    # AI Provider Selection: 'openai' | 'gemini' | 'offline'
-    AI_PROVIDER: str = "gemini"
+    # AI Provider Selection: 'nvidia' | 'gemini' | 'openai' | 'offline'
+    AI_PROVIDER: str = "nvidia"
+    NVIDIA_API_KEY: Optional[str] = None
+    NVIDIA_BASE_URL: str = "https://integrate.api.nvidia.com/v1"
+    NEMOTRON_PRIMARY_MODEL: str = "nvidia/nemotron-3-ultra-550b-a55b"
+    NEMOTRON_FAST_MODEL: str = "meta/llama-3.2-11b-vision-instruct"
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = "gpt-4o-mini"
     GEMINI_API_KEY: Optional[str] = None

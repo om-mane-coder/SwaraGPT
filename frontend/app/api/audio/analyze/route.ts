@@ -28,7 +28,8 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const result = await decodeAndAnalyzeAudio(arrayBuffer, {
       targetRaga,
-      manualTonicHz: tonicHz
+      manualTonicHz: tonicHz,
+      filename: file.name || 'uploaded_recording.wav'
     });
 
     return NextResponse.json(result);

@@ -311,21 +311,21 @@ export default function AudioRecorder({
       </div>
 
       {/* Tanpura Drone Control Bar */}
-      <div className="p-3.5 rounded-xl bg-[#090D16] border border-gray-800/80 flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-300 flex flex-wrap items-center justify-between gap-3 mb-6 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <button
             onClick={toggleTanpura}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs ${
               isTanpuraActive 
                 ? 'bg-rose-500 text-white animate-pulse' 
-                : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+                : 'bg-amber-100 text-amber-950 border border-amber-300 hover:bg-amber-200'
             }`}
           >
-            <Music className="w-3.5 h-3.5" />
+            <Music className="w-3.5 h-3.5 text-amber-800" />
             <span>{isTanpuraActive ? 'Stop Tanpura Drone' : 'Start Tanpura Drone'}</span>
           </button>
-          <span className="text-xs text-gray-400 font-mono">
-            Sa: <strong className="text-amber-400">{tonicFrequency.toFixed(1)} Hz</strong>
+          <span className="text-xs text-slate-600 font-mono font-medium">
+            Sa: <strong className="text-amber-900 font-bold">{tonicFrequency.toFixed(1)} Hz</strong>
           </span>
         </div>
 

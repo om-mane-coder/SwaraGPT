@@ -41,8 +41,8 @@ export default function SwaraIndicator({
   } else if (absDev > 25) {
     status = 'mild';
     statusText = 'Mild Deviation';
-    statusColor = 'text-amber-400 bg-amber-500/10 border-amber-500/30';
-    badgeIcon = <AlertTriangle className="w-4 h-4 text-amber-400" />;
+    statusColor = 'text-amber-900 bg-amber-100 border-amber-300 font-bold shadow-2xs';
+    badgeIcon = <AlertTriangle className="w-4 h-4 text-amber-700" />;
   }
 
   // Cent gauge position: -50 cents to +50 cents mapped to 0% - 100%
@@ -50,13 +50,13 @@ export default function SwaraIndicator({
   const needlePercent = ((clampedDev + 50) / 100) * 100;
 
   return (
-    <div className={`glass-card p-6 rounded-2xl border border-amber-500/20 relative overflow-hidden ${className}`}>
+    <div className={`glass-card p-6 rounded-2xl border border-amber-300 shadow-md relative overflow-hidden ${className}`}>
       {/* Background radial highlight */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
 
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono uppercase tracking-wider text-gray-400">Current Swara</span>
+          <span className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">Current Swara</span>
         </div>
         <div className={`px-2.5 py-1 rounded-full text-xs font-medium border flex items-center gap-1.5 ${statusColor}`}>
           {badgeIcon}
@@ -70,18 +70,18 @@ export default function SwaraIndicator({
           <div className="text-5xl font-extrabold tracking-tight saffron-gradient-text font-serif">
             {swara || '—'}
           </div>
-          <div className="text-xs text-gray-400 font-mono mt-1">
-            Ref Sa: <span className="text-amber-300 font-semibold">{tonic.toFixed(1)} Hz</span>
+          <div className="text-xs text-slate-500 font-mono mt-1 font-medium">
+            Ref Sa: <span className="text-amber-900 font-bold">{tonic.toFixed(1)} Hz</span>
           </div>
         </div>
 
         <div className="text-right">
-          <div className="text-2xl font-bold font-mono text-white">
+          <div className="text-2xl font-bold font-mono text-slate-900">
             {frequency > 0 ? `${frequency.toFixed(1)} Hz` : '— Hz'}
           </div>
           <div className="text-xs font-mono mt-1">
-            <span className="text-gray-400">Deviation: </span>
-            <span className={`font-semibold ${deviation > 0 ? 'text-amber-300' : deviation < 0 ? 'text-sky-300' : 'text-emerald-400'}`}>
+            <span className="text-slate-500 font-medium">Deviation: </span>
+            <span className={`font-bold ${deviation > 0 ? 'text-amber-800' : deviation < 0 ? 'text-sky-700' : 'text-emerald-700'}`}>
               {deviation >= 0 ? `+${deviation.toFixed(1)}` : deviation.toFixed(1)} ¢
             </span>
           </div>

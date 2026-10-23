@@ -76,15 +76,23 @@ app.add_middleware(
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
-# Include Modular Routers
+# Include Modular Routers (both /api/* and root aliases for frontend compatibility)
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication Alias"])
 app.include_router(audio.router, prefix="/api/audio", tags=["Audio Ingestion"])
+app.include_router(audio.router, prefix="/audio", tags=["Audio Ingestion Alias"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["MIR Performance Analysis"])
+app.include_router(analysis.router, prefix="/analysis", tags=["MIR Performance Analysis Alias"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Virtual Guru Chat"])
+app.include_router(chat.router, prefix="/chat", tags=["Virtual Guru Chat Alias"])
 app.include_router(ragas.router, prefix="/api/ragas", tags=["Raga Explorer"])
+app.include_router(ragas.router, prefix="/ragas", tags=["Raga Explorer Alias"])
 app.include_router(progress.router, prefix="/api/progress", tags=["Progress & Analytics"])
+app.include_router(progress.router, prefix="/progress", tags=["Progress & Analytics Alias"])
 app.include_router(practice.router, prefix="/api/practice", tags=["Practice & Riyaz"])
+app.include_router(practice.router, prefix="/practice", tags=["Practice & Riyaz Alias"])
 app.include_router(users.router, prefix="/api/users", tags=["User Profile & Settings"])
+app.include_router(users.router, prefix="/users", tags=["User Profile & Settings Alias"])
 
 
 # Section 38: Live WebSocket Pitch Streaming
@@ -139,6 +147,7 @@ async def websocket_pitch_endpoint(websocket: WebSocket):
 
 @app.get("/health", tags=["Health"])
 @app.get("/api/health", tags=["Health"])
+@app.get("/api/v1/health", tags=["Health"])
 async def health_check():
     """Observability & Health Check."""
     return {

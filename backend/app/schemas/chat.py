@@ -22,6 +22,7 @@ class ChatMessageRequest(BaseModel):
     conversation_id: Optional[str] = None
     performance_context: Optional[PerformanceContext] = None
     voice_input: Optional[bool] = False
+    model: Optional[str] = None
 
 
 class Citation(BaseModel):
@@ -38,6 +39,8 @@ class ChatMessageResponse(BaseModel):
     conversation_id: str
     role: str = "assistant"
     content: str
+    thought: Optional[str] = None
+    model: Optional[str] = None
     response: Optional[str] = None
     message: Optional[str] = None
     citations: List[Citation] = Field(default_factory=list)

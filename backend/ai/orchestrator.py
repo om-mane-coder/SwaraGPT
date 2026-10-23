@@ -13,14 +13,33 @@ from ai.rag import retrieve_knowledge
 from ai.tools import tool_get_user_profile
 import google.generativeai as genai
 import openai
+from openai import OpenAI
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
+NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+NEMOTRON_PRIMARY_MODEL = os.getenv("NEMOTRON_PRIMARY_MODEL", "nvidia/nemotron-3-super-120b-a12b")
+NEMOTRON_FAST_MODEL = os.getenv("NEMOTRON_FAST_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b")
 
 class SwaraGPTOrchestrator:
     def __init__(self):
         self.openai_key = OPENAI_API_KEY
         self.gemini_key = GEMINI_API_KEY
+        self.nvidia_key = NVIDIA_API_KEY
+        self.nvidia_base_url = NVIDIA_BASE_URL
+
+        # Initialize NVIDIA Nemotron NIM Client (Primary Engine)
+        if self.nvidia_key:
+            try:
+                self.nvidia_client = OpenAI(base_url=self.nvidia_base_url, api_key=self.nvidia_key)
+                print(f"[Orchestrator] NVIDIA Nemotron NIM Engine initialized with model {NEMOTRON_PRIMARY_MODEL}")
+            except Exception as e:
+                print(f"[Orchestrator] NVIDIA client init warning: {e}")
+                self.nvidia_client = None
+        else:
+            self.nvidia_client = None
+
         if self.gemini_key:
             try:
                 genai.configure(api_key=self.gemini_key)
@@ -35,6 +54,10 @@ class SwaraGPTOrchestrator:
             openai.api_key = self.openai_key
 
     def generate_response(self, user_message: str, audio_analysis=None, conversation_history=None, mode="Guru Mode") -> str:
+        meta = self.generate_response_with_meta(user_message, audio_analysis, conversation_history, mode)
+        return meta.get("content", "")
+
+    def generate_response_with_meta(self, user_message: str, audio_analysis=None, conversation_history=None, mode="Guru Mode") -> dict:
         profile = tool_get_user_profile(user_id=1)
         raga_hint = audio_analysis["raga_predictions"][0]["raga"] if audio_analysis and audio_analysis.get("raga_predictions") else None
         knowledge = retrieve_knowledge(user_message or "", raga_context=raga_hint)
@@ -58,7 +81,62 @@ class SwaraGPTOrchestrator:
             "4. Respond dynamically to general chat, music theory, raga queries, taal explanations, and riyaaz guidance."
         )
 
-        # 1. Try Gemini API if key is present
+        # 1. PRIMARY ENGINE: NVIDIA Nemotron with Chain-of-Thought Reasoning
+        if self.nvidia_client:
+            try:
+                model_to_use = NEMOTRON_PRIMARY_MODEL
+                messages = [{"role": "system", "content": system_instruction}]
+                if conversation_history:
+                    for m in conversation_history[-6:]:
+                        role = "assistant" if m.get("sender") in ["assistant", "guru"] else "user"
+                        messages.append({"role": role, "content": m.get("content", "")})
+
+                u_text = f"User Input: {user_message}\n"
+                if audio_analysis:
+                    u_text += f"\nStudent Singing Audio Analysis: {json.dumps(audio_analysis, indent=2)}\n"
+                    u_text += "Please analyze the student's cents deviation, note precision, and stability, then prescribe a tailored Riyaaz exercise."
+                if knowledge:
+                    u_text += f"\nRetrieved Knowledge Base Context: {json.dumps(knowledge, indent=2)}"
+
+                messages.append({"role": "user", "content": u_text})
+
+                stream = self.nvidia_client.chat.completions.create(
+                    model=model_to_use,
+                    messages=messages,
+                    temperature=0.6,
+                    max_tokens=2048,
+                    stream=True
+                )
+
+                content_chunks = []
+                thought_chunks = []
+
+                for chunk in stream:
+                    if chunk.choices:
+                        d = chunk.choices[0].delta
+                        c = getattr(d, "content", None)
+                        r = getattr(d, "reasoning_content", None)
+                        if r:
+                            thought_chunks.append(r)
+                        if c:
+                            content_chunks.append(c)
+
+                final_content = "".join(content_chunks).strip()
+                final_thought = "".join(thought_chunks).strip()
+
+                display_content = final_content if final_content else final_thought
+
+                if display_content:
+                    return {
+                        "content": display_content,
+                        "thought": final_thought if (final_thought and final_content) else None,
+                        "model": model_to_use,
+                        "engine": "NVIDIA Nemotron NIM"
+                    }
+            except Exception as e:
+                print(f"[Orchestrator] NVIDIA Nemotron call failed ({e}), checking fallbacks.")
+
+        # 2. Secondary Fallback: Gemini API if key is present
         if self.gemini_model:
             try:
                 prompt_content = f"{system_instruction}\n\n"
@@ -76,11 +154,16 @@ class SwaraGPTOrchestrator:
 
                 res = self.gemini_model.generate_content(prompt_content)
                 if res and res.text:
-                    return res.text
+                    return {
+                        "content": res.text,
+                        "thought": None,
+                        "model": "gemini-1.5-flash",
+                        "engine": "Google Gemini"
+                    }
             except Exception as e:
                 print(f"[Orchestrator] Gemini call failed ({e}), checking OpenAI/Local fallback.")
 
-        # 2. Try OpenAI API if key is present
+        # 3. Tertiary Fallback: OpenAI API if key is present
         if self.openai_key:
             try:
                 messages = [{"role": "system", "content": system_instruction}]
@@ -103,19 +186,37 @@ class SwaraGPTOrchestrator:
                     temperature=0.7,
                     max_tokens=900
                 )
-                return response.choices[0].message.content
+                return {
+                    "content": response.choices[0].message.content,
+                    "thought": None,
+                    "model": "gpt-4o-mini",
+                    "engine": "OpenAI"
+                }
             except Exception as e:
                 print(f"[Orchestrator] OpenAI API call failed ({e}), invoking Local Conversational AI Engine.")
 
-        # 3. Local Conversational AI Engine
+        # 4. Local Conversational AI Engine
         try:
-            return self._run_local_conversational_engine(user_message, audio_analysis, profile, knowledge, conversation_history, mode)
+            local_ans = self._run_local_conversational_engine(user_message, audio_analysis, profile, knowledge, conversation_history, mode)
+            return {
+                "content": local_ans,
+                "thought": None,
+                "model": "local-rule-engine",
+                "engine": "SwaraGPT Local Engine"
+            }
         except Exception as err:
             print(f"[Orchestrator Error]: {err}")
             traceback.print_exc()
-            return f"Namaste! I am here as your AI Music Guru to help you with Indian Classical Music. Ask me about ragas, taals, practice exercises, or upload your singing!"
+            return {
+                "content": "Namaste! I am here as your AI Music Guru to help you with Indian Classical Music. Ask me about ragas, taals, practice exercises, or upload your singing!",
+                "thought": None,
+                "model": "emergency-fallback",
+                "engine": "SwaraGPT Local Engine"
+            }
 
     def _run_local_conversational_engine(self, user_msg: str, audio_analysis, profile, knowledge, history, mode) -> str:
+        knowledge = knowledge or {}
+        profile = profile or {}
         msg = (user_msg or "").strip().lower()
 
         if audio_analysis:

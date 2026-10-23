@@ -95,18 +95,28 @@ function PracticeContent() {
     }
 
     // Find candidate peak with highest normalized autocorrelation above threshold
-    let maxVal = -1;
-    let bestLag = -1;
+    const peaks: number[] = [];
+    let maxVal = 0;
     for (let tau = minLag; tau < maxLag - 1; tau++) {
       if (nsdf[tau] > 0.45 && nsdf[tau] > nsdf[tau - 1] && nsdf[tau] >= nsdf[tau + 1]) {
+        peaks.push(tau);
         if (nsdf[tau] > maxVal) {
           maxVal = nsdf[tau];
-          bestLag = tau;
         }
       }
     }
 
-    if (bestLag === -1 || maxVal < 0.48) return -1;
+    if (peaks.length === 0 || maxVal < 0.45) return -1;
+
+    // Canonical MPM: Pick the first peak within 0.88 of max peak to prevent subharmonic octave halving
+    const cutoff = maxVal * 0.88;
+    let bestLag = peaks[0];
+    for (const p of peaks) {
+      if (nsdf[p] >= cutoff) {
+        bestLag = p;
+        break;
+      }
+    }
 
     // 3-point parabolic peak interpolation for sub-sample precision (<0.1 Hz resolution)
     const x1 = nsdf[bestLag - 1];
@@ -433,15 +443,15 @@ function PracticeContent() {
             )}
 
             {/* Target Raga Quick Guide */}
-            <div className="glass-card p-5 rounded-2xl border border-amber-500/20 text-xs">
+            <div className="glass-card p-5 rounded-2xl border border-amber-300 text-xs shadow-md">
               <div className="flex items-center gap-2 mb-3">
-                <Music className="w-4 h-4 text-amber-400" />
-                <h4 className="font-bold text-white font-serif text-sm">Raga {ragaName} Guidelines</h4>
+                <Music className="w-4 h-4 text-amber-700" />
+                <h4 className="font-bold text-slate-900 font-serif text-sm">Raga {ragaName} Guidelines</h4>
               </div>
-              <p className="text-gray-400 text-[11px] leading-relaxed mb-3">
+              <p className="text-slate-600 text-[11px] leading-relaxed mb-3">
                 Maintain steady breath control. Listen carefully to the drone frequency of Sa ({tonic.toFixed(1)} Hz) and Pa ({(tonic * 1.5).toFixed(1)} Hz).
               </p>
-              <div className="p-2.5 rounded-lg bg-[#090D16] border border-gray-800 font-mono text-[11px] text-amber-200">
+              <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-300 font-mono text-[11px] text-amber-950 font-bold shadow-2xs">
                 Drill: {exercise}
               </div>
             </div>
@@ -467,8 +477,8 @@ function PracticeContent() {
             />
 
             {analyzingBlob && (
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center gap-3 text-amber-300 text-sm animate-pulse">
-                <RefreshCw className="w-4 h-4 animate-spin" />
+              <div className="p-4 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center gap-3 text-amber-900 font-bold text-sm shadow-2xs">
+                <RefreshCw className="w-4 h-4 text-amber-700 animate-spin" />
                 <span>Processing singing audio through MIR pipeline (pYIN + Swara + Raga evaluation)...</span>
               </div>
             )}

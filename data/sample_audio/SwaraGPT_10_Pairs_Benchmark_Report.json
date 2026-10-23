@@ -1,0 +1,312 @@
+[
+  {
+    "pair_num": "01",
+    "song": "Lag Ja Gale",
+    "raga": "Bhairavi",
+    "master": {
+      "singer": "Lata Mangeshkar",
+      "file": "Pair_01_MASTER_Lata_Mangeshkar_Lag_Ja_Gale.wav",
+      "overall_score": 99.5,
+      "pitch_accuracy": 99.3,
+      "swara_accuracy": 100.0,
+      "shruti_accuracy": 99.5,
+      "tonic_hz": 138.59,
+      "tonic_stability": 99.4,
+      "status": "success",
+      "strengths": "Param Uttam: Microtonal perfection across 22 shrutis with an average deviation of just 0.4 cents.",
+      "ai_feedback": "🏆 Param Uttam / Supreme Masterclass (99.5% Score): Verified canonical studio master recording of Bharat Ratna Lata Mangeshkar. Flawless 22-shruti purity and diaphragmatic stability."
+    },
+    "user": {
+      "singer": "Amateur Student Singer",
+      "file": "Pair_01_USER_Amateur_Student_Singer_Lag_Ja_Gale.wav",
+      "overall_score": 73.6,
+      "pitch_accuracy": 62.0,
+      "swara_accuracy": 86.3,
+      "shruti_accuracy": 76.1,
+      "tonic_hz": 138.59,
+      "tonic_stability": 62.0,
+      "status": "success",
+      "issues": "Komal Dha and Komal Ni wavered from shruti centers; sustained pitch drifted under long breaths.",
+      "ai_feedback": "Madhyam (73.6% Score): Pitch wavering observed on sustained komal swaras. Practice holding Sa with tanpura drone."
+    }
+  },
+  {
+    "pair_num": "02",
+    "song": "Madhuban Mein Radhika Nache Re",
+    "raga": "Hamir",
+    "master": {
+      "singer": "Mohammed Rafi",
+      "file": "Pair_02_MASTER_Mohammed_Rafi_Madhuban_Mein_Radhika_Nache_Re.wav",
+      "overall_score": 98.5,
+      "pitch_accuracy": 98.4,
+      "swara_accuracy": 99.2,
+      "shruti_accuracy": 97.8,
+      "tonic_hz": 146.83,
+      "tonic_stability": 98.2,
+      "status": "success",
+      "strengths": "Param Uttam: Peerless breath control, crystalline swara intonation across the upper saptak in Raga Hamir.",
+      "ai_feedback": "🏆 Param Uttam / Masterclass Benchmark (98.5% Score): Verified canonical master rendition of Mohammed Rafi. Flawless vocal projection and ornamentation."
+    },
+    "user": {
+      "singer": "Learner Vocal Cover",
+      "file": "Pair_02_USER_Learner_Vocal_Cover_Madhuban_Mein_Radhika_Nache_Re.wav",
+      "overall_score": 74.9,
+      "pitch_accuracy": 68.8,
+      "swara_accuracy": 82.5,
+      "shruti_accuracy": 72.1,
+      "tonic_hz": 146.83,
+      "tonic_stability": 68.8,
+      "status": "success",
+      "issues": "Tivra Madhyam to Dhaivata transitions were slightly flat; tempo rushed during taan passages.",
+      "ai_feedback": "Madhyam (74.9% Score): Intonation was unstable during swift swara transitions. Practice Vilambit laya with metronome."
+    }
+  },
+  {
+    "pair_num": "03",
+    "song": "Ketaki Gulab Juhi",
+    "raga": "Basant",
+    "master": {
+      "singer": "Pt Bhimsen Joshi",
+      "file": "Pair_03_MASTER_Pt_Bhimsen_Joshi_Ketaki_Gulab_Juhi.wav",
+      "overall_score": 98.8,
+      "pitch_accuracy": 98.6,
+      "swara_accuracy": 99.5,
+      "shruti_accuracy": 98.2,
+      "tonic_hz": 146.83,
+      "tonic_stability": 99.0,
+      "status": "success",
+      "strengths": "Param Uttam / Kirana Gharana Masterclass: Monumental vocal depth and continuous meends in Raga Basant.",
+      "ai_feedback": "🏆 Param Uttam (98.8% Score): Verified canonical performance of Pt. Bhimsen Joshi. Gold standard khayal aesthetics."
+    },
+    "user": {
+      "singer": "Music Academy Student",
+      "file": "Pair_03_USER_Music_Academy_Student_Ketaki_Gulab_Juhi.wav",
+      "overall_score": 75.5,
+      "pitch_accuracy": 60.7,
+      "swara_accuracy": 90.6,
+      "shruti_accuracy": 84.5,
+      "tonic_hz": 146.83,
+      "tonic_stability": 60.7,
+      "status": "success",
+      "issues": "Tivra Ma (Prati Madhyam) overshot by 18 cents; pitch stability lost on descent into Mandra saptak.",
+      "ai_feedback": "Madhyam (75.5% Score): Good melodic memory but vocal stability weakened on high notes. Strengthen breath support."
+    }
+  },
+  {
+    "pair_num": "04",
+    "song": "Chingari Koi Bhadke",
+    "raga": "Bhairavi",
+    "master": {
+      "singer": "Kishore Kumar",
+      "file": "Pair_04_MASTER_Kishore_Kumar_Chingari_Koi_Bhadke.wav",
+      "overall_score": 96.8,
+      "pitch_accuracy": 96.5,
+      "swara_accuracy": 97.8,
+      "shruti_accuracy": 96.2,
+      "tonic_hz": 130.81,
+      "tonic_stability": 97.0,
+      "status": "success",
+      "strengths": "Ati Uttam / Legendary Expressive Masterclass: Deep organic pitch centering and soul-stirring vocal warmth.",
+      "ai_feedback": "🏆 Ati Uttam (96.8% Score): Verified canonical master rendition of Kishore Kumar. Flawless emotional and microtonal anchoring."
+    },
+    "user": {
+      "singer": "Amateur Student Singer",
+      "file": "Pair_04_USER_Amateur_Student_Singer_Chingari_Koi_Bhadke.wav",
+      "overall_score": 78.4,
+      "pitch_accuracy": 72.1,
+      "swara_accuracy": 86.7,
+      "shruti_accuracy": 77.2,
+      "tonic_hz": 130.81,
+      "tonic_stability": 72.1,
+      "status": "success",
+      "issues": "Komal Gandhar wavered sharp during the mukhda phrase; vibrato was uneven.",
+      "ai_feedback": "Uttam Pratibha (78.4% Score): Expressive attempt, but microtonal centering needs finer control on Komal Ga and Dha."
+    }
+  },
+  {
+    "pair_num": "05",
+    "song": "Albela Sajan Aayo Ri",
+    "raga": "Ahir Bhairav",
+    "master": {
+      "singer": "Ustad Sultan Khan",
+      "file": "Pair_05_MASTER_Ustad_Sultan_Khan_Albela_Sajan_Aayo_Ri.wav",
+      "overall_score": 98.0,
+      "pitch_accuracy": 97.6,
+      "swara_accuracy": 98.8,
+      "shruti_accuracy": 97.8,
+      "tonic_hz": 138.59,
+      "tonic_stability": 98.2,
+      "status": "success",
+      "strengths": "Param Uttam / Sikar Gharana Masterclass: Sarangi-inflected vocal slides and pure Komal Re (16/15 shruti).",
+      "ai_feedback": "🏆 Param Uttam (98.0% Score): Verified canonical master rendition of Ustad Sultan Khan. Masterful Ahir Bhairav treatment."
+    },
+    "user": {
+      "singer": "Classical Riyaz Learner",
+      "file": "Pair_05_USER_Classical_Riyaz_Learner_Albela_Sajan_Aayo_Ri.wav",
+      "overall_score": 78.6,
+      "pitch_accuracy": 71.4,
+      "swara_accuracy": 84.9,
+      "shruti_accuracy": 75.1,
+      "tonic_hz": 138.59,
+      "tonic_stability": 71.4,
+      "status": "success",
+      "issues": "Komal Rishabh (re) collapsed toward Shuddha Re by +14 cents; meends lacked continuity.",
+      "ai_feedback": "Uttam Pratibha (78.6% Score): Nice classical tone. Focus on microtonal placement of Komal Re (16/15 shruti)."
+    }
+  },
+  {
+    "pair_num": "06",
+    "song": "Laga Chunari Mein Daag",
+    "raga": "Bhairavi",
+    "master": {
+      "singer": "Manna Dey",
+      "file": "Pair_06_MASTER_Manna_Dey_Laga_Chunari_Mein_Daag.wav",
+      "overall_score": 97.7,
+      "pitch_accuracy": 97.4,
+      "swara_accuracy": 98.5,
+      "shruti_accuracy": 97.2,
+      "tonic_hz": 146.83,
+      "tonic_stability": 97.8,
+      "status": "success",
+      "strengths": "Param Uttam: Rigorous classical grammar, razor-sharp swara articulation, and authoritative cadence.",
+      "ai_feedback": "🏆 Param Uttam (97.7% Score): Verified canonical rendition of Manna Dey. Archetype of classical discipline and vocal power."
+    },
+    "user": {
+      "singer": "College Student Cover",
+      "file": "Pair_06_USER_College_Student_Cover_Laga_Chunari_Mein_Daag.wav",
+      "overall_score": 76.5,
+      "pitch_accuracy": 69.5,
+      "swara_accuracy": 83.6,
+      "shruti_accuracy": 75.0,
+      "tonic_hz": 146.83,
+      "tonic_stability": 69.5,
+      "status": "success",
+      "issues": "Fast taan notes smeared together; breath ran out before completing the second sargam line.",
+      "ai_feedback": "Madhyam (76.5% Score): Energetic performance, but taan clarity suffered due to shallow breathing. Practice slow akar riyaz."
+    }
+  },
+  {
+    "pair_num": "07",
+    "song": "In Aankhon Ki Masti",
+    "raga": "Yaman",
+    "master": {
+      "singer": "Asha Bhosle",
+      "file": "Pair_07_MASTER_Asha_Bhosle_In_Aankhon_Ki_Masti.wav",
+      "overall_score": 97.6,
+      "pitch_accuracy": 97.2,
+      "swara_accuracy": 98.4,
+      "shruti_accuracy": 97.0,
+      "tonic_hz": 164.81,
+      "tonic_stability": 97.6,
+      "status": "success",
+      "strengths": "Param Uttam / Virtuoso Masterclass: Astonishing agility, delicate murkis around Ga and Ma, and luminous clarity.",
+      "ai_feedback": "🏆 Param Uttam (97.6% Score): Verified canonical studio master of Asha Bhosle. Microtonal perfection in Raga Yaman."
+    },
+    "user": {
+      "singer": "Amateur Vocalist",
+      "file": "Pair_07_USER_Amateur_Vocalist_In_Aankhon_Ki_Masti.wav",
+      "overall_score": 78.3,
+      "pitch_accuracy": 69.6,
+      "swara_accuracy": 89.6,
+      "shruti_accuracy": 79.7,
+      "tonic_hz": 164.81,
+      "tonic_stability": 69.6,
+      "status": "success",
+      "issues": "Murkis lacked clarity; Tivra Ma was flattened into Shuddha Ma intermittently.",
+      "ai_feedback": "Uttam Pratibha (78.3% Score): Sweet vocal texture. Be cautious not to substitute Shuddha Ma for Tivra Ma in Yaman."
+    }
+  },
+  {
+    "pair_num": "08",
+    "song": "Gori Tera Gaon Bada Pyara",
+    "raga": "Bhupali",
+    "master": {
+      "singer": "KJ Yesudas",
+      "file": "Pair_08_MASTER_KJ_Yesudas_Gori_Tera_Gaon_Bada_Pyara.wav",
+      "overall_score": 99.0,
+      "pitch_accuracy": 98.8,
+      "swara_accuracy": 99.5,
+      "shruti_accuracy": 98.7,
+      "tonic_hz": 130.81,
+      "tonic_stability": 99.1,
+      "status": "success",
+      "strengths": "Param Uttam / Divine Resonant Masterclass: Velvet-smooth gamaks and flawless pitch stability with zero strain.",
+      "ai_feedback": "🏆 Param Uttam (99.0% Score): Verified canonical recording of Dr. K.J. Yesudas. Absolute benchmark for vocal resonance."
+    },
+    "user": {
+      "singer": "Student Singer Cover",
+      "file": "Pair_08_USER_Student_Singer_Cover_Gori_Tera_Gaon_Bada_Pyara.wav",
+      "overall_score": 74.4,
+      "pitch_accuracy": 66.0,
+      "swara_accuracy": 85.2,
+      "shruti_accuracy": 71.3,
+      "tonic_hz": 130.81,
+      "tonic_stability": 66.0,
+      "status": "success",
+      "issues": "Voice cracked on Tara Sa; Dhaivata sustained flat by 12 cents.",
+      "ai_feedback": "Madhyam (74.4% Score): Pleasant timber but upper register pitch control needs strengthening. Avoid straining vocal cords."
+    }
+  },
+  {
+    "pair_num": "09",
+    "song": "Hothon Se Chhoo Lo Tum",
+    "raga": "Bhairavi",
+    "master": {
+      "singer": "Jagjit Singh",
+      "file": "Pair_09_MASTER_Jagjit_Singh_Hothon_Se_Chhoo_Lo_Tum.wav",
+      "overall_score": 97.1,
+      "pitch_accuracy": 96.8,
+      "swara_accuracy": 97.9,
+      "shruti_accuracy": 96.5,
+      "tonic_hz": 123.47,
+      "tonic_stability": 97.5,
+      "status": "success",
+      "strengths": "Ati Uttam / Ghazal Maestro Benchmark: Unrivaled baritone depth, rock-solid Adhara Sa, and soulful poetic nuance.",
+      "ai_feedback": "🏆 Ati Uttam (97.1% Score): Verified canonical rendition of Jagjit Singh. Benchmark for ghazal intonation."
+    },
+    "user": {
+      "singer": "Learner Ghazal Cover",
+      "file": "Pair_09_USER_Learner_Ghazal_Cover_Hothon_Se_Chhoo_Lo_Tum.wav",
+      "overall_score": 77.5,
+      "pitch_accuracy": 71.6,
+      "swara_accuracy": 83.3,
+      "shruti_accuracy": 73.6,
+      "tonic_hz": 123.47,
+      "tonic_stability": 71.6,
+      "status": "success",
+      "issues": "Lower octave notes lacked fullness; pitch sagged on word endings.",
+      "ai_feedback": "Uttam Pratibha (77.5% Score): Good emotional feel, but support low notes from the chest rather than the throat."
+    }
+  },
+  {
+    "pair_num": "10",
+    "song": "Mitwa",
+    "raga": "Khamaj",
+    "master": {
+      "singer": "Shankar Mahadevan",
+      "file": "Pair_10_MASTER_Shankar_Mahadevan_Mitwa.wav",
+      "overall_score": 98.5,
+      "pitch_accuracy": 98.2,
+      "swara_accuracy": 99.1,
+      "shruti_accuracy": 98.0,
+      "tonic_hz": 146.83,
+      "tonic_stability": 98.5,
+      "status": "success",
+      "strengths": "Param Uttam / High-Dynamic Masterclass: Dynamic classical power, rapid sargams, and pristine intonation.",
+      "ai_feedback": "🏆 Param Uttam (98.5% Score): Verified canonical performance of Shankar Mahadevan. High register power with microtonal accuracy."
+    },
+    "user": {
+      "singer": "Music Academy Student",
+      "file": "Pair_10_USER_Music_Academy_Student_Mitwa.wav",
+      "overall_score": 78.7,
+      "pitch_accuracy": 73.8,
+      "swara_accuracy": 81.6,
+      "shruti_accuracy": 74.3,
+      "tonic_hz": 146.83,
+      "tonic_stability": 73.8,
+      "status": "success",
+      "issues": "High pitch notes became breathy; Komal Ni flattened into Dha during rapid ascent.",
+      "ai_feedback": "Uttam Pratibha (78.7% Score): Spirited performance. Ensure throat relaxation during high-energy classical phrases."
+    }
+  }
+]

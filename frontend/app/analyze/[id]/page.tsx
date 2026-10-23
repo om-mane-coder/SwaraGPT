@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PerformanceScore from '@/components/feedback/PerformanceScore';
 import PitchGraph from '@/components/pitch/PitchGraph';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { 
   Award, Sparkles, MessageSquare, Download, ArrowLeft, 
   CheckCircle2, AlertTriangle, Activity, Music, Compass
@@ -412,8 +413,8 @@ function PerformanceReportContent() {
             </div>
 
             {masterComparison.master_critique && (
-              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-sans whitespace-pre-line">
-                {masterComparison.master_critique}
+              <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-sans shadow-2xs">
+                <MarkdownRenderer content={masterComparison.master_critique} />
               </div>
             )}
           </div>

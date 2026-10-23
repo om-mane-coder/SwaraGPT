@@ -8,30 +8,36 @@ from database.db import SessionLocal
 from ai.rag import retrieve_knowledge
 
 def tool_get_user_profile(user_id=1):
-    db = SessionLocal()
-    profile = db.query(UserProfile).filter_by(user_id=user_id).first()
-    db.close()
-    if not profile:
-        return {
-            "skill_level": "Intermediate",
-            "preferred_tonic": "A#",
-            "tonic_frequency_hz": 233.08,
-            "preferred_gharana": "Hindustani Classical (Gwalior / Kirana)",
-            "strong_swaras": ["Sa", "Pa", "Shuddha Re"],
-            "weak_swaras": ["Shuddha Ga", "Komal Ni"],
-            "current_ragas": ["Yaman", "Bhairavi"],
-            "overall_accuracy_pct": 82.4
-        }
-    return {
-        "skill_level": profile.skill_level or "Intermediate",
-        "preferred_tonic": profile.preferred_tonic or "A#",
-        "tonic_frequency_hz": getattr(profile, 'tonic_frequency_hz', 233.08) or 233.08,
-        "preferred_gharana": getattr(profile, 'preferred_gharana', 'Hindustani Classical') or "Hindustani Classical",
-        "strong_swaras": profile.strong_swaras or ["Sa", "Pa"],
-        "weak_swaras": profile.weak_swaras or ["Shuddha Ga"],
-        "current_ragas": profile.current_ragas or ["Yaman"],
-        "overall_accuracy_pct": profile.overall_accuracy_pct or 80.0
+    default_profile = {
+        "skill_level": "Intermediate",
+        "preferred_tonic": "A#",
+        "tonic_frequency_hz": 233.08,
+        "preferred_gharana": "Hindustani Classical (Gwalior / Kirana)",
+        "strong_swaras": ["Sa", "Pa", "Shuddha Re"],
+        "weak_swaras": ["Shuddha Ga", "Komal Ni"],
+        "current_ragas": ["Yaman", "Bhairavi"],
+        "overall_accuracy_pct": 82.4
     }
+    db = SessionLocal()
+    try:
+        profile = db.query(UserProfile).filter_by(user_id=user_id).first()
+        if not profile:
+            return default_profile
+        return {
+            "skill_level": getattr(profile, "skill_level", "Intermediate") or "Intermediate",
+            "preferred_tonic": getattr(profile, "preferred_tonic", "A#") or "A#",
+            "tonic_frequency_hz": getattr(profile, 'tonic_frequency_hz', 233.08) or 233.08,
+            "preferred_gharana": getattr(profile, 'preferred_gharana', 'Hindustani Classical') or "Hindustani Classical",
+            "strong_swaras": getattr(profile, "strong_swaras", None) or ["Sa", "Pa"],
+            "weak_swaras": getattr(profile, "weak_swaras", None) or ["Shuddha Ga"],
+            "current_ragas": getattr(profile, "current_ragas", None) or ["Yaman"],
+            "overall_accuracy_pct": getattr(profile, "overall_accuracy_pct", 80.0) or 80.0
+        }
+    except Exception as e:
+        print(f"[Profile Warning] Falling back to default profile: {e}")
+        return default_profile
+    finally:
+        db.close()
 
 def tool_search_raga_database(raga_name):
     knowledge = retrieve_knowledge(raga_name, raga_context=raga_name)

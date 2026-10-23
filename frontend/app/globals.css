@@ -72,26 +72,97 @@
   background-color: #EDE6D8 !important;
 }
 
-/* Text adaptations for Light Theme */
+/* High-Contrast Clear Text Adaptations for Light Theme */
 .text-white:not(button *):not([class*="bg-amber-"]):not([class*="bg-rose-"]):not([class*="bg-emerald-"]):not([class*="bg-gradient-"]):not(button):not(.text-white-keep) {
-  color: #1E293B !important;
+  color: #0F172A !important;
 }
 
 .text-gray-100,
-.text-gray-200 {
+.text-gray-200,
+.text-slate-100,
+.text-slate-200,
+.text-zinc-100,
+.text-zinc-200 {
+  color: #0F172A !important;
+}
+
+.text-gray-300,
+.text-slate-300,
+.text-zinc-300 {
   color: #1E293B !important;
 }
 
-.text-gray-300 {
-  color: #334155 !important;
+.text-gray-400,
+.text-slate-400,
+.text-zinc-400 {
+  color: #1E293B !important; /* deep slate - crisp and sharp on light theme */
 }
 
-.text-gray-400 {
-  color: #64748B !important;
+.text-gray-500,
+.text-slate-500,
+.text-zinc-500 {
+  color: #1E293B !important; /* deep slate */
 }
 
-.text-gray-500 {
-  color: #94A3B8 !important;
+.text-gray-600,
+.text-slate-600,
+.text-zinc-600 {
+  color: #0F172A !important;
+}
+
+/* High-Contrast Adaptations for Badges & Muted Tags on Light Theme */
+.bg-gray-800,
+.bg-gray-800\/60,
+.bg-gray-800\/80,
+.bg-gray-800\/40,
+.bg-slate-800,
+.bg-slate-800\/60 {
+  background-color: #FEF3C7 !important; /* warm soft gold badge */
+  border-color: #FCD34D !important;
+  color: #78350F !important;
+}
+
+/* High-Contrast Adaptations for Yellow / Amber Text on Light Theme */
+.text-amber-100,
+.text-amber-200,
+.text-amber-300,
+.text-yellow-100,
+.text-yellow-200,
+.text-yellow-300 {
+  color: #78350F !important; /* deep rich sienna/amber for maximum clarity */
+}
+
+.text-amber-400,
+.text-yellow-400 {
+  color: #92400E !important; /* rich warm amber */
+}
+
+.text-amber-500,
+.text-yellow-500 {
+  color: #B45309 !important; /* vivid deep gold */
+}
+
+/* Exceptions: Preserve luminous gold/amber text only inside explicitly dark code containers */
+.bg-slate-900 .text-amber-300,
+.bg-slate-900 .text-amber-400,
+.bg-slate-900 .text-amber-200,
+.bg-black .text-amber-300,
+.bg-black .text-amber-400 {
+  color: #FCD34D !important;
+}
+
+/* Badge pills: Ensure warm gold backgrounds are soft and clear with sharp borders */
+.bg-amber-500\/10,
+.bg-amber-500\/15,
+.bg-amber-500\/20,
+.bg-amber-500\/5 {
+  background-color: #FEF3C7 !important;
+}
+
+.border-amber-500\/20,
+.border-amber-500\/30,
+.border-amber-500\/40 {
+  border-color: #FCD34D !important;
 }
 
 /* Borders in Light Theme */

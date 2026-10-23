@@ -337,7 +337,11 @@ export function findNearestShruti(centsFromSa: number): ShrutiMatchResult {
 }
 
 export function normalizeToCanonicalSwara(raw: string): string {
-  const clean = (raw || '').trim();
+  let clean = (raw || '').trim().replace(/^\.+|\.+$/g, '');
+  const isTivraMa = clean.includes("Ma'") || clean.includes("ma'") || clean.includes("M'") || clean.toLowerCase().includes("tivra");
+  clean = clean.replace(/'/g, '');
+  if (isTivraMa) return "Ma'";
+
   const map: Record<string, string> = {
     'S': 'Sa', 'Sa': 'Sa', 'sa': 'Sa', 'Sa+': 'Sa',
     'r': 're', 're': 're', 're-': 're', 'Re(Komal)': 're',

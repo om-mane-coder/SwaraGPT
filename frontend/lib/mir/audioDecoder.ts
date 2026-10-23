@@ -16,6 +16,9 @@ export async function decodeAndAnalyzeAudio(
     const audioCtx = new AudioCtxClass();
 
     try {
+      if (!options.filename && typeof (audioSource as any)?.name === 'string') {
+        options.filename = (audioSource as any).name;
+      }
       let arrayBuffer: ArrayBuffer;
       if (audioSource instanceof ArrayBuffer) {
         arrayBuffer = audioSource;
