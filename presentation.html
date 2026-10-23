@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwaraGPT — Lab Assessment Presentation (CO2)</title>
+  <style>
+    :root {
+      --bg: #0B0F19;
+      --card-bg: #131929;
+      --card-border: #26304D;
+      --gold: #F59E0B;
+      --cyan: #38BDF8;
+      --green: #22C55E;
+      --text: #F3F4F6;
+      --muted: #9CA3AF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: rgba(19, 25, 41, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 10px 24px;
+      border-radius: 9999px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .btn {
+      background: #1E293B;
+      color: white;
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #334155; border-color: var(--cyan); }
+    .btn-gold { background: var(--gold); color: #000; border: none; }
+    .btn-gold:hover { background: #D97706; }
+    .deck-container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .slide {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--cyan), var(--green));
+    }
+    .slide-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--cyan);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    h1 { font-size: 32px; font-weight: 800; color: #FFF; margin-bottom: 6px; }
+    h2 { font-size: 24px; font-weight: 700; color: #FFF; margin-bottom: 6px; }
+    .subtitle { color: var(--gold); font-size: 16px; margin-bottom: 24px; font-weight: 500; }
+    .table-wrapper { overflow-x: auto; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th {
+      background: #1C2438;
+      color: var(--gold);
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 700;
+      border-bottom: 2px solid var(--card-border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1E273E;
+      color: var(--text);
+    }
+    tr:nth-child(even) { background: rgba(28, 36, 56, 0.4); }
+    .badge-done {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      display: inline-block;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .module-card {
+      background: rgba(11, 15, 25, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .module-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .module-item {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .module-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .module-name { font-weight: 700; font-size: 14.5px; color: #FFF; margin-bottom: 4px; }
+    .module-desc { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; line-height: 1.4; }
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: monospace;
+      transition: color 0.2s;
+    }
+    .github-link:hover { text-decoration: underline; color: #7DD3FC; }
+    .speaker-note {
+      margin-top: 24px;
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 4px solid var(--gold);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+      color: #E2E8F0;
+    }
+    .speaker-note strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <button class="btn" onclick="window.scrollTo({top: document.getElementById('slide1').offsetTop - 80, behavior: 'smooth'})">Slide 1: Objectives</button>
+    <button class="btn" onclick="window.scrollTo({top: document.getElementById('slide2').offsetTop - 80, behavior: 'smooth'})">Slide 2: Modules & GitHub</button>
+    <button class="btn btn-gold" onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+
+  <div class="deck-container">
+
+    <!-- SLIDE 1: OBJECTIVES -->
+    <div class="slide" id="slide1">
+      <div class="slide-badge">LAB ASSESSMENT EVALUATION — CRITERION CO2</div>
+      <h2>Project Objectives & Implementation Dashboard</h2>
+      <div class="subtitle">% of Planned Objectives Completed: <strong>100% [Fully Functional Across All Modules]</strong></div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th style="width: 260px;">Project Objective</th>
+              <th>Engineering Specification & Implementation Details</th>
+              <th style="width: 140px; text-align: center;">Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-1</td>
+              <td style="font-weight: 600;">Acoustic MIR Signal Processing</td>
+              <td style="color: var(--muted);">80 Hz Butterworth High-Pass Filter, -1dBFS Normalization, VAD silence trimming, and continuous pYIN fundamental pitch (F0) tracking.</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-2</td>
+              <td style="font-weight: 600;">Microtonal 22-Shruti Math</td>
+              <td style="color: var(--muted);">Relative cent formulation <code>C = 1200 · log2(f / fSa)</code>. Exact 22-shruti ratios with intonation tolerance zones: <strong>Sur</strong> (&le;25c), <strong>Mild</strong> (&le;50c), <strong>Besur</strong> (&gt;50c).</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-3</td>
+              <td style="font-weight: 600;">Automated Raga Recognition</td>
+              <td style="color: var(--muted);">3-factor Automated Raga Index (ARI), Vadi/Samvadi energy distribution, Pakad n-gram matching, and Gamak/Meend differential segmentation.</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-4</td>
+              <td style="font-weight: 600;">Conversational Virtual Guru (RAG)</td>
+              <td style="color: var(--muted);">Semantic RAG grounded in verified historical Sanskrit/Hindi treatises (<em>Natya Shastra</em>, <em>Sangeeta Ratnakara</em>, <em>Kramik Pustak Malika</em>) with anti-hallucination guardrails.</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-5</td>
+              <td style="font-weight: 600;">Multi-Factor Weighted Scoring</td>
+              <td style="color: var(--muted);">Formula: <code>Score = 35%(P) + 25%(S) + 15%(Sh) + 15%(R) + 10%(T)</code> with dynamic personalized Riyaz alankar regimen generation.</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: var(--cyan);">OBJ-6</td>
+              <td style="font-weight: 600;">Full-Stack System Integration</td>
+              <td style="color: var(--muted);">Next.js 16 (App Router, Turbopack) + FastAPI backend + SQLite/PostgreSQL persistence + WebSocket pitch streaming.</td>
+              <td style="text-align: center;"><span class="badge-done">100% DONE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="speaker-note">
+        <strong>🗣️ Speaker Note for Slide 1:</strong> "As demonstrated in our objective matrix, SwaraGPT has achieved 100% completion across all six planned engineering milestones—ranging from digital signal processing and microtonal mathematical models to conversational AI grounded in classical treatises."
+      </div>
+    </div>
+
+    <!-- SLIDE 2: MODULES -->
+    <div class="slide" id="slide2">
+      <div class="slide-badge">LAB ASSESSMENT EVALUATION — CRITERION CO2</div>
+      <h2>System Modules & Verified GitHub Source Links</h2>
+      <div class="subtitle">Repository: <strong><a href="https://github.com/om-mane-coder/SwaraGPT" target="_blank" style="color: var(--cyan); text-decoration: none;">github.com/om-mane-coder/SwaraGPT</a></strong> | Clean Architecture</div>
+
+      <div class="grid-2">
+        
+        <!-- CORE MODULES -->
+        <div class="module-card">
+          <h3>🧠 Core Modules (Algorithms & MIR)</h3>
+
+          <div class="module-item">
+            <div class="module-name">1. pYIN Pitch Tracking & DSP Engine</div>
+            <div class="module-desc">Fundamental frequency (F0) extraction, harmonic peak picking, and Butterworth HPF filtering.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/ai/pitch_detector.py" target="_blank">🔗 backend/app/ai/pitch_detector.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">2. 22-Shrutis Just Intonation Calculator</div>
+            <div class="module-desc">Mathematical 22-shruti cent mapping and intonation tolerance categorization.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/ai/shrutis.py" target="_blank">🔗 backend/app/ai/shrutis.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">3. Automated Raga Recognition & Pakad</div>
+            <div class="module-desc">Automated Raga Index (ARI), Vadi/Samvadi distribution, and characteristic phrase recognition.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/ai/raga_recognizer.py" target="_blank">🔗 backend/app/ai/raga_recognizer.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">4. Conversational Virtual Guru (RAG)</div>
+            <div class="module-desc">Classical musicology knowledge retriever citing Bharata Muni and Sarangadeva.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/rag/knowledge_base.py" target="_blank">🔗 backend/app/rag/knowledge_base.py</a>
+          </div>
+
+        </div>
+
+        <!-- TRANSACTION MODULES -->
+        <div class="module-card">
+          <h3>🔄 Transaction Modules (User Flows)</h3>
+
+          <div class="module-item">
+            <div class="module-name">Transaction 1: Auth & User Profile</div>
+            <div class="module-desc">Student/Guru role management, JWT bearer authorization, and tonic Sa calibration.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/routers/auth.py" target="_blank">🔗 backend/app/routers/auth.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">Transaction 2: Audio Ingestion & Capture</div>
+            <div class="module-desc">Web Audio API capture, WebM/WAV transcoding, and upload streaming.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/routers/audio.py" target="_blank">🔗 backend/app/routers/audio.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">Transaction 3: Performance Analysis & Scoring</div>
+            <div class="module-desc">Multi-factor score calculation, intonation zone breakdown, and pitch contour visualization.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/routers/analysis.py" target="_blank">🔗 backend/app/routers/analysis.py</a>
+          </div>
+
+          <div class="module-item">
+            <div class="module-name">Transaction 4: Riyaz Regimen & Progress</div>
+            <div class="module-desc">Adaptive alankar generation based on error notes and longitudinal progress analytics.</div>
+            <a class="github-link" href="https://github.com/om-mane-coder/SwaraGPT/blob/main/backend/app/routers/practice.py" target="_blank">🔗 backend/app/routers/practice.py</a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="speaker-note">
+        <strong>🗣️ Speaker Note for Slide 2:</strong> "Our implementation cleanly separates Core Algorithmic Modules from Transaction Modules handling the student's journey. Each module is verified with comprehensive unit and integration tests, and tracked in our private GitHub repository."
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
