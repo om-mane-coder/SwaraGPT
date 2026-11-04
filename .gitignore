@@ -56,3 +56,11 @@ scratch/
 test_clips/
 .pytest_cache/
 backend/.pytest_cache/
+
+.vercel
+
+*.mbtree
+*.cutree
+*qa_*report.html
+.vercelignore
+frontend/.vercelignore

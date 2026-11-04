@@ -5,7 +5,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SwaraIndicator from '@/components/swara/SwaraIndicator';
-import ShrutiDial, { CANONICAL_SHRUTIS } from '@/components/swara/ShrutiDial';
+import ShrutiDial from '@/components/swara/ShrutiDial';
+import { 
+  findNearestShruti, 
+  CANONICAL_SWARA_CENTERS, 
+  CANONICAL_22_SHRUTIS, 
+  RAGA_SHRUTI_PREFERENCES 
+} from '@/lib/mir/shrutis';
 import PitchGraph, { PitchPoint } from '@/components/pitch/PitchGraph';
 import AudioRecorder from '@/components/audio/AudioRecorder';
 import { 
@@ -27,21 +33,6 @@ const TONIC_OPTIONS = [
   { label: "A3 (220.00 Hz)", val: 220.00, note: "A3" },
   { label: "A#3 (233.08 Hz)", val: 233.08, note: "A#3" },
   { label: "B3 (246.94 Hz)", val: 246.94, note: "B3" },
-];
-
-const NOMINAL_SWARAS = [
-  { name: "Sa", semitone: 0 },
-  { name: "re", semitone: 1 },
-  { name: "Re", semitone: 2 },
-  { name: "ga", semitone: 3 },
-  { name: "Ga", semitone: 4 },
-  { name: "ma", semitone: 5 },
-  { name: "Ma'", semitone: 6 },
-  { name: "Pa", semitone: 7 },
-  { name: "dha", semitone: 8 },
-  { name: "Dha", semitone: 9 },
-  { name: "ni", semitone: 10 },
-  { name: "Ni", semitone: 11 },
 ];
 
 function PracticeContent() {
@@ -132,50 +123,47 @@ function PracticeContent() {
 
   // Convert Hz to Swara & 22-Shruti with Just Intonation precision
   const mapFrequencyToSwara = useCallback((freq: number, saFreq: number) => {
-    if (freq <= 40 || freq > 1500) return;
+    if (freq <= 40 || freq > 1500 || saFreq <= 0) return;
 
     // C = 1200 * log2(freq / saFreq)
     const rawCents = 1200 * Math.log2(freq / saFreq);
     const modCents = ((rawCents % 1200) + 1200) % 1200;
 
-    // Find nearest 22-Shruti
-    let bestShruti = CANONICAL_SHRUTIS[0];
-    let minShrutiDist = 99999;
-    for (const sh of CANONICAL_SHRUTIS) {
-      const d = Math.abs(modCents - sh.cents);
-      if (d < minShrutiDist) {
-        minShrutiDist = d;
-        bestShruti = sh;
+    // Authentic Indian Classical 22-Shruti match with active Raga microtonal context
+    const match = findNearestShruti(modCents, ragaName);
+
+    let displaySwara = match.canonical_swara;
+    let displayDev = match.delta_cents;
+
+    if (analysisMode === 'shruti') {
+      displaySwara = `${match.swara} (${match.shruti_name})`;
+      displayDev = match.delta_cents;
+    } else {
+      // Swara Mode: authentic Just Intonation center (e.g. 386.3 cents for Ga, 590.2 for Ma', etc.)
+      const canonical = match.canonical_swara;
+      displaySwara = canonical;
+
+      // Check if active raga has a preferred microtonal center for this swara
+      const ragaPrefIdx = RAGA_SHRUTI_PREFERENCES[ragaName]?.[canonical];
+      let targetCents = CANONICAL_SWARA_CENTERS[canonical]?.cents ?? match.shruti.cents;
+      if (ragaPrefIdx && CANONICAL_22_SHRUTIS[ragaPrefIdx - 1]) {
+        targetCents = CANONICAL_22_SHRUTIS[ragaPrefIdx - 1].cents;
       }
+
+      let dev = modCents - targetCents;
+      if (dev > 600) dev -= 1200;
+      else if (dev < -600) dev += 1200;
+      displayDev = Math.round(dev * 10) / 10;
     }
-    // Wrap around 1200 cents
-    if (Math.abs(modCents - 1200) < minShrutiDist) {
-      bestShruti = CANONICAL_SHRUTIS[0];
-      minShrutiDist = Math.abs(modCents - 1200);
-    }
-
-    // Find nearest 12-semitone note
-    const semitone = Math.round(modCents / 100) % 12;
-    const targetCents = semitone * 100;
-    const dev = modCents - targetCents;
-    const matchedSwara = NOMINAL_SWARAS[semitone].name;
-
-    // Shruti microtonal deviation
-    let shrutiDev = modCents - bestShruti.cents;
-    if (shrutiDev > 600) shrutiDev -= 1200;
-    else if (shrutiDev < -600) shrutiDev += 1200;
-
-    const displaySwara = analysisMode === 'shruti' ? `${bestShruti.swara} (${bestShruti.name})` : matchedSwara;
-    const displayDev = analysisMode === 'shruti' ? shrutiDev : dev;
 
     setLiveFreq(freq);
     setLiveSwara(displaySwara);
-    setLiveCents(modCents);
+    setLiveCents(Math.round(modCents * 10) / 10);
     setLiveDeviation(displayDev);
 
     // Update real-time contour history
     setPitchHistory((prev) => {
-      const now = prev.length > 0 ? prev[prev.length - 1].time + 0.1 : 0;
+      const now = prev.length > 0 ? prev[prev.length - 1].time + 0.05 : 0;
       const nextPoint: PitchPoint = {
         time: parseFloat(now.toFixed(2)),
         frequency: parseFloat(freq.toFixed(1)),
@@ -186,7 +174,12 @@ function PracticeContent() {
       };
       return [...prev.slice(-60), nextPoint];
     });
-  }, [analysisMode]);
+  }, [analysisMode, ragaName]);
+
+  const mapFrequencyToSwaraRef = useRef(mapFrequencyToSwara);
+  mapFrequencyToSwaraRef.current = mapFrequencyToSwara;
+  const tonicRef = useRef(tonic);
+  tonicRef.current = tonic;
 
   // Start live mic pitch tracking
   const startLivePitchTracker = async () => {
@@ -209,7 +202,7 @@ function PracticeContent() {
         const pitch = detectPitchMPM(buffer, audioCtx.sampleRate);
 
         if (pitch !== -1 && pitch >= 60 && pitch <= 1000) {
-          mapFrequencyToSwara(pitch, tonic);
+          mapFrequencyToSwaraRef.current(pitch, tonicRef.current);
         } else {
           setLiveFreq(0);
           setLiveDeviation(0);

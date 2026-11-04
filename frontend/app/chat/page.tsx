@@ -10,7 +10,7 @@ import {
   ShieldCheck, HelpCircle, ArrowRight, User, Bot, CheckCircle2,
   Copy, Check, Volume2, VolumeX, ChevronDown, ChevronRight,
   Trash2, Plus, MessageSquare, BrainCircuit, Square, SlidersHorizontal,
-  Flame, Music2, Headphones, Activity
+  Flame, Music2, Headphones, Activity, Key, X
 } from 'lucide-react';
 import { chatApi } from '@/lib/api';
 import { useSwaraStore } from '@/lib/store';
@@ -43,20 +43,28 @@ interface ConversationItem {
 
 const MODEL_OPTIONS = [
   {
-    id: 'nvidia/nemotron-3-ultra-550b-a55b',
-    name: 'SwaraGPT 550B Ultra',
-    badge: 'Deep Reasoning Flagship',
-    desc: '550-Billion parameter engine with deep musical treatise reasoning & vocal pedagogy',
+    id: 'swaragpt-native',
+    name: 'SwaraGPT Shastra Engine',
+    badge: 'Canonical Musicology',
+    desc: 'Instant, authoritative classical musicology grounded in Natya Shastra, Sangeeta Ratnakara & Bhatkhande',
     icon: BrainCircuit,
     color: 'from-amber-500 to-amber-700'
   },
   {
-    id: 'meta/llama-3.2-11b-vision-instruct',
-    name: 'SwaraGPT 11B Turbo',
-    badge: 'Real-Time Conversational',
-    desc: 'Lightning-fast conversational mentor for rapid Q&A, drills, and explanations',
+    id: 'gemini-2.5-flash',
+    name: 'Google Gemini 2.5 Flash',
+    badge: 'Cloud Multimodal AI',
+    desc: 'Deep musical dialogue and live queries powered by Google AI',
     icon: Sparkles,
     color: 'from-emerald-500 to-teal-700'
+  },
+  {
+    id: 'gpt-4o-mini',
+    name: 'OpenAI GPT-4o Mini',
+    badge: 'Cloud AI',
+    desc: 'Advanced conversational reasoning with Indian classical prompts',
+    icon: Bot,
+    color: 'from-blue-500 to-indigo-700'
   }
 ];
 
@@ -148,6 +156,29 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [expandedThoughts, setExpandedThoughts] = useState<{ [id: string]: boolean }>({});
   const [includeTelemetry, setIncludeTelemetry] = useState<boolean>(true);
+  const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
+  const [customApiKey, setCustomApiKey] = useState<string>('');
+  const [tempApiKey, setTempApiKey] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('swara_custom_api_key') || '';
+      setCustomApiKey(savedKey);
+      setTempApiKey(savedKey);
+    }
+  }, []);
+
+  const saveCustomApiKey = (keyToSave: string) => {
+    setCustomApiKey(keyToSave);
+    if (typeof window !== 'undefined') {
+      if (keyToSave.trim()) {
+        localStorage.setItem('swara_custom_api_key', keyToSave.trim());
+      } else {
+        localStorage.removeItem('swara_custom_api_key');
+      }
+    }
+    setShowKeyModal(false);
+  };
 
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const shouldAutoScrollRef = useRef<boolean>(true);
@@ -329,105 +360,11 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
     abortControllerRef.current = abortController;
 
     try {
-      // 1. Try real-time Server-Sent Events streaming from /chat/stream
-      const streamUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/chat/stream`;
-      const response = await fetch(streamUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: textToSend,
-          conversation_id: activeConvId,
-          performance_context: perfContext,
-          model: selectedModel
-        }),
-        signal: abortController.signal
-      });
-
-      if (response.ok && response.body) {
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let accumulatedText = '';
-        let accumulatedThought = '';
-        let citations: Citation[] = [];
-        let suggestedDrills: string[] = [];
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.replace('data: ', '').trim());
-                if (data.type === 'init') {
-                  citations = data.citations || [];
-                  suggestedDrills = data.suggested_drills || [];
-                } else if (data.type === 'thought') {
-                  accumulatedThought += data.text;
-                } else if (data.type === 'content') {
-                  accumulatedText += data.text;
-                }
-
-                // Update UI smoothly
-                setMessages(prev =>
-                  prev.map(m =>
-                    m.id === guruMsgId
-                      ? {
-                          ...m,
-                          text: accumulatedText,
-                          thought: accumulatedThought || undefined,
-                          citations: citations.length > 0 ? citations : m.citations,
-                          suggested_drills: suggestedDrills.length > 0 ? suggestedDrills : m.suggested_drills,
-                          isStreaming: true
-                        }
-                      : m
-                  )
-                );
-              } catch {
-                // Ignore parse errors on split chunks
-              }
-            }
-          }
-        }
-
-        // Finalize streaming: ensure text is never empty if thoughts arrived
-        const finalContent = accumulatedText.trim() || accumulatedThought.trim() || '🙏 Namaste, I am at your service.';
-        const finalThought = accumulatedText.trim() ? (accumulatedThought.trim() || undefined) : undefined;
-
-        setMessages(prev =>
-          prev.map(m =>
-            m.id === guruMsgId
-              ? {
-                  ...m,
-                  text: finalContent,
-                  thought: finalThought,
-                  isStreaming: false
-                }
-              : m
-          )
-        );
-        setLoading(false);
-        abortControllerRef.current = null;
-        return;
-      }
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        setLoading(false);
-        return;
-      }
-      console.warn("Streaming API fell back to non-streaming POST /chat:", err);
-    }
-
-    // 2. Non-Streaming Fallback with high-performance LLM
-    try {
-      const res = await chatApi.send(textToSend, perfContext, selectedModel);
+      const res = await chatApi.send(textToSend, perfContext, selectedModel, customApiKey);
       const data = res.data;
       const answer = data?.content || data?.response || data?.reply || data?.message || (typeof data === 'string' ? data : "I have reflected upon your inquiry.");
       const thought = data?.thought || null;
-      const modelUsed = data?.model || selectedModel;
+      const modelUsed = data?.model || activeModelObj.name;
 
       setMessages(prev =>
         prev.map(m =>
@@ -514,57 +451,38 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
 
       <div className="flex-1 flex max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-6 py-3 gap-4 overflow-hidden min-h-0">
         
-        {/* Left Sidebar - Chat History (ChatGPT/Gemini Style) */}
+        {/* Left Sidebar - Chat History */}
         <aside className={`${
-          sidebarOpen ? 'w-64 sm:w-72' : 'w-0'
-        } transition-all duration-300 ease-in-out shrink-0 bg-white/90 backdrop-blur-md rounded-2xl border border-amber-900/10 shadow-sm flex flex-col overflow-hidden hidden md:flex`}>
+          sidebarOpen ? 'w-64' : 'w-0'
+        } transition-all duration-300 ease-in-out shrink-0 bg-white rounded-2xl border border-amber-900/10 shadow-xs flex flex-col overflow-hidden hidden md:flex`}>
           
           {/* New Chat Button */}
           <div className="p-3 border-b border-amber-900/10">
             <button
               onClick={startNewChat}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-medium text-xs py-2.5 px-4 rounded-xl shadow-sm transition-all hover:shadow cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs py-2 px-3 rounded-xl transition-colors cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>New Guru Dialogue</span>
-            </button>
-          </div>
-
-          {/* Telemetry Switch */}
-          <div className="p-3 bg-amber-50/70 border-b border-amber-200/60 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2 text-slate-700 font-medium">
-              <Activity className="w-3.5 h-3.5 text-amber-700" />
-              <span>Singing Telemetry</span>
-            </div>
-            <button
-              onClick={() => setIncludeTelemetry(!includeTelemetry)}
-              className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
-                includeTelemetry ? 'bg-amber-600' : 'bg-slate-300'
-              }`}
-              title="Include live vocal performance scores in queries"
-            >
-              <span className={`w-3.5 h-3.5 rounded-full bg-white absolute top-0.5 transition-transform ${
-                includeTelemetry ? 'left-4.5' : 'left-1'
-              }`} />
+              <span>New Conversation</span>
             </button>
           </div>
 
           {/* Conversations List */}
-          <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold px-2 py-1">
-              Recent Dialogues
+              History
             </div>
             {conversations.map((conv) => (
               <div
                 key={conv.id}
                 onClick={() => setActiveConvId(conv.id)}
-                className={`group flex items-center justify-between p-2.5 rounded-xl text-xs cursor-pointer transition-all ${
+                className={`group flex items-center justify-between p-2 rounded-xl text-xs cursor-pointer transition-colors ${
                   activeConvId === conv.id
-                    ? 'bg-amber-100/80 text-amber-950 font-semibold shadow-2xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    ? 'bg-amber-100 text-amber-950 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <div className="flex items-center gap-2.5 truncate">
+                <div className="flex items-center gap-2 truncate">
                   <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${activeConvId === conv.id ? 'text-amber-700' : 'text-slate-400'}`} />
                   <span className="truncate">{conv.title}</span>
                 </div>
@@ -572,51 +490,35 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
               </div>
             ))}
           </div>
-
-          {/* Knowledge Grounding Status */}
-          <div className="p-3 border-t border-amber-900/10 bg-[#FCFAF6] text-[11px] text-slate-500 flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span className="truncate">Musicology Canon Grounded</span>
-          </div>
         </aside>
 
         {/* Main Chat Workspace */}
-        <main className="flex-1 flex flex-col bg-white/95 backdrop-blur-md rounded-2xl border border-amber-900/10 shadow-sm overflow-hidden relative">
+        <main className="flex-1 flex flex-col bg-white rounded-2xl border border-amber-900/10 shadow-xs overflow-hidden relative">
           
-          {/* Top Bar: Model Selector, Sidebar Toggle & Status */}
-          <header className="px-4 py-3 border-b border-amber-900/10 flex items-center justify-between bg-[#FCFAF6]/90">
+          {/* Top Bar: Model Selector & Sidebar Toggle */}
+          <header className="px-4 py-2.5 border-b border-amber-900/10 flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="hidden md:flex p-1.5 rounded-lg text-slate-500 hover:bg-slate-200 transition-colors cursor-pointer"
+                className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 title="Toggle Sidebar"
               >
                 <SlidersHorizontal className="w-4 h-4" />
               </button>
 
-              {/* Model Selector Dropdown */}
+              {/* Clean Model Selector */}
               <div className="relative">
                 <button
                   onClick={() => setShowModelDropdown(!showModelDropdown)}
-                  className="flex items-center gap-2 bg-white hover:bg-amber-50/70 border border-amber-300/80 px-3 py-1.5 rounded-xl shadow-2xs transition-all cursor-pointer group"
+                  className="flex items-center gap-2 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                 >
                   <activeModelObj.icon className="w-4 h-4 text-amber-700" />
-                  <div className="text-left">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-900">{activeModelObj.name}</span>
-                      <span className="text-[9px] bg-amber-100 text-amber-800 font-mono px-1.5 py-0.2 rounded font-semibold">
-                        {activeModelObj.badge}
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
+                  <span className="text-xs font-semibold text-slate-800">{activeModelObj.name}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                 </button>
 
                 {showModelDropdown && (
-                  <div className="absolute left-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-amber-200/90 p-2 z-50">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold px-2 py-1 mb-1">
-                      Select Virtual Guru Engine
-                    </div>
+                  <div className="absolute left-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-slate-200 p-1.5 z-50">
                     {MODEL_OPTIONS.map((opt) => (
                       <div
                         key={opt.id}
@@ -624,35 +526,108 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
                           setSelectedModel(opt.id);
                           setShowModelDropdown(false);
                         }}
-                        className={`p-2.5 rounded-xl cursor-pointer transition-all ${
-                          selectedModel === opt.id
-                            ? 'bg-amber-50 border border-amber-300'
-                            : 'hover:bg-slate-50'
+                        className={`p-2 rounded-lg cursor-pointer transition-colors ${
+                          selectedModel === opt.id ? 'bg-amber-50 text-amber-900 font-semibold' : 'hover:bg-slate-50 text-slate-700'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <opt.icon className="w-4 h-4 text-amber-700" />
-                            <span className="text-xs font-bold text-slate-900">{opt.name}</span>
-                          </div>
-                          {selectedModel === opt.id && <Check className="w-4 h-4 text-amber-700" />}
+                          <span className="text-xs">{opt.name}</span>
+                          {selectedModel === opt.id && <Check className="w-3.5 h-3.5 text-amber-700" />}
                         </div>
-                        <p className="text-[11px] text-slate-500 mt-1 pl-6">{opt.desc}</p>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
+
+              {/* API Key Modal Button */}
+              <button
+                onClick={() => {
+                  setTempApiKey(customApiKey);
+                  setShowKeyModal(true);
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                  customApiKey
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                }`}
+                title="Configure custom AI Key (Gemini / OpenAI)"
+              >
+                <Key className="w-3.5 h-3.5 text-amber-700" />
+                <span className="hidden sm:inline">{customApiKey ? 'Custom AI Key Active' : 'Custom AI Key'}</span>
+              </button>
             </div>
 
-            {/* Right Status Badges */}
-            <div className="flex items-center gap-2">
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
-                <span>RAG Active (22 Shrutis & Ragas)</span>
-              </span>
+            {/* Subtle Status */}
+            <div className="text-[11px] font-mono text-slate-400">
+              Classical Shastras Grounded
             </div>
           </header>
+
+          {/* API Key Setup Modal */}
+          {showKeyModal && (
+            <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-2xl max-w-md w-full border border-slate-200 shadow-xl p-6 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2 text-slate-900 font-semibold text-sm">
+                    <Key className="w-4 h-4 text-amber-600" />
+                    <span>Configure AI Provider Key (Optional)</span>
+                  </div>
+                  <button
+                    onClick={() => setShowKeyModal(false)}
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  SwaraGPT features a built-in canonical musicology engine that answers all classical inquiries offline with zero keys. To connect live cloud AI reasoning, paste your free Google Gemini API key or OpenAI key below:
+                </p>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-slate-700 block">API Key (Gemini or OpenAI):</label>
+                  <input
+                    type="password"
+                    value={tempApiKey}
+                    onChange={(e) => setTempApiKey(e.target.value)}
+                    placeholder="AIzaSy... or sk-..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-mono"
+                  />
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                    <span>Stored locally in your browser</span>
+                    <a
+                      href="https://aistudio.google.com/app/apikey"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-700 hover:text-amber-800 font-semibold underline"
+                    >
+                      Get Free Gemini Key ↗
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                  {customApiKey && (
+                    <button
+                      type="button"
+                      onClick={() => saveCustomApiKey('')}
+                      className="px-3 py-1.5 rounded-xl text-xs text-rose-600 hover:bg-rose-50 font-medium cursor-pointer"
+                    >
+                      Clear Key
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => saveCustomApiKey(tempApiKey)}
+                    className="px-4 py-1.5 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-xs cursor-pointer transition-colors"
+                  >
+                    Save & Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Messages Stream Container */}
           <div
@@ -663,31 +638,20 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
             
             {/* Empty state suggestions */}
             {messages.length <= 1 && (
-              <div className="max-w-2xl mx-auto my-6 space-y-4">
-                <div className="text-center space-y-1.5">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-700 text-white shadow-md shadow-amber-500/25">
-                    <Sparkles className="w-6 h-6" />
-                  </div>
-                  <h2 className="text-base font-bold text-slate-800 font-serif">Sadhana Inquiries & Masterclass Topics</h2>
-                  <p className="text-xs text-slate-500">Select a prompt below or type your custom question to begin.</p>
+              <div className="max-w-xl mx-auto my-auto py-12 text-center space-y-5">
+                <div>
+                  <h2 className="text-lg font-bold text-slate-800 font-serif">Ask Your Virtual Guru</h2>
+                  <p className="text-xs text-slate-500 mt-1">Select a topic below or type any question to begin</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="flex flex-wrap justify-center gap-2">
                   {SUGGESTED_PROMPTS.map((item, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(item.prompt)}
-                      className="text-left p-3.5 bg-white hover:bg-amber-50/70 border border-amber-200/80 hover:border-amber-400 rounded-xl transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
+                      className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 rounded-xl text-xs font-medium transition-colors cursor-pointer"
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-mono text-amber-800 font-semibold flex items-center gap-1">
-                          <item.icon className="w-3 h-3 text-amber-600" />
-                          {item.category}
-                        </span>
-                        <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-amber-700 group-hover:translate-x-0.5 transition-all" />
-                      </div>
-                      <div className="text-xs font-bold text-slate-800 group-hover:text-amber-950">{item.title}</div>
-                      <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{item.prompt}</div>
+                      {item.title}
                     </button>
                   ))}
                 </div>
@@ -788,15 +752,12 @@ How may I illuminate your musical path today? Feel free to ask a question or exp
 
                   {/* RAG Knowledge Citations */}
                   {msg.sender === 'guru' && msg.citations && msg.citations.length > 0 && !msg.isStreaming && (
-                    <div className="mt-4 pt-3 border-t border-amber-200/60 text-[11px] font-mono space-y-1 bg-amber-50/60 p-2.5 rounded-xl">
-                      <div className="flex items-center gap-1.5 text-amber-950 font-bold">
-                        <BookOpen className="w-3.5 h-3.5 text-amber-700" />
-                        <span>Verified Knowledge Sources:</span>
-                      </div>
+                    <div className="mt-3 pt-2 text-[11px] text-slate-400 font-mono">
+                      <span className="font-semibold text-slate-500">Sources: </span>
                       {msg.citations.map((c, i) => (
-                        <div key={i} className="text-slate-600 pl-3 border-l-2 border-amber-400">
-                          <span className="text-slate-900 font-semibold">{c.title}</span> • {c.source} {c.tradition ? `(${c.tradition})` : ''}
-                        </div>
+                        <span key={i}>
+                          {c.title} ({c.source}){i < msg.citations!.length - 1 ? ' • ' : ''}
+                        </span>
                       ))}
                     </div>
                   )}

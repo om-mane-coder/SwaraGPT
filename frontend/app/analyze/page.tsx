@@ -8,7 +8,7 @@ import AudioRecorder from '@/components/audio/AudioRecorder';
 import { 
   Upload, Sparkles, CheckCircle2, ArrowRight, RefreshCw, 
   Layers, ShieldAlert, Music, FileAudio, Clock, Play, Pause,
-  Award, GraduationCap, Volume2
+  Award, GraduationCap, Volume2, ChevronDown
 } from 'lucide-react';
 import { audioApi } from '@/lib/api';
 import { useSwaraStore } from '@/lib/store';
@@ -153,6 +153,7 @@ export default function AnalyzePage() {
   const [targetRaga, setTargetRaga] = useState<string>(selectedRaga || 'Yaman');
   const [tonicHz, setTonicHz] = useState<number>(selectedTonicHz || 138.59);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [showBenchmarks, setShowBenchmarks] = useState<boolean>(false);
   const [currentStage, setCurrentStage] = useState<number>(1);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
@@ -254,60 +255,56 @@ export default function AnalyzePage() {
     <div className="min-h-screen flex flex-col bg-[#FAF8F5]">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Page Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-mono mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Automated MIR Vocal Evaluator</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-serif tracking-tight mb-3">
-            Analyze Vocal Performance
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif tracking-tight mb-2">
+            Vocal Practice & Riyaz Analyzer
           </h1>
-          <p className="text-sm text-gray-400">
-            Upload or record singing audio to extract pitch contours, identify swaras, check raga adherence, and receive AI Guru critique.
+          <p className="text-xs sm:text-sm text-slate-600">
+            Record or upload your singing to check pitch accuracy, swara alignment, and receive instant feedback.
           </p>
         </div>
 
         {/* Target Raga & Tonic Selection */}
-        <div className="glass-card p-6 rounded-2xl border border-amber-500/20 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="bg-white p-5 rounded-2xl border border-amber-900/10 shadow-xs mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-mono text-gray-400 block mb-2">
-              Target Raga Benchmark:
+            <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+              Target Raga:
             </label>
             <select
               value={targetRaga}
               onChange={(e) => setTargetRaga(e.target.value)}
-              className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition-colors"
             >
               {['Yaman', 'Bhairav', 'Bhairavi', 'Bhupali', 'Bageshri', 'Darbari Kanada', 'Malkauns', 'Kafi', 'Todi', 'Marwa', 'Desh', 'Hamsadhwani'].map((r) => (
                 <option key={r} value={r}>Raga {r}</option>
               ))}
             </select>
-            <span className="text-[11px] text-gray-500 mt-1 block">
-              Evaluation rules and canonical shrutis are configured per raga.
+            <span className="text-[11px] text-slate-400 mt-1 block">
+              Evaluates swara grammar & shruti intonation.
             </span>
           </div>
 
           <div>
-            <label className="text-xs font-mono text-gray-400 block mb-2">
-              Fundamental Sa Reference (Hz):
+            <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+              Sa Tonic Reference (Hz):
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <input
                 type="number"
                 value={tonicHz}
                 step="0.1"
                 onChange={(e) => setTonicHz(parseFloat(e.target.value) || 130.81)}
-                className="w-full bg-[#090D16] border border-gray-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-300 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-amber-600 focus:bg-white transition-colors"
               />
-              <span className="text-xs font-mono text-gray-400 shrink-0">
-                {tonicHz < 150 ? 'Male Voice' : 'Female Voice'}
+              <span className="text-[11px] font-mono text-slate-500 shrink-0 bg-slate-100 px-2 py-1.5 rounded-lg">
+                {tonicHz < 150 ? 'Male (~C3)' : 'Female (~G#3)'}
               </span>
             </div>
-            <span className="text-[11px] text-gray-500 mt-1 block">
-              Set your personal tonic or leave for automated long-term estimation.
+            <span className="text-[11px] text-slate-400 mt-1 block">
+              Fundamental Sa pitch reference frequency.
             </span>
           </div>
         </div>
@@ -373,110 +370,101 @@ export default function AnalyzePage() {
           </div>
         )}
 
-        {/* 10 Canonical Benchmark Vocal Pairs (Master vs. Amateur) */}
+        {/* Optional Benchmark Vocal Library */}
         {!isProcessing && (
-          <div className="mt-12">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono mb-2">
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Canonical MIR Ground-Truth Testbed</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 font-serif">
-                  10 Master vs. Amateur Vocal Benchmark Pairs
-                </h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Listen or evaluate famous legends (scoring 95–100%) against amateur learners singing identical lyrics.
-                </p>
-              </div>
-              <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500">
-                <span className="px-2 py-1 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 font-semibold">Master (95–100%)</span>
-                <span>vs</span>
-                <span className="px-2 py-1 rounded bg-slate-200 text-slate-700 border border-slate-300 font-semibold">Learner (70–79%)</span>
-              </div>
-            </div>
+          <div className="mt-8 pt-6 border-t border-slate-200">
+            <button
+              onClick={() => setShowBenchmarks(!showBenchmarks)}
+              className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-amber-800 transition-colors mx-auto cursor-pointer p-2 rounded-lg hover:bg-amber-50"
+            >
+              <Award className="w-4 h-4 text-amber-600" />
+              <span>{showBenchmarks ? "Hide Sample Practice Tracks" : "Try with Sample Master & Student Tracks (Optional)"}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showBenchmarks ? "rotate-180" : ""}`} />
+            </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {BENCHMARK_PAIRS.map((pair) => (
-                <div
-                  key={pair.num}
-                  className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-                >
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">
-                          #{pair.num}
+            {showBenchmarks && (
+              <div className="mt-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-base font-bold text-slate-800 font-serif">
+                    Sample Classical & Film Vocal Tracks
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Select a sample below to test the automatic pitch & swara evaluation engine.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {BENCHMARK_PAIRS.map((pair) => (
+                    <div
+                      key={pair.num}
+                      className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col justify-between"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">
+                            #{pair.num}
+                          </span>
+                          <h3 className="text-xs font-bold text-slate-900">
+                            {pair.song}
+                          </h3>
+                        </div>
+                        <span className="text-[10px] text-amber-700 font-mono">
+                          Raga {pair.raga}
                         </span>
-                        <h3 className="text-sm font-bold text-slate-900 font-serif">
-                          {pair.song}
-                        </h3>
                       </div>
-                      <span className="text-[11px] text-amber-700 font-mono mt-0.5 inline-block">
-                        Raga {pair.raga}
-                      </span>
-                    </div>
-                  </div>
 
-                  {/* Master vs Student Row */}
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
-                    {/* Master Singer Option */}
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-200/60 text-xs">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Award className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <div className="truncate">
-                          <span className="font-semibold text-slate-900 block truncate">{pair.masterSinger}</span>
-                          <span className="text-[10px] text-amber-700 font-mono">Master Score: {pair.masterScore}</span>
+                      <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                        {/* Master Singer Option */}
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-200/60 text-xs">
+                          <div className="truncate pr-2">
+                            <span className="font-semibold text-slate-900 block truncate text-xs">{pair.masterSinger}</span>
+                            <span className="text-[10px] text-amber-700 font-mono">Master ({pair.masterScore})</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              onClick={() => togglePlayAudio(pair.masterFile)}
+                              className="p-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:text-amber-600 transition-colors"
+                              title="Preview Master audio"
+                            >
+                              {playingFile === pair.masterFile ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                            </button>
+                            <button
+                              onClick={() => handleSelectDemoTrack(pair.masterFile, pair.raga, pair.tonic)}
+                              className="px-2 py-1 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-medium text-[11px] transition-colors"
+                            >
+                              Analyze
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Learner Singer Option */}
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+                          <div className="truncate pr-2">
+                            <span className="font-medium text-slate-800 block truncate text-xs">{pair.userSinger}</span>
+                            <span className="text-[10px] text-slate-500 font-mono">Student ({pair.userScore})</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              onClick={() => togglePlayAudio(pair.userFile)}
+                              className="p-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
+                              title="Preview Learner audio"
+                            >
+                              {playingFile === pair.userFile ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                            </button>
+                            <button
+                              onClick={() => handleSelectDemoTrack(pair.userFile, pair.raga, pair.tonic)}
+                              className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-900 text-white font-medium text-[11px] transition-colors"
+                            >
+                              Analyze
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => togglePlayAudio(pair.masterFile)}
-                          className="p-1.5 rounded-md bg-white border border-slate-300 text-slate-700 hover:text-amber-600 hover:border-amber-400 transition-all"
-                          title="Preview Master audio"
-                        >
-                          {playingFile === pair.masterFile ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                        </button>
-                        <button
-                          onClick={() => handleSelectDemoTrack(pair.masterFile, pair.raga, pair.tonic)}
-                          className="px-2.5 py-1 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-medium text-[11px] transition-all flex items-center gap-1 shadow-sm"
-                        >
-                          <span>Analyze</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
                     </div>
-
-                    {/* Learner Singer Option */}
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <GraduationCap className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <div className="truncate">
-                          <span className="font-medium text-slate-800 block truncate">{pair.userSinger}</span>
-                          <span className="text-[10px] text-slate-500 font-mono">Learner Score: {pair.userScore}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => togglePlayAudio(pair.userFile)}
-                          className="p-1.5 rounded-md bg-white border border-slate-300 text-slate-700 hover:text-slate-900 hover:border-slate-400 transition-all"
-                          title="Preview Learner audio"
-                        >
-                          {playingFile === pair.userFile ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                        </button>
-                        <button
-                          onClick={() => handleSelectDemoTrack(pair.userFile, pair.raga, pair.tonic)}
-                          className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-900 text-white font-medium text-[11px] transition-all flex items-center gap-1 shadow-sm"
-                        >
-                          <span>Analyze</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
 

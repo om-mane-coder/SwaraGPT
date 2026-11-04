@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Sparkles, Music, Mic, BookOpen, Activity, User, LogOut, 
-  Settings, History, Menu, X, Compass, Award 
+  Settings, History, Menu, X, Compass, Award, Disc 
 } from 'lucide-react';
 import { useSwaraStore } from '@/lib/store';
 
@@ -20,13 +20,11 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: Activity },
-    { href: '/practice', label: 'Practice', icon: Mic },
-    { href: '/analyze', label: 'Analyze', icon: Award },
+    { href: '/analyze', label: 'Vocal Practice', icon: Mic },
+    { href: '/riyaz', label: 'Riyaz Studio', icon: Disc },
+    { href: '/chat', label: 'Virtual Guru', icon: Sparkles },
     { href: '/ragas', label: 'Ragas', icon: BookOpen },
-    { href: '/progress', label: 'Progress', icon: Compass },
-    { href: '/history', label: 'History', icon: History },
-    { href: '/chat', label: 'Guru Chat', icon: Sparkles },
+    { href: '/dashboard', label: 'Progress', icon: Activity },
   ];
 
   return (
@@ -35,21 +33,17 @@ export default function Navbar() {
         
         {/* Brand Identity */}
         <Link href="/" className="flex items-center gap-3 group" id="nav-brand-logo">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform duration-300">
-            <Music className="w-5 h-5 text-black" />
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-            </span>
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 shadow-sm group-hover:scale-105 transition-transform duration-200">
+            <Music className="w-5 h-5 text-white" />
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold tracking-tight saffron-gradient-text">SwaraGPT</span>
-            <span className="text-[10px] text-amber-700/80 tracking-widest uppercase font-mono font-medium">Virtual Guru AI</span>
+            <span className="text-[10px] text-amber-800/70 tracking-widest uppercase font-mono font-medium">Virtual Guru</span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-2 text-sm font-medium text-slate-600">
+        <nav className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-600">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
@@ -57,9 +51,9 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg transition-all duration-200 ${
+                className={`flex items-center gap-2 py-2 px-3.5 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'text-amber-800 bg-amber-100/90 font-semibold border border-amber-300/80 shadow-2xs'
+                    ? 'text-amber-900 bg-amber-100 font-semibold'
                     : 'text-slate-600 hover:text-amber-800 hover:bg-amber-50/70'
                 }`}
                 id={`nav-${link.label.toLowerCase().replace(' ', '-')}`}

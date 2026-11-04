@@ -7,26 +7,27 @@ from typing import Optional, Dict, Any, List
 import numpy as np
 from app.ai.shrutis import find_nearest_shruti
 
-# 12 Nominal Semitone Centers (in Cents from Sa)
+# 12 Authentic Indian Classical Just Intonation Swara Centers (in Cents from Sa)
 SWARA_12_NOMINAL = [
     {"name": "Sa", "type": "Shuddha", "cents": 0.0, "code": "S"},
-    {"name": "Re", "type": "Komal", "cents": 100.0, "code": "r"},
-    {"name": "Re", "type": "Shuddha", "cents": 200.0, "code": "R"},
-    {"name": "Ga", "type": "Komal", "cents": 300.0, "code": "g"},
-    {"name": "Ga", "type": "Shuddha", "cents": 400.0, "code": "G"},
-    {"name": "Ma", "type": "Shuddha", "cents": 500.0, "code": "m"},
-    {"name": "Ma", "type": "Tivra", "cents": 600.0, "code": "M'"},
-    {"name": "Pa", "type": "Shuddha", "cents": 700.0, "code": "P"},
-    {"name": "Dha", "type": "Komal", "cents": 800.0, "code": "d"},
-    {"name": "Dha", "type": "Shuddha", "cents": 900.0, "code": "D"},
-    {"name": "Ni", "type": "Komal", "cents": 1000.0, "code": "n"},
-    {"name": "Ni", "type": "Shuddha", "cents": 1100.0, "code": "N"},
+    {"name": "Re", "type": "Komal", "cents": 111.7, "code": "r"},
+    {"name": "Re", "type": "Shuddha", "cents": 203.9, "code": "R"},
+    {"name": "Ga", "type": "Komal", "cents": 315.6, "code": "g"},
+    {"name": "Ga", "type": "Shuddha", "cents": 386.3, "code": "G"},
+    {"name": "Ma", "type": "Shuddha", "cents": 498.0, "code": "m"},
+    {"name": "Ma", "type": "Tivra", "cents": 590.2, "code": "M'"},
+    {"name": "Pa", "type": "Shuddha", "cents": 702.0, "code": "P"},
+    {"name": "Dha", "type": "Komal", "cents": 813.7, "code": "d"},
+    {"name": "Dha", "type": "Shuddha", "cents": 884.4, "code": "D"},
+    {"name": "Ni", "type": "Komal", "cents": 1017.6, "code": "n"},
+    {"name": "Ni", "type": "Shuddha", "cents": 1088.3, "code": "N"},
 ]
 
 
 def detect_swaras(
     pitch_contour: List[Dict[str, Any]],
-    sa_hz: float
+    sa_hz: float,
+    raga_context: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Transform continuous pitch points into segmented Swara events.
@@ -68,7 +69,7 @@ def detect_swaras(
 
         # Convert to cents
         cents_from_sa = 1200.0 * np.log2(freq / sa_hz)
-        shruti_info = find_nearest_shruti(cents_from_sa)
+        shruti_info = find_nearest_shruti(cents_from_sa, raga_context=raga_context)
 
         # Octave
         if cents_from_sa < -60.0:

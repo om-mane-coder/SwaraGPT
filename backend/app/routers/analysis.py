@@ -211,8 +211,8 @@ async def analyze_vocal_performance(
 
     sa_hz = float(pitch_res.get("tonic", {}).get("estimated_sa_hz", default_sa))
 
-    # 3. Swara Segmentation & Intonation Evaluation
-    swara_res = detect_swaras(pitch_res["pitch_contour"], sa_hz=sa_hz)
+    raga_ctx = target_raga if (target_raga and target_raga not in ["Auto-Detect", ""]) else None
+    swara_res = detect_swaras(pitch_res["pitch_contour"], sa_hz=sa_hz, raga_context=raga_ctx)
 
     # 4. Ornamentation Trajectory Segmentation (Meend, Gamak, Andolan, etc.)
     ornaments = detect_ornamentations(pitch_res["pitch_contour"], sa_hz=sa_hz)

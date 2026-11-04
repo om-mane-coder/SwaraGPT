@@ -127,8 +127,7 @@ def compare_practice_with_master(
 
     # Pedagogical feedback contrasting with the master singer
     critique_lines = [
-        f"🎯 **Master Benchmark Assessment against {singer_name}'s Original Rendition**",
-        f"In this riyaz session of **'{master_song.get('title')}'** (Raga {master_song.get('raga')}), your overall fidelity compared to **{singer_name}** achieved **{overall_master_match}%**."
+        f"🎯 **Master Benchmark Assessment against {singer_name}'s Original Rendition**"
     ]
 
     if pitch_match_pct >= 90.0:

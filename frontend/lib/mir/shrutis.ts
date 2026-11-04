@@ -299,9 +299,92 @@ export interface ShrutiMatchResult {
   status: 'Exact Sur' | 'In Tune' | 'Mild Deviation' | 'Besur';
 }
 
-export function findNearestShruti(centsFromSa: number): ShrutiMatchResult {
+/**
+ * Authentic Indian Classical Just Intonation Cent Centers for 12 Swaras
+ * Derived from the Gandharva Veda 22-Shruti system (Sangeet Parijat / Natya Shastra)
+ */
+export const CANONICAL_SWARA_CENTERS: Record<string, { cents: number; name: string; shrutiIndex: number }> = {
+  'Sa': { cents: 0.0, name: 'Shadja', shrutiIndex: 1 },
+  're': { cents: 111.7, name: 'Komal Rishabh (Chandovati)', shrutiIndex: 4 },
+  'Re': { cents: 203.9, name: 'Shuddha Rishabh (Ranjani)', shrutiIndex: 6 },
+  'ga': { cents: 315.6, name: 'Komal Gandhar (Raudri)', shrutiIndex: 8 },
+  'Ga': { cents: 386.3, name: 'Shuddha Gandhar (Krodha)', shrutiIndex: 9 },
+  'Ma': { cents: 498.0, name: 'Shuddha Madhyam (Prasarini)', shrutiIndex: 11 },
+  "Ma'": { cents: 590.2, name: 'Tivra Madhyam (Marjani)', shrutiIndex: 13 },
+  'Pa': { cents: 702.0, name: 'Pancham (Rakta)', shrutiIndex: 15 },
+  'dha': { cents: 813.7, name: 'Komal Dhaivat (Madanti)', shrutiIndex: 18 },
+  'Dha': { cents: 884.4, name: 'Shuddha Dhaivat (Rohini)', shrutiIndex: 19 },
+  'ni': { cents: 1017.6, name: 'Komal Nishad (Ugra)', shrutiIndex: 21 },
+  'Ni': { cents: 1088.3, name: 'Shuddha Nishad (Kshobhini)', shrutiIndex: 22 },
+};
+
+/**
+ * Microtonal 22-Shruti Mapping for Major Classical Ragas
+ */
+export const RAGA_SHRUTI_PREFERENCES: Record<string, Record<string, number>> = {
+  "Yaman": { "Sa": 1, "Re": 6, "Ga": 9, "Ma'": 13, "Pa": 15, "Dha": 19, "Ni": 22 },
+  "Bhairav": { "Sa": 1, "re": 4, "Ga": 9, "Ma": 11, "Pa": 15, "dha": 18, "Ni": 22 },
+  "Bhupali": { "Sa": 1, "Re": 6, "Ga": 9, "Pa": 15, "Dha": 19 },
+  "Malkauns": { "Sa": 1, "ga": 8, "Ma": 11, "dha": 18, "ni": 21 },
+  "Bageshri": { "Sa": 1, "Re": 6, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21 },
+  "Darbari": { "Sa": 1, "Re": 5, "ga": 7, "Ma": 11, "Pa": 15, "dha": 17, "ni": 21 },
+  "Darbari Kanada": { "Sa": 1, "Re": 5, "ga": 7, "Ma": 11, "Pa": 15, "dha": 17, "ni": 21 },
+  "Kafi": { "Sa": 1, "Re": 5, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21 },
+  "Todi": { "Sa": 1, "re": 3, "ga": 7, "Ma'": 14, "Pa": 15, "dha": 17, "Ni": 22 },
+  "Marwa": { "Sa": 1, "re": 3, "Ga": 9, "Ma'": 13, "Dha": 20, "Ni": 22 },
+  "Bihag": { "Sa": 1, "Re": 6, "Ga": 9, "Ma": 11, "Ma'": 13, "Pa": 15, "Ni": 22 },
+  "Ahir Bhairav": { "Sa": 1, "re": 3, "Ga": 9, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21 },
+  "Bhimpalasi": { "Sa": 1, "Re": 6, "ga": 8, "Ma": 11, "Pa": 15, "Dha": 19, "ni": 21 },
+  "Puriya Dhanashree": { "Sa": 1, "re": 3, "Ga": 9, "Ma'": 13, "Pa": 15, "dha": 18, "Ni": 22 },
+  "Shankara": { "Sa": 1, "Re": 6, "Ga": 9, "Pa": 15, "Dha": 19, "Ni": 22 }
+};
+
+export function findNearestShruti(centsFromSa: number, ragaContext?: string): ShrutiMatchResult {
   const modCents = ((centsFromSa % 1200) + 1200) % 1200;
 
+  // If a raga context is provided and known, check if a preferred shruti is within close range
+  if (ragaContext && RAGA_SHRUTI_PREFERENCES[ragaContext]) {
+    const prefs = RAGA_SHRUTI_PREFERENCES[ragaContext];
+    let bestRagaShruti: ShrutiDefinition | null = null;
+    let minRagaDiff = 99999;
+
+    for (const [, shrutiIdx] of Object.entries(prefs)) {
+      const sh = CANONICAL_22_SHRUTIS[shrutiIdx - 1];
+      if (sh) {
+        let diff = Math.abs(modCents - sh.cents);
+        if (diff > 600) diff = 1200 - diff;
+        // If within 50 cents of an allowed raga shruti, consider it strongly
+        if (diff < minRagaDiff && diff <= 55.0) {
+          minRagaDiff = diff;
+          bestRagaShruti = sh;
+        }
+      }
+    }
+
+    if (bestRagaShruti && minRagaDiff <= 40.0) {
+      let signedDelta = modCents - bestRagaShruti.cents;
+      if (signedDelta > 600) signedDelta -= 1200;
+      else if (signedDelta < -600) signedDelta += 1200;
+
+      const absDelta = Math.abs(signedDelta);
+      let status: 'Exact Sur' | 'In Tune' | 'Mild Deviation' | 'Besur' = 'Besur';
+      if (absDelta <= 12.0) status = 'Exact Sur';
+      else if (absDelta <= 25.0) status = 'In Tune';
+      else if (absDelta <= 45.0) status = 'Mild Deviation';
+
+      return {
+        shruti: bestRagaShruti,
+        shruti_name: bestRagaShruti.name,
+        swara: bestRagaShruti.swara,
+        canonical_swara: bestRagaShruti.canonical_swara,
+        delta_cents: Math.round(signedDelta * 10) / 10,
+        is_in_tune: absDelta <= 25.0,
+        status
+      };
+    }
+  }
+
+  // Global nearest shruti search across all 22 Shrutis
   let best = CANONICAL_22_SHRUTIS[0];
   let minDiff = 99999;
 
@@ -343,18 +426,18 @@ export function normalizeToCanonicalSwara(raw: string): string {
   if (isTivraMa) return "Ma'";
 
   const map: Record<string, string> = {
-    'S': 'Sa', 'Sa': 'Sa', 'sa': 'Sa', 'Sa+': 'Sa',
-    'r': 're', 're': 're', 're-': 're', 'Re(Komal)': 're',
-    'R': 'Re', 'Re': 'Re', 'Re-': 'Re', 'Re(Shuddha)': 'Re',
-    'g': 'ga', 'ga': 'ga', 'ga-': 'ga', 'Ga(Komal)': 'ga',
-    'G': 'Ga', 'Ga': 'Ga', 'Ga+': 'Ga', 'Ga(Shuddha)': 'Ga',
-    'm': 'Ma', 'ma': 'Ma', 'Ma': 'Ma', 'Ma+': 'Ma', 'M': 'Ma',
+    'S': 'Sa', 'Sa': 'Sa', 'sa': 'Sa', 'Sa+': 'Sa', 'Sa-': 'Sa',
+    'r': 're', 're': 're', 're-': 're', 'Re(Komal)': 're', 'Komal Re': 're',
+    'R': 'Re', 'Re': 'Re', 'Re-': 'Re', 'Re(Shuddha)': 'Re', 'Shuddha Re': 'Re',
+    'g': 'ga', 'ga': 'ga', 'ga-': 'ga', 'Ga(Komal)': 'ga', 'Komal Ga': 'ga',
+    'G': 'Ga', 'Ga': 'Ga', 'Ga+': 'Ga', 'Ga(Shuddha)': 'Ga', 'Shuddha Ga': 'Ga',
+    'm': 'Ma', 'ma': 'Ma', 'Ma': 'Ma', 'Ma+': 'Ma', 'M': 'Ma', 'Shuddha Ma': 'Ma',
     "M'": "Ma'", "ma'": "Ma'", "Ma'": "Ma'", "Ma''": "Ma'", 'Tivra Ma': "Ma'",
     'P': 'Pa', 'Pa': 'Pa', 'pa': 'Pa', 'Pa+': 'Pa',
-    'd': 'dha', 'dha': 'dha', 'dha-': 'dha', 'Dha(Komal)': 'dha',
-    'D': 'Dha', 'Dha': 'Dha', 'Dha+': 'Dha', 'Dha(Shuddha)': 'Dha',
-    'n': 'ni', 'ni': 'ni', 'Ni(Komal)': 'ni',
-    'N': 'Ni', 'Ni': 'Ni', 'Ni(Shuddha)': 'Ni'
+    'd': 'dha', 'dha': 'dha', 'dha-': 'dha', 'Dha(Komal)': 'dha', 'Komal Dha': 'dha',
+    'D': 'Dha', 'Dha': 'Dha', 'Dha+': 'Dha', 'Dha(Shuddha)': 'Dha', 'Shuddha Dha': 'Dha',
+    'n': 'ni', 'ni': 'ni', 'Ni(Komal)': 'ni', 'Komal Ni': 'ni',
+    'N': 'Ni', 'Ni': 'Ni', 'Ni(Shuddha)': 'Ni', 'Shuddha Ni': 'Ni'
   };
   return map[clean] || (clean.startsWith('S') ? 'Sa' : clean);
 }

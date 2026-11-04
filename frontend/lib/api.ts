@@ -64,14 +64,18 @@ export const authApi = {
 };
 
 export const chatApi = {
-  send: (message: string, performance_context?: any, model?: string) =>
-    api.post('/api/chat', { message, performance_context, model }).catch(() => api.post('/chat', { message, performance_context, model })),
-  sendMessage: (message: string, conversation_id?: string, performance_context?: any, model?: string) =>
-    api.post('/api/chat', { message, conversation_id, performance_context, model }).catch(() => api.post('/chat', { message, conversation_id, performance_context, model })),
+  send: (message: string, performance_context?: any, model?: string, apiKey?: string) =>
+    api.post('/chat', { message, performance_context, model }, {
+      headers: apiKey ? { 'x-api-key': apiKey } : {}
+    }).catch(() => api.post('/api/chat', { message, performance_context, model })),
+  sendMessage: (message: string, conversation_id?: string, performance_context?: any, model?: string, apiKey?: string) =>
+    api.post('/chat', { message, conversation_id, performance_context, model }, {
+      headers: apiKey ? { 'x-api-key': apiKey } : {}
+    }).catch(() => api.post('/api/chat', { message, conversation_id, performance_context, model })),
   getConversations: () =>
-    api.get('/api/chat/conversations').catch(() => api.get('/chat/conversations')).catch(() => ({ data: [] })),
+    api.get('/chat/conversations').catch(() => ({ data: [] })),
   getHistory: (conversation_id: string) =>
-    api.get(`/api/chat/history/${conversation_id}`).catch(() => api.get(`/chat/history/${conversation_id}`)).catch(() => ({ data: [] })),
+    api.get(`/chat/history/${conversation_id}`).catch(() => ({ data: [] })),
 };
 
 export const audioApi = {

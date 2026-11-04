@@ -14,7 +14,7 @@ import {
   ScoreBreakdown,
   AudioQualityMetrics
 } from './types';
-import { findNearestShruti, normalizeToCanonicalSwara, CANONICAL_22_SHRUTIS } from './shrutis';
+import { findNearestShruti, normalizeToCanonicalSwara, CANONICAL_22_SHRUTIS, RAGA_SHRUTI_PREFERENCES } from './shrutis';
 import { RAGA_REGISTRY, RagaDefinition } from './ragas';
 import {
   preprocessSignal,
@@ -73,23 +73,16 @@ export class SwaraMIRCIEngine {
     }
 
     const lowerFile = (options.filename || '').toLowerCase();
-    let targetRagaName = options.targetRaga || "Yaman";
-    let tonicHint = options.manualTonicHz;
-
-    if (lowerFile.includes('bhimsen') || lowerFile.includes('master') || lowerFile.includes('famous') || lowerFile.includes('good')) {
-      targetRagaName = "Yaman";
-      tonicHint = 138.59;
-    } else if (lowerFile.includes('amateur') || lowerFile.includes('bad') || lowerFile.includes('learner') || lowerFile.includes('average')) {
-      targetRagaName = "Yaman";
-      tonicHint = 138.59;
-    }
+    const hasExplicitTarget = Boolean(options.targetRaga && options.targetRaga !== "Auto-Detect" && options.targetRaga.trim() !== "");
+    const targetRagaName = hasExplicitTarget ? (options.targetRaga as string) : "";
+    const tonicHint = options.manualTonicHz;
 
     // 3. Tonic (Sa) Detection
     const voicedPitches = voicedFrames.map((f) => f.pitch);
     const tonicEstimate = estimateTonicFromF0(voicedPitches, tonicHint);
     const saHz = tonicEstimate.estimated_sa_hz;
 
-    const targetRagaDef = RAGA_REGISTRY[targetRagaName];
+    const targetRagaDef = hasExplicitTarget ? RAGA_REGISTRY[targetRagaName] : undefined;
     const forbiddenCanonicalSet = targetRagaDef
       ? new Set(targetRagaDef.forbidden_swaras.map(normalizeToCanonicalSwara))
       : null;
@@ -101,10 +94,10 @@ export class SwaraMIRCIEngine {
     for (const frame of pitchFrames) {
       if (frame.pitch > 55.0 && saHz > 0) {
         const cents = 1200.0 * Math.log2(frame.pitch / saHz);
-        const match = findNearestShruti(cents);
+        const match = findNearestShruti(cents, hasExplicitTarget ? targetRagaName : undefined);
         let effectiveDev = Math.abs(match.delta_cents);
 
-        // If matched swara is forbidden in target raga, calculate deviation from closest allowed raga swara
+        // If user explicitly chose a target raga and this swara is forbidden in it, calculate deviation from closest allowed raga swara
         if (targetRagaDef && forbiddenCanonicalSet && forbiddenCanonicalSet.has(match.canonical_swara)) {
           let minAllowedDev = 1200;
           for (const allowedSw of targetRagaDef.swaras) {
@@ -163,7 +156,7 @@ export class SwaraMIRCIEngine {
     // 7. Automated Raga Recognition & Grammar Adherence
     const ragaCandidates = this.recognizeRaga(swaraTimeline, targetRagaName);
     const topCandidate = ragaCandidates[0] || {
-      raga_name: targetRagaName,
+      raga_name: targetRagaName || "Yaman",
       confidence: 0.88,
       thaat: "Kalyan",
       vadi: "Ga",
@@ -189,8 +182,8 @@ export class SwaraMIRCIEngine {
     const saFrames = pitchPoints.filter((p) => p.canonical_swara === 'Sa' && p.pitch > 55.0);
 
     if (saFrames.length >= 4 && (saFrames[saFrames.length - 1].time - saFrames[0].time > 3.0)) {
-      const startSa = saFrames.slice(0, 2).reduce((a, b) => a + b.cents, 0) / 2;
-      const endSa = saFrames.slice(-2).reduce((a, b) => a + b.cents, 0) / 2;
+      const startSa = saFrames.slice(0, 2).reduce((a, b) => a + (b.cents ?? 0), 0) / 2;
+      const endSa = saFrames.slice(-2).reduce((a, b) => a + (b.cents ?? 0), 0) / 2;
       tonicDriftCents = Math.abs(endSa - startSa);
     } else {
       // Compare recurring swaras between early and late parts of performance (e.g. Re early vs Re late, Ga early vs Ga late)
@@ -233,50 +226,6 @@ export class SwaraMIRCIEngine {
         0.10 * tonicStability) *
         10
     ) / 10;
-
-    const isMasterTrack =
-      (lowerFile.includes('master') ||
-        lowerFile.includes('lata') ||
-        lowerFile.includes('rafi') ||
-        lowerFile.includes('bhimsen') ||
-        lowerFile.includes('kishore') ||
-        lowerFile.includes('sultan') ||
-        lowerFile.includes('manna') ||
-        lowerFile.includes('asha') ||
-        lowerFile.includes('yesudas') ||
-        lowerFile.includes('jagjit') ||
-        lowerFile.includes('shankar')) &&
-      !lowerFile.includes('user') &&
-      !lowerFile.includes('amateur') &&
-      !lowerFile.includes('student') &&
-      !lowerFile.includes('cover') &&
-      !lowerFile.includes('learner');
-
-    if (isMasterTrack) {
-      if (lowerFile.includes('lata')) {
-        finalPitchAcc = 99.3; finalSwaraAcc = 100.0; finalShrutiAcc = 99.5; finalRagaAcc = 99.7; finalTonicStab = 99.4; overallScore = 99.5;
-      } else if (lowerFile.includes('bhimsen')) {
-        finalPitchAcc = 98.6; finalSwaraAcc = 99.5; finalShrutiAcc = 98.2; finalRagaAcc = 99.2; finalTonicStab = 99.0; overallScore = 98.8;
-      } else if (lowerFile.includes('yesudas')) {
-        finalPitchAcc = 98.8; finalSwaraAcc = 99.5; finalShrutiAcc = 98.7; finalRagaAcc = 99.2; finalTonicStab = 99.1; overallScore = 99.0;
-      } else if (lowerFile.includes('rafi')) {
-        finalPitchAcc = 98.4; finalSwaraAcc = 99.2; finalShrutiAcc = 97.8; finalRagaAcc = 98.6; finalTonicStab = 98.2; overallScore = 98.5;
-      } else if (lowerFile.includes('shankar')) {
-        finalPitchAcc = 98.2; finalSwaraAcc = 99.1; finalShrutiAcc = 98.0; finalRagaAcc = 98.8; finalTonicStab = 98.5; overallScore = 98.5;
-      } else if (lowerFile.includes('sultan')) {
-        finalPitchAcc = 97.6; finalSwaraAcc = 98.8; finalShrutiAcc = 97.8; finalRagaAcc = 98.5; finalTonicStab = 98.2; overallScore = 98.0;
-      } else if (lowerFile.includes('manna')) {
-        finalPitchAcc = 97.4; finalSwaraAcc = 98.5; finalShrutiAcc = 97.2; finalRagaAcc = 98.0; finalTonicStab = 97.8; overallScore = 97.7;
-      } else if (lowerFile.includes('asha')) {
-        finalPitchAcc = 97.2; finalSwaraAcc = 98.4; finalShrutiAcc = 97.0; finalRagaAcc = 98.2; finalTonicStab = 97.6; overallScore = 97.6;
-      } else if (lowerFile.includes('jagjit')) {
-        finalPitchAcc = 96.8; finalSwaraAcc = 97.9; finalShrutiAcc = 96.5; finalRagaAcc = 97.4; finalTonicStab = 97.5; overallScore = 97.1;
-      } else if (lowerFile.includes('kishore')) {
-        finalPitchAcc = 96.5; finalSwaraAcc = 97.8; finalShrutiAcc = 96.2; finalRagaAcc = 97.2; finalTonicStab = 97.0; overallScore = 96.8;
-      } else {
-        finalPitchAcc = 97.5; finalSwaraAcc = 98.5; finalShrutiAcc = 97.5; finalRagaAcc = 98.0; finalTonicStab = 98.0; overallScore = 97.8;
-      }
-    }
 
     const scores: ScoreBreakdown = {
       overall_score: overallScore,
@@ -325,11 +274,11 @@ export class SwaraMIRCIEngine {
       shruti_accuracy: scores.shruti_score,
       raga_accuracy: scores.raga_score,
       tonic_stability: scores.tonic_score,
-      pitch_stability: isMasterTrack ? scores.tonic_score : pitchStability,
-      shruti_precision: isMasterTrack ? scores.shruti_score : shrutiPrecision,
-      mean_shruti_deviation_cents: isMasterTrack ? 0.5 : Math.round(meanShrutiDev * 10) / 10,
+      pitch_stability: pitchStability,
+      shruti_precision: shrutiPrecision,
+      mean_shruti_deviation_cents: Math.round(meanShrutiDev * 10) / 10,
       detected_raga: topCandidate.raga_name,
-      target_raga: targetRagaName,
+      target_raga: targetRagaName || topCandidate.raga_name,
       raga_confidence: topCandidate.confidence,
       raga_candidates: ragaCandidates,
       raga_predictions: ragaCandidates,
@@ -339,16 +288,10 @@ export class SwaraMIRCIEngine {
       display_pitch_contour: displayContour,
       detected_ornaments: ornaments,
       ornament_segments: ornaments,
-      strong_swaras: isMasterTrack ? ["Sa", "Re", "Ga", "Ma", "Pa", "Dha", "Ni"] : strongSwaras,
-      weak_swaras: isMasterTrack ? [] : weakSwaras,
-      strengths: isMasterTrack
-        ? [
-            "🏆 Param Uttam master reference alignment: Pristine 22-shruti intonation.",
-            "Diaphragmatic tonic stability with exemplary nyasa swara steadiness.",
-            "Gold standard benchmark: Zero vocal faults detected."
-          ]
-        : diagnostics.strengths,
-      issues: isMasterTrack ? ["Benchmark standard achieved: Zero intonation or tempo flaws detected."] : diagnostics.issues,
+      strong_swaras: strongSwaras,
+      weak_swaras: weakSwaras,
+      strengths: diagnostics.strengths,
+      issues: diagnostics.issues,
       recommendations: diagnostics.recommendations,
       practice_recommendations: diagnostics.recommendations,
       ai_feedback: diagnostics.ai_feedback,
@@ -377,16 +320,24 @@ export class SwaraMIRCIEngine {
       ? new Set(targetRagaDef.forbidden_swaras.map(normalizeToCanonicalSwara))
       : null;
 
-    let currentSwara: string | null = null;
-    let currentShruti = "";
+    let lockedSwara: string | null = null;
+    let lockedShruti = "";
     let startTime = 0;
     let pitchesInNote: number[] = [];
     let deltasInNote: number[] = [];
 
+    // Hysteresis buffer to absorb vocal vibrato micro-oscillations
+    let candidateSwara: string | null = null;
+    let candidateCount = 0;
+    const HYSTERESIS_FRAMES = 2; // ~46ms persistence required to trigger note boundary
+
     const flushNote = (endTime: number) => {
       const dur = Math.max(0.046, endTime - startTime);
-      // Require at least 150ms duration and 3 frames to avoid transient passing glides
-      if (dur >= 0.15 && pitchesInNote.length >= 3 && currentSwara) {
+      // Require at least 70ms duration and 2 frames to capture rapid taans while eliminating transient clicks
+      if (dur >= 0.07 && pitchesInNote.length >= 2 && lockedSwara) {
+        // Calculate median and mean pitch of note
+        const sortedP = [...pitchesInNote].sort((a, b) => a - b);
+        const medianP = sortedP[Math.floor(sortedP.length / 2)];
         const meanP = pitchesInNote.reduce((a, b) => a + b, 0) / pitchesInNote.length;
         const meanD = deltasInNote.reduce((a, b) => a + Math.abs(b), 0) / deltasInNote.length;
 
@@ -396,14 +347,14 @@ export class SwaraMIRCIEngine {
         }
         const stdP = Math.sqrt(variance / pitchesInNote.length);
         const stability = Math.max(20.0, Math.min(100.0, 100.0 - (stdP / Math.max(1.0, meanP)) * 200.0));
-        const isForbidden = forbiddenSet && forbiddenSet.has(currentSwara);
+        const isForbidden = forbiddenSet && forbiddenSet.has(lockedSwara);
 
         let accuracy = Math.max(15.0, Math.min(100.0, 100.0 - meanD * 0.85));
         let intonationStatus = "In Tune (Sur)";
 
         if (isForbidden) {
           accuracy = Math.max(15.0, Math.min(48.0, 60.0 - meanD * 1.2));
-          intonationStatus = `Besur (Varjit Swara: ${currentSwara} not allowed in Raga ${targetRagaDef?.name})`;
+          intonationStatus = `Besur (Varjit Swara: ${lockedSwara} not allowed in Raga ${targetRagaDef?.name})`;
         } else if (meanD <= 12.0) {
           intonationStatus = "Exact Sur (Perfect Intonation)";
         } else if (meanD <= 25.0) {
@@ -414,21 +365,21 @@ export class SwaraMIRCIEngine {
           intonationStatus = "Besur (Significant Deviation)";
         }
 
-        const centsFromSa = 1200.0 * Math.log2(Math.max(1.0, meanP) / saHz);
+        const centsFromSa = 1200.0 * Math.log2(Math.max(1.0, medianP) / saHz);
         let octave: 'Mandra' | 'Madhya' | 'Taar' = 'Madhya';
         if (centsFromSa < -60) octave = 'Mandra';
         else if (centsFromSa >= 1150) octave = 'Taar';
 
         events.push({
-          swara: currentSwara,
-          swara_type: `${currentSwara} (${octave})`,
-          shruti_name: currentShruti || "Tivra",
+          swara: lockedSwara,
+          swara_type: `${lockedSwara} (${octave})`,
+          shruti_name: lockedShruti || "Tivra",
           octave,
           start_time: Math.round(startTime * 100) / 100,
           end_time: Math.round(endTime * 100) / 100,
           duration: Math.round(dur * 100) / 100,
-          mean_pitch: Math.round(meanP * 10) / 10,
-          frequency: Math.round(meanP * 10) / 10,
+          mean_pitch: Math.round(medianP * 10) / 10,
+          frequency: Math.round(medianP * 10) / 10,
           timestamp: Math.round(startTime * 100) / 100,
           cents_from_sa: Math.round(centsFromSa * 10) / 10,
           cents_deviation: Math.round(meanD * 10) / 10,
@@ -438,7 +389,9 @@ export class SwaraMIRCIEngine {
           is_in_tune: meanD <= 25.0
         });
       }
-      currentSwara = null;
+      lockedSwara = null;
+      candidateSwara = null;
+      candidateCount = 0;
       pitchesInNote = [];
       deltasInNote = [];
     };
@@ -446,32 +399,53 @@ export class SwaraMIRCIEngine {
     for (let i = 0; i < points.length; i++) {
       const pt = points[i];
       if (pt.pitch <= 50.0 || pt.swara === "-" || isInActiveMeend(pt.time)) {
-        if (currentSwara) flushNote(pt.time);
+        if (lockedSwara) flushNote(pt.time);
         continue;
       }
 
       const canonical = pt.canonical_swara || pt.swara;
-      if (currentSwara === null) {
-        currentSwara = canonical;
-        currentShruti = pt.shruti;
+      if (lockedSwara === null) {
+        lockedSwara = canonical;
+        lockedShruti = pt.shruti;
         startTime = pt.time;
         pitchesInNote = [pt.pitch];
         deltasInNote = [pt.delta_cents];
-      } else if (currentSwara === canonical) {
+        candidateSwara = null;
+        candidateCount = 0;
+      } else if (lockedSwara === canonical) {
         pitchesInNote.push(pt.pitch);
         deltasInNote.push(pt.delta_cents);
+        candidateSwara = null;
+        candidateCount = 0;
       } else {
-        flushNote(pt.time);
-        currentSwara = canonical;
-        currentShruti = pt.shruti;
-        startTime = pt.time;
-        pitchesInNote = [pt.pitch];
-        deltasInNote = [pt.delta_cents];
+        // Hysteresis Schmitt Trigger Check
+        if (candidateSwara === canonical) {
+          candidateCount++;
+          if (candidateCount >= HYSTERESIS_FRAMES) {
+            // Confirm genuine swara transition
+            flushNote(pt.time - (candidateCount - 1) * 0.023);
+            lockedSwara = canonical;
+            lockedShruti = pt.shruti;
+            startTime = pt.time - (candidateCount - 1) * 0.023;
+            pitchesInNote = [pt.pitch];
+            deltasInNote = [pt.delta_cents];
+            candidateSwara = null;
+            candidateCount = 0;
+          } else {
+            pitchesInNote.push(pt.pitch);
+            deltasInNote.push(pt.delta_cents);
+          }
+        } else {
+          candidateSwara = canonical;
+          candidateCount = 1;
+          pitchesInNote.push(pt.pitch);
+          deltasInNote.push(pt.delta_cents);
+        }
       }
     }
 
-    if (currentSwara) {
-      flushNote(points[points.length - 1]?.time || startTime + 0.3);
+    if (lockedSwara) {
+      flushNote(points[points.length - 1]?.time || startTime + 0.2);
     }
 
     return events;
@@ -573,32 +547,84 @@ export class SwaraMIRCIEngine {
   }
 
   /**
-   * Explainable Automatic Raga Identification (ARI)
+   * Explainable Automatic Raga Identification (ARI) & Grammar Verification
+   * Evaluates:
+   * 1. Duration-weighted Scale Adherence with non-linear Varjit Swara penalty (40%)
+   * 2. Vadi / Samvadi Nyasa & Sustained Prominence (28%)
+   * 3. Melodic Transitions & Pakad Catchphrase Sequence Alignment (LCS + Bigram Transitions) (22%)
+   * 4. 22-Shruti Microtonal Congruence (10%)
    */
-  private static recognizeRaga(
+  public static recognizeRaga(
     swaras: SwaraEvent[],
-    targetRagaName: string
+    targetRagaName?: string
   ): RagaCandidate[] {
     const candidates: RagaCandidate[] = [];
     const totalDuration = swaras.reduce((acc, s) => acc + s.duration, 0) || 1.0;
 
-    // Calculate duration for each swara
+    // 1. Duration and pitch statistics per canonical swara
     const swaraDurations: Record<string, number> = {};
+    const swaraCentsSum: Record<string, number> = {};
+    const swaraCentsCount: Record<string, number> = {};
+
     for (const s of swaras) {
       const norm = normalizeToCanonicalSwara(s.swara);
       swaraDurations[norm] = (swaraDurations[norm] || 0) + s.duration;
+      swaraCentsSum[norm] = (swaraCentsSum[norm] || 0) + (s.cents_from_sa ?? 0);
+      swaraCentsCount[norm] = (swaraCentsCount[norm] || 0) + 1;
     }
 
-    const sungSwaras = Object.keys(swaraDurations);
+    // 2. Extract deduplicated melodic trajectory from clean events (duration >= 0.06s)
+    const cleanSwaras = swaras.filter((s) => s.duration >= 0.06);
+    const rawSeq = cleanSwaras.map((s) => normalizeToCanonicalSwara(s.swara));
+    const compSeq: string[] = [];
+    for (const sw of rawSeq) {
+      if (compSeq.length === 0 || compSeq[compSeq.length - 1] !== sw) {
+        compSeq.push(sw);
+      }
+    }
+
+    // Sung bigram transitions (e.g. "Ni->Re", "Re->Ga", "Ma'->Ga")
+    const sungBigrams = new Set<string>();
+    for (let i = 0; i < compSeq.length - 1; i++) {
+      sungBigrams.add(`${compSeq[i]}->${compSeq[i + 1]}`);
+    }
+
+    // Non-Sa transitions (bypassing return to drone Sa, e.g. "Dha->Ga", "Pa->Ga", "Ni->Re")
+    const nonSaSeq = compSeq.filter((s) => s !== 'Sa');
+    const nonSaBigrams = new Set<string>();
+    for (let i = 0; i < nonSaSeq.length - 1; i++) {
+      nonSaBigrams.add(`${nonSaSeq[i]}->${nonSaSeq[i + 1]}`);
+    }
+
+    // Helper: Longest Common Subsequence between sung sequence and raga pakad
+    const lcsScore = (targetSeq: string[]): number => {
+      const m = compSeq.length;
+      const n = targetSeq.length;
+      if (m === 0 || n === 0) return 0;
+      let prev = new Array(n + 1).fill(0);
+      let curr = new Array(n + 1).fill(0);
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          if (compSeq[i - 1] === targetSeq[j - 1]) {
+            curr[j] = prev[j - 1] + 1;
+          } else {
+            curr[j] = Math.max(prev[j], curr[j - 1]);
+          }
+        }
+        prev = [...curr];
+      }
+      return curr[n] / n;
+    };
 
     for (const ragaKey of Object.keys(RAGA_REGISTRY)) {
       const def = RAGA_REGISTRY[ragaKey];
       const allowedSet = new Set(def.swaras.map(normalizeToCanonicalSwara));
       const forbiddenSet = new Set(def.forbidden_swaras.map(normalizeToCanonicalSwara));
 
-      // 1. Scale Adherence (Duration-weighted)
+      // --- TERM 1: Duration-weighted Scale Adherence & Steep Varjit Penalty (40%) ---
       let allowedDuration = 0;
       let forbiddenDuration = 0;
+      let maxContinuousForbidden = 0;
 
       for (const [sw, dur] of Object.entries(swaraDurations)) {
         if (allowedSet.has(sw)) {
@@ -608,42 +634,130 @@ export class SwaraMIRCIEngine {
         }
       }
 
-      const rawAdherence = (allowedDuration / totalDuration) * 100.0;
-      const penalty = (forbiddenDuration / totalDuration) * 120.0;
-      const scaleScore = Math.max(0.0, Math.min(100.0, rawAdherence - penalty));
+      for (const s of cleanSwaras) {
+        const norm = normalizeToCanonicalSwara(s.swara);
+        if (forbiddenSet.has(norm) && s.duration > maxContinuousForbidden) {
+          maxContinuousForbidden = s.duration;
+        }
+      }
 
-      // 2. Vadi & Samvadi Prominence
+      const allowedRatio = allowedDuration / totalDuration;
+      const forbiddenRatio = forbiddenDuration / totalDuration;
+
+      // Scale coverage: how many notes of the raga's scale were actually sung with >= 1.5% time
+      let coveredNotesCount = 0;
+      for (const sw of Array.from(allowedSet)) {
+        if ((swaraDurations[sw] || 0) / totalDuration >= 0.015) {
+          coveredNotesCount++;
+        }
+      }
+      const scaleCoverageRatio = coveredNotesCount / Math.max(1, allowedSet.size);
+
+      // Non-linear Varjit penalty: singing a forbidden note sustained is severe in Indian Classical
+      let penalty = forbiddenRatio * 150.0;
+      if (forbiddenRatio > 0.04) penalty += (forbiddenRatio - 0.04) * 200.0;
+      if (maxContinuousForbidden >= 0.35) penalty += 18.0;
+
+      const rawScaleScore = (allowedRatio * 0.70 + scaleCoverageRatio * 0.30) * 100.0;
+      const scaleScore = Math.max(0.0, Math.min(100.0, rawScaleScore - penalty));
+
+      // --- TERM 2: Vadi & Samvadi Nyasa / Prominence (28%) ---
       const normVadi = normalizeToCanonicalSwara(def.vadi);
       const normSamvadi = normalizeToCanonicalSwara(def.samvadi);
       const vadiDur = swaraDurations[normVadi] || 0;
       const samvadiDur = swaraDurations[normSamvadi] || 0;
-      const vadiRatio = (vadiDur + samvadiDur) / totalDuration;
-      const vadiScore = Math.min(100.0, vadiRatio * 250.0);
 
-      // 3. Pakad Matching (Subsequence overlap)
-      let pakadMatch = 60.0;
-      const pakadNorm = def.pakad_sequence.map(normalizeToCanonicalSwara);
-      let matchCount = 0;
-      for (const p of pakadNorm) {
-        if (swaraDurations[p] && swaraDurations[p] > 0.05) matchCount++;
+      let vadiScore = 0;
+      if (vadiDur < 0.06 || (vadiDur / totalDuration) < 0.015) {
+        // Critical: Vadi note is missing or barely an accidental frame!
+        vadiScore = 15.0;
+      } else {
+        const avgNoteDuration = totalDuration / Math.max(1, allowedSet.size);
+        const vadiRelativeWeight = vadiDur / Math.max(0.01, avgNoteDuration);
+        const samvadiContribution = normSamvadi === 'Sa' ? samvadiDur * 0.35 : samvadiDur;
+        const totalVadiRatio = (vadiDur + samvadiContribution) / totalDuration;
+        vadiScore = Math.min(100.0, 35.0 + Math.min(45.0, totalVadiRatio * 180.0) + (vadiRelativeWeight >= 1.0 ? 20.0 : 0.0));
       }
-      pakadMatch = Math.min(100.0, (matchCount / Math.max(1, pakadNorm.length)) * 100.0);
 
-      // Total Confidence
+      // --- TERM 3: Melodic Phrase / Pakad & Chalan Alignment (22%) ---
+      const pakadNorm = def.pakad_sequence.map(normalizeToCanonicalSwara);
+      const arohaNorm = def.aroha.map(normalizeToCanonicalSwara);
+      const avarohaNorm = def.avaroha.map(normalizeToCanonicalSwara);
+
+      // Bigram matching for Pakad
+      let pakadBigramHits = 0;
+      let totalPakadBigrams = 0;
+      for (let k = 0; k < pakadNorm.length - 1; k++) {
+        totalPakadBigrams++;
+        const pPair = `${pakadNorm[k]}->${pakadNorm[k + 1]}`;
+        if (sungBigrams.has(pPair) || nonSaBigrams.has(pPair)) {
+          pakadBigramHits++;
+        }
+      }
+      const pakadBigramRatio = totalPakadBigrams > 0 ? pakadBigramHits / totalPakadBigrams : 0.5;
+
+      // Aroha & Avaroha direction transitions
+      let ragaChalanHits = 0;
+      const allRagaPairs = new Set<string>();
+      for (let k = 0; k < arohaNorm.length - 1; k++) allRagaPairs.add(`${arohaNorm[k]}->${arohaNorm[k + 1]}`);
+      for (let k = 0; k < avarohaNorm.length - 1; k++) allRagaPairs.add(`${avarohaNorm[k]}->${avarohaNorm[k + 1]}`);
+
+      let totalSungTransitions = 0;
+      for (const pair of Array.from(sungBigrams)) {
+        totalSungTransitions++;
+        if (allRagaPairs.has(pair)) ragaChalanHits++;
+      }
+      const chalanRatio = totalSungTransitions > 0 ? ragaChalanHits / totalSungTransitions : 0.5;
+
+      // LCS alignment
+      const pakadLcs = lcsScore(pakadNorm);
+
+      const pakadScore = Math.max(
+        10.0,
+        Math.min(100.0, (pakadBigramRatio * 0.45 + pakadLcs * 0.35 + chalanRatio * 0.20) * 100.0)
+      );
+
+      // --- TERM 4: 22-Shruti Microtonal Congruence (10%) ---
+      let shrutiCongruenceScore = 70.0;
+      const ragaShrutiPrefs = RAGA_SHRUTI_PREFERENCES[def.name];
+      if (ragaShrutiPrefs) {
+        let shrutiMatches = 0;
+        let testedShrutiNotes = 0;
+        for (const [sw, prefIdx] of Object.entries(ragaShrutiPrefs)) {
+          const normSw = normalizeToCanonicalSwara(sw);
+          if (swaraCentsCount[normSw] && swaraCentsCount[normSw] >= 2) {
+            testedShrutiNotes++;
+            const meanCents = swaraCentsSum[normSw] / swaraCentsCount[normSw];
+            const prefCents = CANONICAL_22_SHRUTIS[prefIdx - 1]?.cents ?? 0;
+            let diff = Math.abs((((meanCents - prefCents) % 1200) + 1800) % 1200 - 600);
+            if (diff <= 22.0) shrutiMatches++;
+          }
+        }
+        if (testedShrutiNotes > 0) {
+          shrutiCongruenceScore = (shrutiMatches / testedShrutiNotes) * 100.0;
+        }
+      }
+
+      // Composite Confidence
       const totalConf = Math.min(
         0.98,
         Math.max(
-          0.1,
-          (scaleScore * 0.45 + vadiScore * 0.30 + pakadMatch * 0.25) / 100.0
+          0.05,
+          (scaleScore * 0.40 + vadiScore * 0.28 + pakadScore * 0.22 + shrutiCongruenceScore * 0.10) / 100.0
         )
       );
 
-      let explanation = `Strong ${scaleScore.toFixed(0)}% scale adherence to ${def.thaat} framework.`;
-      if (vadiDur > 0) {
-        explanation += ` Prominent resting on Vadi (${def.vadi}).`;
+      let explanation = `Scale adherence: ${scaleScore.toFixed(0)}% in ${def.thaat} thaat.`;
+      if (vadiDur >= 0.1) {
+        explanation += ` Prominent resting on Vadi (${def.vadi}, ${(vadiDur).toFixed(1)}s).`;
+      } else {
+        explanation += ` Low presence of Vadi (${def.vadi}).`;
       }
-      if (forbiddenDuration > 0.3) {
-        explanation += ` Note: occasional presence of Varjit swara was detected.`;
+      if (pakadScore >= 65) {
+        explanation += ` Strong melodic alignment with characteristic ${def.name} pakad.`;
+      }
+      if (forbiddenDuration > 0.2) {
+        explanation += ` Warning: Varjit swara detected (${(forbiddenDuration).toFixed(2)}s).`;
       }
 
       candidates.push({
@@ -655,7 +769,7 @@ export class SwaraMIRCIEngine {
         samvadi: def.samvadi,
         scale_adherence: Math.round(scaleScore * 10) / 10,
         vadi_adherence: Math.round(vadiScore * 10) / 10,
-        pakad_match_score: Math.round(pakadMatch * 10) / 10,
+        pakad_match_score: Math.round(pakadScore * 10) / 10,
         explanation,
         description: def.description
       });
@@ -664,11 +778,17 @@ export class SwaraMIRCIEngine {
     // Sort by confidence descending
     candidates.sort((a, b) => b.confidence - a.confidence);
 
-    // If target raga is present and complies with the scale, prioritize it as the evaluated benchmark
-    const targetIdx = candidates.findIndex((c) => c.raga_name.toLowerCase() === targetRagaName.toLowerCase());
-    if (targetIdx > 0 && (candidates[targetIdx].confidence >= candidates[0].confidence - 0.12 || candidates[targetIdx].scale_adherence >= 80)) {
-      const [tCand] = candidates.splice(targetIdx, 1);
-      candidates.unshift(tCand);
+    // If target raga was explicitly selected AND has strong genuine adherence, prioritize it
+    if (targetRagaName && targetRagaName.trim() !== "" && targetRagaName !== "Auto-Detect") {
+      const targetIdx = candidates.findIndex((c) => c.raga_name.toLowerCase() === targetRagaName.toLowerCase());
+      if (targetIdx > 0) {
+        const tCand = candidates[targetIdx];
+        // Only prioritize if it has solid scale adherence (>= 75%) and reasonable confidence
+        if (tCand.scale_adherence >= 75.0 && tCand.confidence >= candidates[0].confidence - 0.15) {
+          candidates.splice(targetIdx, 1);
+          candidates.unshift(tCand);
+        }
+      }
     }
 
     return candidates.slice(0, 5);
